@@ -6,10 +6,10 @@ export const server = (
   app: Probot,
   { getRouter }: ApplicationFunctionOptions
 ) => {
-  const router = getRouter!("/probot");
+  const router = getRouter!("/app");
 
   probot(app);
-  webapp(router);
+  webapp(router, app);
 };
 
 run(server);

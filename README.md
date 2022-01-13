@@ -4,7 +4,16 @@
 
 ## Development Notes
 
+Proxy link: https://smee.io/ncfiNkNRMrzhpjK9
+
 Install link: https://github.com/apps/cyf-learning-lab/installations/new
+
+- Adds to Install and Authorized Github Apps
+
+Login link: http://localhost:3000/app/login
+
+- Redirects to https://github.com/login/oauth/authorize?client_id=Iv1.40c3b8ab12e6d9d3&redirect_uri=https%3A%2F%2Fsmee.io%2FncfiNkNRMrzhpjK9%2Fprobot%2Flogin%2Fcb)
+- Only adds as authorized app
 
 ## Setup
 
