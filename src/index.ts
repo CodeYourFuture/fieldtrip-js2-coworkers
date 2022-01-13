@@ -1,15 +1,15 @@
-import { Probot } from "probot";
+import { ApplicationFunctionOptions, Probot, run } from "probot";
+import { webapp } from "./webapp";
+import { probot } from "./probot";
 
-export = (app: Probot) => {
-  app.on("issues.opened", async (context) => {
-    const issueComment = context.issue({
-      body: "Thanks for opening this issue!",
-    });
-    await context.octokit.issues.createComment(issueComment);
-  });
-  // For more information on building apps:
-  // https://probot.github.io/docs/
+export const server = (
+  app: Probot,
+  { getRouter }: ApplicationFunctionOptions
+) => {
+  const router = getRouter!("/probot");
 
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  probot(app);
+  webapp(router);
 };
+
+run(server);

@@ -1,6 +1,10 @@
-# edu-bot
+# CYF Learning Lab
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that A Probot app
+
+## Development Notes
+
+Install link: https://github.com/apps/cyf-learning-lab/installations/new
 
 ## Setup
 
