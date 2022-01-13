@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["src/"],
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2015", "es2017"],
+    "outDir": "./lib",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    }
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "transpiler": "ts-node/transpilers/swc-experimental"
+  }
+}
