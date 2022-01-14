@@ -14,7 +14,7 @@ export const api = (router: Router, app: Probot) => {
       } catch {}
     }
 
-    res.json(user);
+    res.json(user?.data);
   });
 
   router.get("/whoami", async (_, res) => {
