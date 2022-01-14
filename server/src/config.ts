@@ -1,5 +1,3 @@
-import { pick } from "lodash";
-
 require("dotenv").config({
   path: require("path").resolve(__dirname, "../../.env"),
 });

@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Router } from "@reach/router";
-import { App } from "./app";
+import { Home } from "src/pages";
 import "src/assets/tailwind.output.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <App path="/*" />
+      <Home path="/*" />
     </Router>
   </React.StrictMode>,
   document.getElementById("root")
