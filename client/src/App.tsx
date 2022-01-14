@@ -1,10 +1,13 @@
+import type { FC } from "react";
 import { useState, useEffect } from "react";
+import { RouteComponentProps } from "@reach/router";
+import { H1, ExternalLink } from "@djgrant/components";
 
 type User = {
   data: any;
 };
 
-export function App() {
+export const App: FC<RouteComponentProps> = () => {
   const [user, setUser] = useState<null | User>(null);
   useEffect(() => {
     fetch("/api/user")
@@ -14,14 +17,16 @@ export function App() {
 
   return (
     <div>
-      <h1>CYF Learning Lab</h1>
+      <H1>CYF Learning Lab</H1>
       <p>
         {user?.data ? (
           `Hi ${user.data.login}!`
         ) : (
-          <a href="/auth/login">Authenticate with GitHub</a>
+          <ExternalLink href="/auth/login">
+            Authenticate with GitHub
+          </ExternalLink>
         )}
       </p>
     </div>
   );
-}
+};
