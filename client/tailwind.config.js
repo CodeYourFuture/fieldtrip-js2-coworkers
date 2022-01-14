@@ -8,6 +8,9 @@ module.exports = {
     typography: {
       default: {
         css: {
+          html: {
+            color: "#111",
+          },
           h1: {
             fontFamily: "Rubik",
           },
@@ -17,21 +20,10 @@ module.exports = {
           h3: {
             fontFamily: "Rubik",
           },
-          a: {
-            color: "#38a169",
-          },
         },
       },
     },
-    extend: {
-      colors: {
-        cyan: "#9cdbff",
-      },
-      margin: {
-        96: "24rem",
-        128: "32rem",
-      },
-    },
+    extend: {},
   },
   plugins: [
     require("@tailwindcss/typography"),

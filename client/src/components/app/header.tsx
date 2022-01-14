@@ -11,17 +11,23 @@ type User = {
 export const Header: FC = () => {
   const { error, loading, data } = useFetch<User>("/api/user", []);
   return (
-    <header>
+    <header className="border-b border-gray-200 bg-slate-50">
       {error && <Flash>{error.message}</Flash>}
-      <Container className="flex justify-between py-4 border-b border-gray-200">
+      <Container className="flex justify-between py-4">
         <div className="flex items-center">
-          <img src={logo} className="block w-24 pr-2" alt="CYF logo" />
+          <img src={logo} className="block pr-2 w-28" alt="CYF logo" />
           <div className="text-xs font-medium uppercase text-slate-500">
             Learning Lab
           </div>
         </div>
         <div>
-          {data && <img src={data.avatar_url} className="w-8 rounded-full" />}
+          {data && (
+            <img
+              src={data.avatar_url}
+              alt="User Github avatar"
+              className="w-8 rounded-full"
+            />
+          )}
           {!data && !loading && (
             <a href="/auth/login" className="text-sm">
               Sign In

@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "react-scripts build",
-    "build:tw": "tailwindcss build -i src/tailwind.css -o src/assets/tailwind.output.css",
+    "build:tw": "tailwindcss build -i src/assets/tailwind.css -o src/assets/tailwind.output.css",
     "dev": "react-scripts start"
   },
   "eslintConfig": {
