@@ -12,9 +12,34 @@
       href="https://fonts.googleapis.com/css?family=Rubik&amp;display=swap"
       media="all"
     />
-
     <% if (process.env.NODE_ENV !== 'production') { %>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,line-clamp"></script>
+    <script>
+      tailwind.config = {
+        important: true,
+        theme: {
+          fontFamily: {
+            heading: "Rubik",
+          },
+          typography: {
+            default: {
+              css: {
+                h1: {
+                  fontFamily: "Rubik",
+                },
+                h2: {
+                  fontFamily: "Rubik",
+                },
+                h3: {
+                  fontFamily: "Rubik",
+                },
+              },
+            },
+          },
+          extend: {},
+        },
+      };
+    </script>
     <% } %>
 
     <title>CYF Learning Lab</title>
