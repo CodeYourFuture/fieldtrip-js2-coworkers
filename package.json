@@ -10,13 +10,21 @@
   
   "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "scripts": {
-    "build": "lerna run build",
-    "dev": "lerna run dev --parallel",
-    "test": "lerna run build -- --noEmit && jest"
+    "build": "nx run-many --target=build --all --parallel",
+    "dev": "nx run-many --target=dev --all --parallel",
+    "graph": "nx dep-graph",
+    "test": "yarn build -- --noEmit && jest"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.19",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.4.4"
+    "@babel/runtime": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@nrwl/cli": "latest",
+    "@nrwl/nx-cloud": "latest",
+    "@nrwl/tao": "latest",
+    "@nrwl/workspace": "latest",
+    "@types/jest": "^27.4.0",
+    "babel-preset-react-app": "^10.0.1",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.2"
   }
 }
