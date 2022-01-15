@@ -11,24 +11,25 @@
   },
   "devDependencies": {
     "@djgrant/components": "^0.4.1",
-    "@tailwindcss/custom-forms": "^0.2.1",
+    "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/typography": "^0.5.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.19",
-    "@types/reach__router": "^1.3.4",
+    "@types/reach__router": "^1.3.10",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "http-proxy-middleware": "^2.0.1",
     "react-scripts": "5.0.0",
-    "tailwindcss": "^3.0.13",
+    "tailwindcss": "^3.0.15",
     "typescript": "^4.5.4"
   },
   "scripts": {
-    "build": "react-scripts build",
-    "build:tw": "tailwindcss build -i src/assets/tailwind.css -o src/assets/tailwind.output.css",
+    "build": "export REACT_APP_GIT_SHA=`git rev-parse --short HEAD` && yarn build:app && yarn build:css",
+    "build:app": "react-scripts build",
+    "build:css": "tailwindcss build -i public/tailwind.css -o build/tailwind.$REACT_APP_GIT_SHA.css --minify",
     "dev": "react-scripts start"
   },
   "eslintConfig": {
