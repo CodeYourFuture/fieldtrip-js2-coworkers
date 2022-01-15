@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Redirect, Router } from "@reach/router";
 import { Home } from "src/pages";
 import { Play } from "src/pages/play";
-import "src/assets/defaults.css";
+import "src/assets/styles.css";
 
 ReactDOM.render(
   <React.StrictMode>
