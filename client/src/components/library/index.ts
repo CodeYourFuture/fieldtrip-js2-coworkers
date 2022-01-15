@@ -1,4 +1,11 @@
-export { Button, Progress, Tab, Tabs, Input } from "@djgrant/components";
+export {
+  Button,
+  Progress,
+  Tab,
+  Tabs,
+  TabPage,
+  Input,
+} from "@djgrant/components";
 
 export * from "./container";
 export * from "./flash";

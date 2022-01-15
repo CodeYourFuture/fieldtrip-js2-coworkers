@@ -1,15 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Redirect, Router } from "@reach/router";
-import { Home } from "src/pages";
+import { ModuleHome } from "src/pages";
 import { Play } from "src/pages/play";
+import { js2 } from "src/courses";
 import "src/assets/styles.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Redirect from="/" to="/js2" noThrow />
-      <Home path="/js2/*" />
+      <ModuleHome path="/js2/*" config={js2} />
       <Play path="/play" />
     </Router>
   </React.StrictMode>,
