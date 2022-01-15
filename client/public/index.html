@@ -12,15 +12,6 @@
       href="https://fonts.googleapis.com/css?family=Rubik&amp;display=swap"
       media="all"
     />
-    <% if (process.env.NODE_ENV !== 'production') { %>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <script src="%PUBLIC_URL%/tailwind.cdn.config.js"></script>
-    <% } else { %>
-    <link
-      href="%PUBLIC_URL%/tailwind.%REACT_APP_GIT_SHA%.css"
-      rel="stylesheet"
-    />
-    <% } %>
     <title>CYF Learning Lab</title>
   </head>
   <body>
