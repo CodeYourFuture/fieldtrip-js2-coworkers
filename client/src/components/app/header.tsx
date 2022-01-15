@@ -20,7 +20,7 @@ export const Header: FC = () => {
             Learning Lab
           </div>
         </div>
-        <div>
+        <div className="flex items-center">
           {data && (
             <img
               src={data.avatar_url}
