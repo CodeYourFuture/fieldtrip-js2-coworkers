@@ -2,13 +2,13 @@
   "private": true,
   "name": "cyf-learning-lab",
   "version": "1.0.0",
+  "author": "Daniel Grant",
+  "license": "ISC",
+  "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "workspaces": [
     "client",
     "server"
   ],
-  "author": "Daniel Grant <1670902+djgrant@users.noreply.github.com>",
-  "license": "ISC",
-  "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "scripts": {
     "build": "nx run-many --target=build --all --parallel",
     "dev": "nx run-many --target=dev --all --parallel",
@@ -16,8 +16,6 @@
     "test": "yarn build -- --noEmit && jest"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.16.7",
-    "@babel/core": "^7.16.7",
     "@nrwl/cli": "latest",
     "@nrwl/nx-cloud": "latest",
     "@nrwl/tao": "latest",
@@ -26,5 +24,17 @@
     "babel-preset-react-app": "^10.0.1",
     "jest": "^27.4.7",
     "ts-jest": "^27.1.2"
+  },
+  "resolutions": {
+    "@babel/core": "7.16.7",
+    "@babel/parser": "7.16.8",
+    "@babel/helper-plugin-utils": "7.16.7",
+    "@babel/plugin-syntax-jsx": "7.16.7",
+    "@babel/plugin-proposal-object-rest-spread": "7.16.7",
+    "babel-plugin-macros": "^3.1.0",
+    "babel-preset-react-app": "^10.0.1",
+    "find-cache-dir": "^3.3.2",
+    "fs-extra": "^10.0.0",
+    "mini-css-extract-plugin": "2.4.5"
   }
 }
