@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Redirect, Router } from "@reach/router";
 import { ModuleHome } from "src/pages";
 import { Play } from "src/pages/play";
-import { js2 } from "src/courses";
+import js2 from "@courses/js2-coworkers";
 import "src/assets/styles.css";
 
 ReactDOM.render(
