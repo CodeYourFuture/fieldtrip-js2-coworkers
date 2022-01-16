@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import type { RouteComponentProps } from "@reach/router";
-import type { ModuleConfig } from "src/types/courses";
+import type { ModuleConfig } from "@packages/course-utils";
 import { AppLayout } from "src/components/templates";
 import {
   H1,

@@ -6,6 +6,7 @@ npm-debug.log
 coverage
 lib
 build
+dist
 .pnp
 .pnp.js
 .DS_Store

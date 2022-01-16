@@ -2,8 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "private": true,
-  "author": "Daniel Grant <1670902+djgrant@users.noreply.github.com>",
-  
+  "author": "Daniel Grant",
   "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "scripts": {
     "build": "tsc",

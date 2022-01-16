@@ -1,0 +1,13 @@
+{
+  "name": "@courses/js2-coworkers",
+  "version": "1.0.0",
+  "author": "Daniel Grant",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@packages/course-utils": "1.0.0"
+  }
+}
