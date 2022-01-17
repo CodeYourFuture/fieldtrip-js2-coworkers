@@ -13,6 +13,7 @@
   "scripts": {
     "build": "lerna run build",
     "dev": "lerna run dev --parallel",
+    "dev:packages": "lerna run dev --parallel --scope @packages/* --scope @courses/*",
     "test": "yarn build -- --noEmit && jest"
   },
   "devDependencies": {

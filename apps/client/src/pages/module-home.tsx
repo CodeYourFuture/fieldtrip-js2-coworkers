@@ -1,18 +1,19 @@
 import type { FC } from "react";
 import type { RouteComponentProps } from "@reach/router";
-import type { ModuleConfig } from "@packages/course-utils";
+import type { CourseConfig } from "@packages/lab-tools";
 import { AppLayout } from "src/components/templates";
 import {
+  Button,
   H1,
   H4,
   Container,
-  Button,
+  Markdown,
   Tab,
   Tabs,
   TabPage,
 } from "src/components/library";
 
-type Props = { config: ModuleConfig };
+type Props = { config: CourseConfig };
 
 export const ModuleHome: FC<RouteComponentProps & Props> = ({ config }) => {
   return (
@@ -24,7 +25,9 @@ export const ModuleHome: FC<RouteComponentProps & Props> = ({ config }) => {
             <H1>{config.title}</H1>
           </div>
           <Button>Start Project</Button>
-          <div className="w-2/3 text-slate-500">{config.summary}</div>
+          <div className="w-2/3 text-slate-500">
+            <Markdown>{config.summary}</Markdown>
+          </div>
         </Container>
       </section>
       <Container>
@@ -41,7 +44,7 @@ export const ModuleHome: FC<RouteComponentProps & Props> = ({ config }) => {
           <div className="w-4/5">
             {config.stages.map((stage, i) => (
               <TabPage key={stage.key} match={stage.key}>
-                {stage.summary}
+                <Markdown>{stage.summary}</Markdown>
               </TabPage>
             ))}
           </div>

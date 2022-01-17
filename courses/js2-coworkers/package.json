@@ -4,10 +4,10 @@
   "author": "Daniel Grant",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "lab-tools build",
+    "dev": "yarn build --watch"
   },
   "dependencies": {
-    "@packages/course-utils": "1.0.0"
+    "@packages/lab-tools": "1.0.0"
   }
 }
