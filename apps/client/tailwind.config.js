@@ -4,7 +4,7 @@ module.exports = {
     path.join(__dirname, "./src/**/*.{js,jsx,ts,tsx,md,mdx}"),
     path.join(
       __dirname,
-      "../node_modules/@djgrant/components/src/**/*.{ts,tsx}"
+      "../../node_modules/@djgrant/components/src/**/*.{ts,tsx}"
     ),
   ],
   important: true,
