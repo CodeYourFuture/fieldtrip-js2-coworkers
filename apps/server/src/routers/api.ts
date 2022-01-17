@@ -1,35 +1,53 @@
 import { Probot } from "probot";
 import { Router } from "express";
-import { getUserOctokit } from "../util";
 
 export const api = (router: Router, app: Probot) => {
   router.get("/user", async (req, res) => {
-    let user = null;
+    res.json(req.locals.user);
+  });
 
-    if (req.session?.user?.auth) {
-      const { auth } = req.session.user;
-      try {
-        const userOctokit = getUserOctokit(auth, app);
-        user = await userOctokit.users.getAuthenticated();
-      } catch {}
+  router.get("/courses/:id", async (req, res) => {
+    const { user } = req.locals;
+    if (!user) return res.send(403);
+
+    const repo = await user.octokit
+      .request("GET /repos/{username}/{name}", {
+        username: user.login,
+        name: req.params.id,
+      })
+      .catch((err: any) => err);
+
+    const course = {
+      active: repo.status === 200,
+    };
+
+    if (!course.active) {
+      res.send(course);
+      return;
     }
 
-    res.json(user?.data);
+    res.send(course);
   });
 
-  router.get("/whoami", async (_, res) => {
-    const octokit = await app.auth();
-    const { data } = await octokit.apps.getAuthenticated();
-    res.json(data);
+  router.post("/courses/:id", async (req, res, next) => {
+    const { user } = req.locals;
+    if (!user) return res.send(403);
+    try {
+      const repo = await user.octokit.request("POST /user/repos", {
+        name: req.params.id,
+      });
+      res.status(201).send(repo);
+    } catch (err) {
+      next(err);
+    }
   });
 
-  router.get("/ping", async (_, res) => {
+  router.get("/ping/:id", async (req, res) => {
     app.receive({
-      id: "test-ping",
+      id: req.params.id,
       name: "ping",
-      payload: "test payload",
+      payload: req.query,
     });
-
-    res.send(200);
+    res.sendStatus(200);
   });
 };

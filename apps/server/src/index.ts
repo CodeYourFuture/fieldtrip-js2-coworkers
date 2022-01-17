@@ -4,6 +4,7 @@ import { auth } from "./routers/auth";
 import { probot } from "./routers/probot";
 import { webapp } from "./routers/webapp";
 import { session } from "./middlewares/session";
+import { user } from "./middlewares/user";
 import { probotConfig } from "./config";
 
 export const server = (
@@ -11,7 +12,7 @@ export const server = (
   { getRouter }: ApplicationFunctionOptions
 ) => {
   const authRouter = getRouter!("/auth").use(session);
-  const apiRouter = getRouter!("/api").use(session);
+  const apiRouter = getRouter!("/api").use(session).use(user(app));
   const appRouter = getRouter!("/");
 
   probot(app);
