@@ -15,7 +15,7 @@ import {
 
 type Props = { config: CourseConfig };
 
-export const ModuleHome: FC<RouteComponentProps & Props> = ({ config }) => {
+export const Course: FC<RouteComponentProps & Props> = ({ config }) => {
   return (
     <AppLayout>
       <section className="mb-8 bg-slate-50">
