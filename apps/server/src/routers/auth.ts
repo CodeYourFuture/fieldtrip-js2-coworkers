@@ -16,22 +16,26 @@ export const auth = (router: Router, app: Probot) => {
   });
 
   router.get("/login/cb", async (req, res) => {
-    const authorise = createOAuthUserAuth({
-      clientId: config.GITHUB_CLIENT_ID!,
-      clientSecret: config.GITHUB_CLIENT_SECRET!,
-      code: req.query.code as string,
-    });
+    try {
+      const authorise = createOAuthUserAuth({
+        clientId: config.GITHUB_CLIENT_ID!,
+        clientSecret: config.GITHUB_CLIENT_SECRET!,
+        code: req.query.code as string,
+      });
 
-    const auth = await authorise();
-    const userOctokit = getUserOctokit(auth, app);
-    const user = await userOctokit.users.getAuthenticated();
+      const auth = await authorise();
+      const userOctokit = getUserOctokit(auth, app);
+      const user = await userOctokit.users.getAuthenticated();
 
-    req.session!.user = {
-      id: user.data.id,
-      login: user.data.login,
-      auth: auth,
-    };
+      req.session!.user = {
+        id: user.data.id,
+        login: user.data.login,
+        auth: auth,
+      };
 
-    res.redirect("/");
+      res.redirect("/");
+    } catch (err: any) {
+      res.status(err.status).send(err);
+    }
   });
 };
