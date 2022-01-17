@@ -22,4 +22,14 @@ export const api = (router: Router, app: Probot) => {
     const { data } = await octokit.apps.getAuthenticated();
     res.json(data);
   });
+
+  router.get("/ping", async (_, res) => {
+    app.receive({
+      id: "test-ping",
+      name: "ping",
+      payload: "test payload",
+    });
+
+    res.send(200);
+  });
 };

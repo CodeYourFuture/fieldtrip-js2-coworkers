@@ -7,7 +7,16 @@ export const probot = (app: Probot) => {
     });
     await context.octokit.issues.createComment(issueComment);
   });
+
   app.on(["installation", "installation_repositories"], async (context) => {
     context.log(context);
+  });
+
+  app.on(["ping"], async (context) => {
+    if (context.id === "test-ping") {
+      context.log(context.payload);
+    } else {
+      context.log("Unhandled ping event", context.payload);
+    }
   });
 };
