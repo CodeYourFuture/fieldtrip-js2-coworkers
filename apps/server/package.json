@@ -6,7 +6,7 @@
   "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "scripts": {
     "build": "tsc",
-    "dev": "onchange -i -k 'src/*' -- ts-node src/index.ts",
+    "dev": "onchange -i -k 'src/**/*' -- ts-node src/index.ts",
     "start": "node ./lib/index.js"
   },
   "dependencies": {
