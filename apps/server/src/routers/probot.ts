@@ -13,10 +13,6 @@ export const probot = (app: Probot) => {
   });
 
   app.on(["ping"], async (context) => {
-    if (context.id === "test-ping") {
-      context.log(context.payload);
-    } else {
-      context.log("Unhandled ping event", context.payload);
-    }
+    context.log(context.payload);
   });
 };

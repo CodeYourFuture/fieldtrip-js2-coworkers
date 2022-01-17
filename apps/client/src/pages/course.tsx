@@ -12,10 +12,17 @@ import {
   Tabs,
   TabPage,
 } from "src/components/library";
+import useFetch from "use-http";
 
 type Props = { config: CourseConfig };
 
 export const Course: FC<RouteComponentProps & Props> = ({ config }) => {
+  const courseStatus = useFetch("/api/courses/js2-project-coworkers", []);
+  const newCourse = useFetch("/api/courses/js2-project-coworkers", {
+    method: "post",
+  });
+  const startCourse = () => newCourse.post();
+
   return (
     <AppLayout>
       <section className="mb-8 bg-slate-50">
@@ -24,7 +31,12 @@ export const Course: FC<RouteComponentProps & Props> = ({ config }) => {
             <H4>{config.module} Module Project</H4>
             <H1>{config.title}</H1>
           </div>
-          <Button>Start Project</Button>
+          {courseStatus.data &&
+            (courseStatus.data?.active ? (
+              "Course started"
+            ) : (
+              <Button onClick={startCourse}>Start Project</Button>
+            ))}
           <div className="w-2/3 text-slate-500">
             <Markdown>{config.summary}</Markdown>
           </div>
