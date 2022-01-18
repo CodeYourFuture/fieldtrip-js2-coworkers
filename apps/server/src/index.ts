@@ -17,6 +17,6 @@ server.use(middlewares.probot(bots.uma, config.bots.uma));
 server.use("/api", routers.api);
 server.use("/auth", routers.auth);
 
-server.listen(config.SERVER_PORT, () => {
-  console.log("Server listening on port", config.SERVER_PORT);
+server.listen(config.PORT, () => {
+  console.log("Server listening on port", config.PORT);
 });

@@ -13,8 +13,8 @@ const getEnv = (...keys: string[]): string => {
   return value;
 };
 
-export const SERVER_PORT = getEnv("SERVER_PORT");
-export const PROXY_URL = getEnv("PROXY_URL");
+export const HOST = getEnv("HOST");
+export const PORT = getEnv("PORT");
 
 export const SESSION_KEY1 = getEnv("SESSION_KEY1");
 export const SESSION_KEY2 = getEnv("SESSION_KEY2");
