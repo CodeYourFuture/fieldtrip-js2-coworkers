@@ -1,7 +1,8 @@
 // @ts-check
-/** @type {import("@packages/lab-tools").CourseConfig} */
+/** @type {import('../index').CourseConfig} */
 
 const config = {
+  id: "js2",
   title: "Co-worker Discovery Tools",
   module: "JS2",
   summary: "./summary.md",
