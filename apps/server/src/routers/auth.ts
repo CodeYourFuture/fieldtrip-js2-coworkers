@@ -8,7 +8,7 @@ export const auth = Router();
 
 auth.get("/login", async (_, res) => {
   const params = querystring.stringify({
-    client_id: config.probot1.GITHUB_CLIENT_ID,
+    client_id: config.bots.root.GITHUB_CLIENT_ID,
     redirect_uri: `${config.PROXY_URL}/auth/login/cb`,
   });
   const url = `https://github.com/login/oauth/authorize?${params}`;
@@ -18,8 +18,8 @@ auth.get("/login", async (_, res) => {
 auth.get("/login/cb", async (req, res, next) => {
   try {
     const authorise = createOAuthUserAuth({
-      clientId: config.probot1.GITHUB_CLIENT_ID,
-      clientSecret: config.probot1.GITHUB_CLIENT_SECRET,
+      clientId: config.bots.root.GITHUB_CLIENT_ID,
+      clientSecret: config.bots.root.GITHUB_CLIENT_SECRET,
       code: req.query.code as string,
     });
 

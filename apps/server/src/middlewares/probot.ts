@@ -3,11 +3,9 @@ import { createNodeMiddleware, createProbot } from "probot";
 import * as config from "../config";
 import { getLog } from "../utils";
 import type { ApplicationFunction } from "probot/lib/types";
+import type { BotConfig } from "../config";
 
-export const probot = (
-  bot: ApplicationFunction,
-  botConfig: typeof config.probot1
-) => {
+export const probot = (bot: ApplicationFunction, botConfig: BotConfig) => {
   if (config.isDev && botConfig.WEBHOOK_PATH) {
     const SmeeClient = require("smee-client");
     const smee = new SmeeClient({
