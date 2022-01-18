@@ -1,14 +1,18 @@
 import { Probot } from "probot";
 import { Router } from "express";
+import querystring from "querystring";
 import { createOAuthUserAuth } from "@octokit/auth-oauth-user";
 import { getUserOctokit } from "../utils";
 import * as config from "../config";
 
-const installUrl = `https://github.com/apps/${config.GH_APP_NAME}/installations/new`;
-
 export const auth = (router: Router, app: Probot) => {
   router.get("/login", async (_, res) => {
-    res.redirect(installUrl);
+    const params = querystring.stringify({
+      client_id: config.GH_APP_CLIENT_ID,
+      redirect_uri: `${config.PROXY_URL}/auth/login/cb`,
+    });
+    const url = `https://github.com/login/oauth/authorize?${params}`;
+    res.redirect(url);
   });
 
   router.get("/login/cb", async (req, res, next) => {

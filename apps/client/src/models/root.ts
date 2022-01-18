@@ -8,32 +8,30 @@ export const Root = types
     user: types.maybeNull(User),
     courses: types.map(Course),
   })
-  .actions((self) => {
-    const loadUser = flow(function* () {
+  .actions((self) => ({
+    loadUser: flow(function* () {
       const user = yield fetch("/api/user").then((res) => res.json());
       self.user = user;
-    });
-
-    const loadCourses = flow(function* () {
+    }),
+    loadCourses: flow(function* () {
       const courses = yield fetch("/api/courses").then((res) => res.json());
       courses.forEach((course: any) => self.courses.put(course));
-    });
-
-    const loadCourseStatus = flow(function* ({ params }) {
+    }),
+    loadCourseStatus: flow(function* ({ params }) {
+      if (self.user === null) return;
       const course = self.courses.get(params.id);
       if (!course) return;
       yield course.getStatus();
-    });
-
-    return {
-      // lazy loading: load everything up front so I don't have to implement loading states :)
-      init: flow(function* () {
-        yield loadUser();
-        yield loadCourses();
-        yield router.match("/courses/:id/*", loadCourseStatus);
-      }),
-    };
-  })
+    }),
+  }))
+  .actions((self) => ({
+    // lazy loading: load everything up front so I don't have to implement loading states :)
+    init: flow(function* () {
+      yield self.loadUser();
+      yield self.loadCourses();
+      yield router.match("/courses/:id/*", self.loadCourseStatus);
+    }),
+  }))
   .views((self) => ({
     get courseList() {
       return Array.from(self.courses.values());
