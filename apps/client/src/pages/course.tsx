@@ -14,6 +14,7 @@ import {
 } from "src/components/library";
 import { ICourse } from "src/models";
 import { useMst } from "src/store";
+import githubIcon from "src/assets/github.svg";
 
 type Props = { course: ICourse };
 
@@ -38,6 +39,11 @@ export const Course: FC<RouteComponentProps & Props> = observer(
               )
             ) : (
               <Button onClick={() => (window.location.href = "/auth/login")}>
+                <img
+                  src={githubIcon}
+                  alt="Github mark"
+                  className="inline-block w-4 mr-2 mb-0.5 color-white"
+                />
                 Sign in to enroll
               </Button>
             )}
