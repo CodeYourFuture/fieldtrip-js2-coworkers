@@ -1,18 +1,13 @@
 import type { FC } from "react";
-import useFetch from "use-http";
-import { Container, Flash } from "src/components/library";
+import { observer } from "mobx-react-lite";
+import { Container } from "src/components/library";
 import logo from "src/assets/logo.png";
+import { useMst } from "src/store";
 
-type User = {
-  loing: string;
-  avatar_url: string;
-};
-
-export const Header: FC = () => {
-  const { error, loading, data } = useFetch<User>("/api/user", []);
+export const Header: FC = observer(() => {
+  const { user } = useMst();
   return (
     <header className="border-b border-gray-200 bg-slate-50">
-      {error && <Flash>{error.message}</Flash>}
       <Container className="flex justify-between py-4">
         <div className="flex items-center">
           <img src={logo} className="block pr-2 w-28" alt="CYF logo" />
@@ -21,14 +16,14 @@ export const Header: FC = () => {
           </div>
         </div>
         <div className="flex items-center">
-          {data && (
+          {user && (
             <img
-              src={data.avatar_url}
+              src={user.avatar_url}
               alt="User Github avatar"
               className="w-8 rounded-full"
             />
           )}
-          {!data && !loading && (
+          {!user && (
             <a href="/auth/login" className="text-sm">
               Sign In
             </a>
@@ -37,4 +32,4 @@ export const Header: FC = () => {
       </Container>
     </header>
   );
-};
+});

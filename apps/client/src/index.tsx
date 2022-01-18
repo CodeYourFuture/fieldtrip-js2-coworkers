@@ -1,18 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Redirect, Router } from "@reach/router";
-import { Course } from "src/pages";
-import { Play } from "src/pages/play";
-import js2 from "@courses/js2-coworkers";
+import { Provider, store } from "src/store";
+import { Courses, NotFound } from "src/pages";
 import "src/assets/styles.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <Redirect from="/" to="/js2" noThrow />
-      <Course path="/js2/*" config={js2} />
-      <Play path="/play" />
-    </Router>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+ReactDOM.render(<div />, document.getElementById("root"));
+
+store.init().then(() => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <Provider value={store}>
+        <Router>
+          <Redirect from="/" to="courses/js2" noThrow />
+          <Courses path="courses/*" />
+          <NotFound default />
+        </Router>
+      </Provider>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+});

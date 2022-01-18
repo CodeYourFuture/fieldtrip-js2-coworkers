@@ -1,5 +1,5 @@
 import { Probot } from "probot";
-import { getUserOctokit } from "../util";
+import { getUserOctokit } from "../utils";
 import type { RequestHandler } from "express";
 
 export function user(app: Probot): RequestHandler {

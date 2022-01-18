@@ -1,7 +1,7 @@
 import { Probot } from "probot";
 import { Router } from "express";
 import { createOAuthUserAuth } from "@octokit/auth-oauth-user";
-import { getUserOctokit } from "../util";
+import { getUserOctokit } from "../utils";
 import * as config from "../config";
 
 const installUrl = `https://github.com/apps/${config.GH_APP_NAME}/installations/new`;

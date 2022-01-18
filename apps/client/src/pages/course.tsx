@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import type { RouteComponentProps } from "@reach/router";
-import type { CourseConfig } from "@packages/lab-tools";
+import { observer } from "mobx-react-lite";
 import { AppLayout } from "src/components/templates";
 import {
   Button,
@@ -12,56 +12,54 @@ import {
   Tabs,
   TabPage,
 } from "src/components/library";
-import useFetch from "use-http";
+import { ICourse } from "src/models";
 
-type Props = { config: CourseConfig };
+type Props = { course: ICourse };
 
-export const Course: FC<RouteComponentProps & Props> = ({ config }) => {
-  const courseStatus = useFetch("/api/courses/js2-project-coworkers", []);
-  const newCourse = useFetch("/api/courses/js2-project-coworkers", {
-    method: "post",
-  });
-  const startCourse = () => newCourse.post();
-
-  return (
-    <AppLayout>
-      <section className="mb-8 bg-slate-50">
-        <Container className="py-8 space-y-6">
-          <div>
-            <H4>{config.module} Module Project</H4>
-            <H1>{config.title}</H1>
-          </div>
-          {courseStatus.data &&
-            (courseStatus.data?.active ? (
-              "Course started"
-            ) : (
-              <Button onClick={startCourse}>Start Project</Button>
-            ))}
-          <div className="w-2/3 text-slate-500">
-            <Markdown>{config.summary}</Markdown>
-          </div>
-        </Container>
-      </section>
-      <Container>
-        <section>
-          <div className="mb-6">
-            <Tabs>
-              {config.stages.map((stage, i) => (
-                <Tab key={stage.key} to={stage.key} default={i === 0}>
-                  {stage.label}
-                </Tab>
+export const Course: FC<RouteComponentProps & Props> = observer(
+  ({ course }) => {
+    return (
+      <AppLayout>
+        <section className="mb-8 bg-slate-50">
+          <Container className="py-8 space-y-6">
+            <div>
+              <H4 className="mb-1.5">{course.module} Module Project</H4>
+              <H1>{course.title}</H1>
+            </div>
+            {course.status &&
+              (course.status?.active ? (
+                <Button variant="outline" disabled>
+                  Course started
+                </Button>
+              ) : (
+                <Button onClick={course.enroll}>Start Project</Button>
               ))}
-            </Tabs>
-          </div>
-          <div className="w-4/5">
-            {config.stages.map((stage, i) => (
-              <TabPage key={stage.key} match={stage.key}>
-                <Markdown>{stage.summary}</Markdown>
-              </TabPage>
-            ))}
-          </div>
+            <div className="w-2/3 text-slate-500">
+              <Markdown>{course.summary}</Markdown>
+            </div>
+          </Container>
         </section>
-      </Container>
-    </AppLayout>
-  );
-};
+        <Container>
+          <section>
+            <div className="mb-6">
+              <Tabs>
+                {course.stages.map((stage, i) => (
+                  <Tab key={stage.key} to={stage.key} default={i === 0}>
+                    {stage.label}
+                  </Tab>
+                ))}
+              </Tabs>
+            </div>
+            <div className="w-4/5">
+              {course.stages.map((stage) => (
+                <TabPage key={stage.key} match={stage.key}>
+                  <Markdown>{stage.summary}</Markdown>
+                </TabPage>
+              ))}
+            </div>
+          </section>
+        </Container>
+      </AppLayout>
+    );
+  }
+);

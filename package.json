@@ -6,9 +6,7 @@
   
   "homepage": "https://github.com/djgrant/cyf-learning-lab",
   "workspaces": [
-    "apps/*",
-    "courses/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "build": "lerna run build",

@@ -1,9 +1,17 @@
 import { Probot } from "probot";
 import { Router } from "express";
+import { compileCourse } from "../utils";
+import courses from "../../../../courses";
+
+const promisedCourses = Promise.all(courses.map(compileCourse));
 
 export const api = (router: Router, app: Probot) => {
   router.get("/user", async (req, res) => {
     res.json(req.locals.user);
+  });
+
+  router.get("/courses", async (req, res) => {
+    res.send(await promisedCourses);
   });
 
   router.get("/courses/:id", async (req, res) => {
@@ -17,26 +25,28 @@ export const api = (router: Router, app: Probot) => {
       })
       .catch((err: any) => err);
 
-    const course = {
+    const status = {
+      id: req.params.id,
       active: repo.status === 200,
     };
 
-    if (!course.active) {
-      res.send(course);
-      return;
-    }
-
-    res.send(course);
+    res.send({ status });
   });
 
   router.post("/courses/:id", async (req, res, next) => {
     const { user } = req.locals;
     if (!user) return res.send(403);
     try {
-      const repo = await user.octokit.request("POST /user/repos", {
+      await user.octokit.request("POST /user/repos", {
         name: req.params.id,
       });
-      res.status(201).send(repo);
+
+      const status = {
+        id: req.params.id,
+        active: true,
+      };
+
+      res.status(201).send({ status });
     } catch (err) {
       next(err);
     }

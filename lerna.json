@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "packages": ["apps/*", "courses/*", "packages/*"],
+  "packages": ["apps/*"],
   "useWorkspaces": true,
   "npmClient": "yarn"
 }
