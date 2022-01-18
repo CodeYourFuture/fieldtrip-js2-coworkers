@@ -22,29 +22,22 @@ export const SESSION_KEY2 = getEnv("SESSION_KEY2");
 export const isDev = process.env.NODE_ENV === "development";
 export const isProd = process.env.NODE_ENV === "production";
 
-export const probot1 = {
-  NAME: getEnv("GH_APP1_NAME"),
-  APP_ID: getEnv("GH_APP1_ID"),
-  GITHUB_CLIENT_ID: getEnv("GH_APP1_CLIENT_ID"),
-  GITHUB_CLIENT_SECRET: getEnv("GH_APP1_CLIENT_SECRET"),
-  PRIVATE_KEY: getEnv("GH_APP1_PRIVATE_KEY"),
-  WEBHOOK_PATH: getEnv("GH_APP1_WEBHOOK_PATH"),
-  WEBHOOK_SECRET: getEnv("GH_APP1_WEBHOOK_SECRET"),
-  WEBHOOK_PROXY_URL: getEnv("GH_APP1_WEBHOOK_PROXY_URL"),
-};
-
-export const probot2 = {
-  NAME: getEnv("GH_APP2_NAME"),
-  APP_ID: getEnv("GH_APP2_ID"),
-  GITHUB_CLIENT_ID: getEnv("GH_APP2_CLIENT_ID"),
-  GITHUB_CLIENT_SECRET: getEnv("GH_APP2_CLIENT_SECRET"),
-  PRIVATE_KEY: getEnv("GH_APP2_PRIVATE_KEY"),
-  WEBHOOK_PATH: getEnv("GH_APP2_WEBHOOK_PATH"),
-  WEBHOOK_SECRET: getEnv("GH_APP2_WEBHOOK_SECRET"),
-  WEBHOOK_PROXY_URL: getEnv("GH_APP2_WEBHOOK_PROXY_URL"),
-};
+export const createBotConfig = (i: number) => ({
+  NAME: getEnv(`GH_APP${i}_NAME`),
+  APP_ID: getEnv(`GH_APP${i}_ID`),
+  GITHUB_CLIENT_ID: getEnv(`GH_APP${i}_CLIENT_ID`),
+  GITHUB_CLIENT_SECRET: getEnv(`GH_APP${i}_CLIENT_SECRET`),
+  PRIVATE_KEY: getEnv(`GH_APP${i}_PRIVATE_KEY`),
+  WEBHOOK_PATH: getEnv(`GH_APP${i}_WEBHOOK_PATH`),
+  WEBHOOK_SECRET: getEnv(`GH_APP${i}_WEBHOOK_SECRET`),
+  WEBHOOK_PROXY_URL: getEnv(`GH_APP${i}_WEBHOOK_PROXY_URL`),
+});
 
 export const bots = {
-  root: probot1,
-  amber: probot2,
+  root: createBotConfig(1),
+  amber: createBotConfig(2),
+  malachi: createBotConfig(3),
+  uma: createBotConfig(4),
 };
+
+export type BotConfig = ReturnType<typeof createBotConfig>;

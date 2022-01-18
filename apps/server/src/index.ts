@@ -9,8 +9,10 @@ const server = express();
 server.use(middlewares.session);
 server.use(middlewares.user);
 
-server.use(middlewares.probot(bots.root, config.probot1));
-server.use(middlewares.probot(bots.amber, config.probot2));
+server.use(middlewares.probot(bots.root, config.bots.root));
+server.use(middlewares.probot(bots.amber, config.bots.amber));
+server.use(middlewares.probot(bots.malachi, config.bots.malachi));
+server.use(middlewares.probot(bots.uma, config.bots.uma));
 
 server.use("/api", routers.api);
 server.use("/auth", routers.auth);
