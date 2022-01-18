@@ -1,3 +1,4 @@
+import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
 import { types, flow } from "mobx-state-tree";
 import { User } from "./user";
 import { Course } from "./course";
@@ -37,3 +38,7 @@ export const Root = types
       return Array.from(self.courses.values());
     },
   }));
+
+export interface IRoot extends Instance<typeof Root> {}
+export interface IRootSnapshotIn extends SnapshotIn<typeof Root> {}
+export interface IRootSnapshotOut extends SnapshotOut<typeof Root> {}
