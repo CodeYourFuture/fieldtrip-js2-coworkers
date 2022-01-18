@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "Daniel Grant",
   
-  "homepage": "https://github.com/djgrant/cyf-learning-lab",
+  "homepage": "https://github.com/codeyourfuture/cyf-learning-lab",
   "workspaces": [
     "apps/*"
   ],
