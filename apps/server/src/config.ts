@@ -1,17 +1,15 @@
 require("dotenv").config({
   path: require("path").resolve(__dirname, "../../../.env"),
 });
-
-const getEnv = (...keys: string[]): string => {
-  const value = process.env[keys[0]];
-  if (typeof value !== "string") {
-    if (keys.length > 1) {
-      return getEnv(...keys.slice(1));
-    }
-    throw new Error(`Config value for ${keys[0]} is not defined`);
+function getEnv(key: string, required?: true): string;
+function getEnv(key: string, required?: false): string | undefined;
+function getEnv(key: string, required = true) {
+  const value = process.env[key];
+  if (required && typeof value !== "string") {
+    throw new Error(`Config value for ${key} is not defined`);
   }
   return value;
-};
+}
 
 export const HOST = getEnv("HOST");
 export const PORT = getEnv("PORT");
@@ -30,7 +28,7 @@ export const createBotConfig = (i: number) => ({
   PRIVATE_KEY: getEnv(`GH_APP${i}_PRIVATE_KEY`),
   WEBHOOK_PATH: getEnv(`GH_APP${i}_WEBHOOK_PATH`),
   WEBHOOK_SECRET: getEnv(`GH_APP${i}_WEBHOOK_SECRET`),
-  WEBHOOK_PROXY_URL: getEnv(`GH_APP${i}_WEBHOOK_PROXY_URL`),
+  WEBHOOK_PROXY_URL: getEnv(`GH_APP${i}_WEBHOOK_PROXY_URL`, false),
 });
 
 export const bots = {
