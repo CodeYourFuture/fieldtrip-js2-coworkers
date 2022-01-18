@@ -10,7 +10,7 @@ export const probot = (bot: ApplicationFunction, botConfig: BotConfig) => {
     const SmeeClient = require("smee-client");
     const smee = new SmeeClient({
       source: botConfig.WEBHOOK_PROXY_URL,
-      target: `http://localhost:${config.SERVER_PORT}${botConfig.WEBHOOK_PATH}`,
+      target: `http://localhost:${config.PORT}${botConfig.WEBHOOK_PATH}`,
     });
     smee.start();
   }

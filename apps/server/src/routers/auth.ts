@@ -9,7 +9,7 @@ export const auth = Router();
 auth.get("/login", async (_, res) => {
   const params = querystring.stringify({
     client_id: config.bots.root.GITHUB_CLIENT_ID,
-    redirect_uri: `${config.PROXY_URL}/auth/login/cb`,
+    redirect_uri: `${config.HOST}/auth/login/cb`,
   });
   const url = `https://github.com/login/oauth/authorize?${params}`;
   res.redirect(url);
