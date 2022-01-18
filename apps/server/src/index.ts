@@ -1,24 +1,20 @@
-import { ApplicationFunctionOptions, Probot, run } from "probot";
-import { api } from "./routers/api";
-import { auth } from "./routers/auth";
-import { probot } from "./routers/probot";
-import { webapp } from "./routers/webapp";
-import { session } from "./middlewares/session";
-import { user } from "./middlewares/user";
-import { probotConfig } from "./config";
+import express from "express";
+import * as routers from "./routers";
+import * as bots from "./bots";
+import * as middlewares from "./middlewares";
+import * as config from "./config";
 
-export const server = (
-  app: Probot,
-  { getRouter }: ApplicationFunctionOptions
-) => {
-  const authRouter = getRouter!("/auth").use(session);
-  const apiRouter = getRouter!("/api").use(session).use(user(app));
-  const appRouter = getRouter!("/");
+const server = express();
 
-  probot(app);
-  auth(authRouter, app);
-  api(apiRouter, app);
-  webapp(appRouter);
-};
+server.use(middlewares.session);
+server.use(middlewares.user);
 
-run(server, { env: probotConfig });
+server.use(middlewares.probot(bots.root, config.probot1));
+server.use(middlewares.probot(bots.amber, config.probot2));
+
+server.use("/api", routers.api);
+server.use("/auth", routers.auth);
+
+server.listen(config.SERVER_PORT, () => {
+  console.log("Server listening on port", config.SERVER_PORT);
+});
