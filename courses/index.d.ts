@@ -1,5 +1,5 @@
 import { CourseConfig } from "server";
 
-declare const index: CourseConfig[];
+declare const index: { [key: string]: CourseConfig };
 
 export default index;

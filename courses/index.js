@@ -1,1 +1,3 @@
-module.exports = [require("./js2-coworkers/config")];
+module.exports = {
+  js2: require("./js2-coworkers/config"),
+};
