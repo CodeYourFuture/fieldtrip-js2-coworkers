@@ -1,7 +1,6 @@
-// @ts-check
+import { CourseConfig, Stage } from "server";
 
-/** @type {import('../index').Stage} */
-const week1 = {
+const week1: Stage = {
   key: "week-1",
   label: "Week 1",
   summary: "./week1.md",
@@ -11,8 +10,7 @@ const week1 = {
   ],
 };
 
-/** @type {import('../index').CourseConfig} */
-const config = {
+const config: CourseConfig = {
   id: "js2",
   title: "Co-worker Discovery Tools",
   module: "JS2",
@@ -20,4 +18,4 @@ const config = {
   stages: [week1],
 };
 
-module.exports = config;
+export const js2 = config;
