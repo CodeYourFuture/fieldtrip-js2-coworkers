@@ -6,7 +6,7 @@
   "types": "./src/types.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "onchange -i -k 'src/**/*' -- ts-node src/index.ts",
+    "dev": "onchange -i -k 'src/**/*' '../../courses/**/*' -- ts-node src/index.ts",
     "start": "node ./lib/index.js"
   },
   "dependencies": {

@@ -11,10 +11,12 @@ export const Root = types
   })
   .actions((self) => ({
     loadUser: flow(function* () {
-      const user = yield fetch("/api/user").then((res) => res.json());
-      self.user = user;
-    }),
+      try {
+        const user = yield fetch("/api/user").then((res) => res.json());
 
+        self.user = user;
+      } catch {}
+    }),
     loadCourse: flow(function* ({ params }) {
       const courseId = params.id;
       if (!courseId) return;
@@ -30,11 +32,6 @@ export const Root = types
       yield self.loadUser();
       yield router.match("/courses/:id/*", self.loadCourse);
     }),
-  }))
-  .views((self) => ({
-    get courseList() {
-      return Array.from(self.courses.values());
-    },
   }));
 
 export interface IRoot extends Instance<typeof Root> {}

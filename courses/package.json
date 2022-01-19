@@ -2,7 +2,7 @@
   "private": true,
   "name": "@packages/courses",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "author": "Daniel Grant",
   
   "dependencies": {
