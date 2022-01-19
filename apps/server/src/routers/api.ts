@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { compileCourse } from "../utils";
-import courses from "@packages/courses";
+import * as courses from "@packages/courses";
 
 export const api = Router();
 
@@ -22,7 +22,7 @@ api.get("/courses", async (req, res) => {
 
 api.get("/courses/:id", async (req, res) => {
   const { user } = req.locals;
-  const courseConfig = courses[req.params.id];
+  const courseConfig = courses[req.params.id as keyof typeof courses];
 
   if (!courseConfig) {
     res.status(404).send("Course not found");
