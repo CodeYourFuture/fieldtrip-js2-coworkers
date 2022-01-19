@@ -30,7 +30,7 @@ export const Course: FC<RouteComponentProps & Props> = observer(
               <H1>{course.title}</H1>
             </div>
             {user ? (
-              course.status?.active ? (
+              course.active ? (
                 <Button variant="outline" disabled>
                   Course started
                 </Button>
@@ -63,10 +63,32 @@ export const Course: FC<RouteComponentProps & Props> = observer(
                 ))}
               </Tabs>
             </div>
-            <div className="w-4/5">
+            <div className="w-2/3">
               {course.stages.map((stage) => (
                 <TabPage key={stage.key} match={stage.key}>
-                  <Markdown>{stage.summary}</Markdown>
+                  <div className="border">
+                    <div className="px-4 py-3 bg-slate-50">
+                      <H4>Onboarding steps</H4>
+                    </div>
+                    {stage.actions.map((action, i) => (
+                      <div key={i} className="px-4 py-3 border-t">
+                        <span className="mr-3 text-lg font-medium text-gray-400">
+                          {String(i + 1)}
+                        </span>
+                        {action.label}
+                        <Button
+                          size="sm"
+                          className="float-right bg-emerald-500"
+                          onClick={() => (window.location.href = action.url)}
+                        >
+                          Start
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Markdown>
+                    {"### Course description\n".concat(stage.summary)}
+                  </Markdown>
                 </TabPage>
               ))}
             </div>
