@@ -1,11 +1,10 @@
-import { Probot } from "probot";
 import { getUserOctokit } from "../utils";
 import type { RequestHandler } from "express";
 
-export const user: RequestHandler = async (req, _, next) => {
-  req.locals = { user: null };
+export const userSession: RequestHandler = async (req, _, next) => {
+  req.locals = { user: null, bots: {} };
 
-  if (req.session?.user?.auth) {
+  if (req.session.user?.auth) {
     const { auth } = req.session.user;
     try {
       const octokit = getUserOctokit(auth);

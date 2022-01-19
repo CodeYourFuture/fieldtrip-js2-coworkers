@@ -1,6 +1,7 @@
 require("dotenv").config({
   path: require("path").resolve(__dirname, "../../../.env"),
 });
+
 function getEnv(key: string, required?: true): string;
 function getEnv(key: string, required?: false): string | undefined;
 function getEnv(key: string, required = true) {
