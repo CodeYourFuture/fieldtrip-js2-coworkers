@@ -14,23 +14,21 @@ export const Root = types
       const user = yield fetch("/api/user").then((res) => res.json());
       self.user = user;
     }),
-    loadCourses: flow(function* () {
-      const courses = yield fetch("/api/courses").then((res) => res.json());
-      courses.forEach((course: any) => self.courses.put(course));
-    }),
-    loadCourseStatus: flow(function* ({ params }) {
-      if (self.user === null) return;
-      const course = self.courses.get(params.id);
-      if (!course) return;
-      yield course.getStatus();
+
+    loadCourse: flow(function* ({ params }) {
+      const courseId = params.id;
+      if (!courseId) return;
+      const course = yield fetch(`/api/courses/${courseId}`).then((res) =>
+        res.json()
+      );
+      self.courses.put(course);
     }),
   }))
   .actions((self) => ({
-    // lazy loading: load everything up front so I don't have to implement loading states :)
+    // lazy loading i.e. load everything up front so I don't have to implement loading states :)
     init: flow(function* () {
       yield self.loadUser();
-      yield self.loadCourses();
-      yield router.match("/courses/:id/*", self.loadCourseStatus);
+      yield router.match("/courses/:id/*", self.loadCourse);
     }),
   }))
   .views((self) => ({
