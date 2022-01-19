@@ -13,6 +13,7 @@
     "build": "lerna run build",
     "dev": "lerna run dev --parallel",
     "dev:packages": "lerna run dev --parallel --scope @packages/* --scope @courses/*",
+    "start": "yarn workspace server start",
     "test": "yarn build -- --noEmit && jest"
   },
   "devDependencies": {

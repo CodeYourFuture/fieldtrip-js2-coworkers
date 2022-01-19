@@ -2,10 +2,11 @@
   "private": true,
   "name": "@packages/courses",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "dist/courses/index.js",
   "author": "Daniel Grant",
   
-  "dependencies": {
-    "server": "1.0.0"
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
   }
 }
