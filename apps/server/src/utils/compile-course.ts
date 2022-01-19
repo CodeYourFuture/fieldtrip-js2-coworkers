@@ -1,9 +1,6 @@
 import path from "path";
 import { promises as fs } from "fs";
-import type { Express } from "express";
-import type { CourseConfig } from "../types";
-
-type Locals = Express["request"]["locals"];
+import type { Locals, CourseConfig } from "../types";
 
 export async function compileCourse(
   config: CourseConfig,
@@ -52,7 +49,7 @@ async function compileAction(
 async function getMarkdown(relativePath: string) {
   const resolvePath = path.resolve(
     process.cwd(),
-    "../../courses/js2-coworkers",
+    "../../courses/js2-coworkers/docs",
     relativePath
   );
   return await fs.readFile(resolvePath, { encoding: "utf-8" });

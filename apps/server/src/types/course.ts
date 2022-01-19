@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import { Locals } from "./";
 
 export type CourseConfig = {
   id: string;
@@ -20,5 +20,3 @@ export type Action = {
   url: string;
   passed: ((context: Locals) => boolean) | boolean;
 };
-
-type Locals = Express["request"]["locals"];
