@@ -1,6 +1,6 @@
 import path from "path";
 import { promises as fs } from "fs";
-import type { CourseConfig } from "../../../../courses";
+import type { CourseConfig } from "../types";
 
 export async function compileCourse(
   config: CourseConfig

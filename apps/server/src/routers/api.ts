@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { compileCourse } from "../utils";
-import courses from "../../../../courses";
+import courses from "@packages/courses";
 
 const promisedCourses = Promise.all(courses.map(compileCourse));
 

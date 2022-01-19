@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "@packages/courses",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Daniel Grant",
+  
+  "dependencies": {
+    "server": "1.0.0"
+  }
+}

@@ -6,7 +6,8 @@
   
   "homepage": "https://github.com/codeyourfuture/cyf-learning-lab",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "courses"
   ],
   "scripts": {
     "build": "lerna run build",
