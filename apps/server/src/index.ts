@@ -7,7 +7,7 @@ import * as config from "./config";
 const server = express();
 
 server.use(mw.session);
-server.get(["/api/user", "/api/courses/:id"], mw.userSession);
+server.use(["/api/user", "/api/courses/:id"], mw.userSession);
 server.get("/api/courses/:id", mw.botSessions);
 
 server.use(mw.probot(bots.amber));
