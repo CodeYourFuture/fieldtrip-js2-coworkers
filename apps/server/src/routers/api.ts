@@ -1,19 +1,19 @@
 import { Router } from "express";
-import { compileCourse } from "../utils";
-import * as courses from "@packages/courses";
+import { compileCourse, compileCourseMeta } from "../utils";
+import courses from "@packages/courses";
 
 export const api = Router();
 
 api.get("/user", async (req, res) => {
   const { user } = req.locals;
   if (!user) {
-    res.send(null);
-    return;
+    res.sendStatus(403);
+  } else {
+    res.json({
+      login: user.login,
+      avatar_url: user.avatar_url,
+    });
   }
-  res.json({
-    login: user.login,
-    avatar_url: user.avatar_url,
-  });
 });
 
 api.get("/courses", async (req, res) => {
@@ -30,8 +30,8 @@ api.get("/courses/:id", async (req, res) => {
   }
 
   if (!user) {
-    const courseMeta = await compileCourse(courseConfig);
-    res.send(courseMeta);
+    const courseMeta = await compileCourseMeta(courseConfig);
+    res.send({ ...courseMeta, enrolled: false });
     return;
   }
 
@@ -43,8 +43,8 @@ api.get("/courses/:id", async (req, res) => {
     .catch((err: any) => err);
 
   const courseLoggedIn = {
-    ...(await compileCourse(courseConfig)),
-    active: repo.status === 200,
+    ...(await compileCourse(courseConfig, req.locals)),
+    enrolled: repo.status === 200,
   };
 
   res.send(courseLoggedIn);
@@ -60,7 +60,7 @@ api.post("/courses/:id", async (req, res, next) => {
 
     const status = {
       id: req.params.id,
-      active: true,
+      enrolled: true,
     };
 
     res.status(201).send({ status });

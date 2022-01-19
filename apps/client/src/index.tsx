@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Redirect, Router } from "@reach/router";
 import { Provider, store } from "src/store";
-import { Courses, NotFound } from "src/pages";
+import { Course, NotFound } from "src/pages";
 import { Announcement } from "./components/app";
 import "src/assets/styles.css";
 
@@ -19,7 +19,7 @@ store
         <Provider value={store}>
           <Router>
             <Redirect from="/" to="courses/js2" noThrow />
-            <Courses path="courses/*" />
+            <Course path="courses/:id/*" />
             <NotFound default />
           </Router>
         </Provider>

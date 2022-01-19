@@ -8,13 +8,13 @@ export const Course = types
     module: types.string,
     summary: types.string,
     stages: types.array(types.late(() => CourseStage)),
-    active: types.boolean,
+    enrolled: types.boolean,
   })
   .actions((self) => ({
     enroll: flow(function* () {
       const res = yield fetch(`/api/courses/${self.id}`, { method: "POST" });
       const course = yield res.json();
-      self.active = course.active;
+      self.enrolled = course.enrolled;
     }),
   }));
 
@@ -28,6 +28,7 @@ export const CourseStage = types.model({
 export const CourseAction = types.model({
   label: types.string,
   url: types.string,
+  passed: types.boolean,
 });
 
 export interface ICourse extends Instance<typeof Course> {}
