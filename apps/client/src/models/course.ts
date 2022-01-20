@@ -1,5 +1,6 @@
 import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
 import { types, flow } from "mobx-state-tree";
+import { getRoot } from "src/store";
 
 export const Course = types
   .model({
@@ -12,9 +13,17 @@ export const Course = types
   })
   .actions((self) => ({
     enroll: flow(function* () {
-      const res = yield fetch(`/api/courses/${self.id}`, { method: "POST" });
-      const course = yield res.json();
-      self.enrolled = course.enrolled;
+      try {
+        const res = yield fetch(`/api/courses/${self.id}`, {
+          method: "POST",
+        });
+        self.enrolled = true;
+        // @todo: do something better on catch
+        // cannot yield here otherwise self-reference breaks types
+        getRoot(self).loadCourse(self.id).catch(console.error);
+      } catch (err) {
+        console.log(err);
+      }
     }),
   }));
 

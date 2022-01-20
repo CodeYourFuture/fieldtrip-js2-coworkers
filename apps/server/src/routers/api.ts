@@ -57,14 +57,11 @@ api.post("/courses/:id", async (req, res, next) => {
     await user.octokit.request("POST /user/repos", {
       name: req.params.id,
     });
-
-    const status = {
-      id: req.params.id,
-      enrolled: true,
-    };
-
-    res.status(201).send({ status });
+    res.sendStatus(201);
   } catch (err) {
+    // if this fails it could mean:
+    // a) repo already exists
+    // b) user uninstall the root app, but didn't revoke its oauth privileges
     next(err);
   }
 });
