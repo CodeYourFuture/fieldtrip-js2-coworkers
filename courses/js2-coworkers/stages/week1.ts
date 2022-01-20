@@ -3,7 +3,7 @@ import type { Stage } from "../../types";
 export const week1: Stage = {
   key: "week-1",
   label: "Week 1",
-  summary: "./week1.md",
+  summary: "./week1/week1.md",
   actions: [
     {
       label: "Add Malachi Bot to your repo",
@@ -27,4 +27,17 @@ export const week1: Stage = {
       passed: (context) => Object.keys(context.bots).includes("uma"),
     },
   ],
+  // @ts-ignore
+  events: {
+    malachi: [
+      {
+        type: ["installation_repositories.added", "installation.created"],
+        action: {
+          type: "create_issue",
+          title: "Introducing your product owner",
+          body: "./week1/malachi/intro-issue.md",
+        },
+      },
+    ],
+  },
 };
