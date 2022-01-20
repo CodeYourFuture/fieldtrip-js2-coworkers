@@ -4,20 +4,20 @@ import * as bots from "./bots";
 import * as mw from "./middlewares";
 import * as config from "./config";
 
-const server = express();
+const app = express();
 
-server.use(mw.session);
-server.use(["/api/user", "/api/courses/:id"], mw.userSession);
-server.get("/api/courses/:id", mw.botSessions);
+app.use(mw.session);
+app.use(["/api/user", "/api/courses/:id"], mw.userSession);
+app.get("/api/courses/:id", mw.botSessions);
 
-server.use(mw.probot(bots.amber));
-server.use(mw.probot(bots.malachi));
-server.use(mw.probot(bots.uma));
-server.use(mw.probot(bots.root));
+app.use(mw.probot(bots.amber));
+app.use(mw.probot(bots.malachi));
+app.use(mw.probot(bots.uma));
+app.use(mw.probot(bots.root));
 
-server.use("/api", routers.api);
-server.use("/auth", routers.auth);
+app.use("/api", routers.api);
+app.use("/auth", routers.auth);
 
-server.listen(config.PORT, () => {
-  console.log("Server listening on port", config.PORT);
+app.listen(config.PORT, () => {
+  console.log("app listening on port", config.PORT);
 });
