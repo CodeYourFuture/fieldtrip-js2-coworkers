@@ -4,7 +4,7 @@ import * as config from "../config";
 
 export const app = (app: Probot) => {
   app.on(["installation", "installation_repositories"], async (context) => {
-    context.log(context);
+    context.log("Amber installed");
   });
 };
 
