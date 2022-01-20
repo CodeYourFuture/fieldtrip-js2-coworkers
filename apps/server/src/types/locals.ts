@@ -1,10 +1,10 @@
 import { ProbotOctokit } from "probot";
+import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 import type { Probot } from "probot";
 import type { Bots } from "./";
 
-export type User = {
-  octokit: InstanceType<typeof ProbotOctokit>;
-  [key: string]: any;
+export type AuthenticatedLocals = Locals & {
+  user: NonNullable<Locals["user"]>;
 };
 
 export type Locals = {
@@ -17,3 +17,7 @@ export type Locals = {
         };
       };
 };
+
+export type User = {
+  octokit: InstanceType<typeof ProbotOctokit>;
+} & RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"];
