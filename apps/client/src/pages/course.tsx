@@ -23,8 +23,7 @@ interface Props extends RouteComponentProps {
 export const Course: FC<Props> = observer(({ id }) => {
   const { user, courses } = useMst();
   const course = courses.get(id!);
-  // @todo handle this properly – currently just a hack around data loading after page load
-  if (!course) return <Announcement message="Configuring science...." />;
+  if (!course) return <Announcement message="Loading course...." />;
   return (
     <AppLayout>
       <section className="mb-8 bg-slate-50">
@@ -70,7 +69,7 @@ export const Course: FC<Props> = observer(({ id }) => {
           <div className="w-2/3">
             {course.stages.map((stage) => (
               <TabPage key={stage.key} match={stage.key}>
-                {Boolean(stage.actions.length) && (
+                {Boolean(stage.actions.length) && course.enrolled && (
                   <div className="border">
                     <div className="px-4 py-3 bg-slate-50">
                       <H4>Onboarding steps</H4>
