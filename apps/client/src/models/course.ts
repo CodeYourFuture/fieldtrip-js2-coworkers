@@ -32,12 +32,23 @@ export const Course = types
     }),
   }));
 
-export const CourseStage = types.model({
-  key: types.string,
-  label: types.string,
-  summary: types.string,
-  actions: types.array(types.late(() => CourseAction)),
-});
+export const CourseStage = types
+  .model({
+    key: types.string,
+    label: types.string,
+    summary: types.string,
+    actions: types.array(types.late(() => CourseAction)),
+  })
+  .views((self) => ({
+    get actionsWithUnlocked() {
+      let prevPassed = true;
+      return self.actions.map((item) => {
+        const action = { ...item, unlocked: prevPassed };
+        prevPassed = item.passed;
+        return action;
+      });
+    },
+  }));
 
 export const CourseAction = types.model({
   label: types.string,

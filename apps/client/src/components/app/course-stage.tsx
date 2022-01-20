@@ -11,8 +11,11 @@ export const CourseStage: FC<Props> = ({ stage }) => (
     <div className="px-4 py-3 bg-slate-50">
       <H4>Onboarding steps</H4>
     </div>
-    {stage.actions.map((action, i) => (
-      <div key={i} className="px-4 py-3 border-t">
+    {stage.actionsWithUnlocked.map((action, i) => (
+      <div
+        key={i}
+        className={`px-4 py-3 border-t ${!action.unlocked && "opacity-40"}`}
+      >
         <span className="mr-3 text-lg font-medium text-gray-400">
           {String(i + 1)}
         </span>
@@ -22,13 +25,15 @@ export const CourseStage: FC<Props> = ({ stage }) => (
             Done
           </span>
         ) : (
-          <Button
-            size="sm"
-            className="float-right bg-emerald-500"
-            onClick={() => (window.location.href = action.url)}
-          >
-            Start
-          </Button>
+          action.unlocked && (
+            <Button
+              size="sm"
+              className="float-right bg-emerald-500"
+              onClick={() => (window.location.href = action.url)}
+            >
+              Start
+            </Button>
+          )
         )}
       </div>
     ))}
