@@ -12,8 +12,7 @@ export const week1: Stage = {
     },
     {
       label: "Meet Malachi",
-      // @todo allow functions for url fields
-      url: "https://github.com/djgrant/js2/issues/1",
+      url: (context) => `https://github.com/${context.user.login}/js2/issues/1`,
       // @todo project card is assigned to user
       passed: () => false,
     },

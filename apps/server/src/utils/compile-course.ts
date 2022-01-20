@@ -1,10 +1,10 @@
 import path from "path";
 import { promises as fs } from "fs";
-import type { Locals, CourseConfig } from "../types";
+import type { AuthenticatedLocals, CourseConfig } from "../types";
 
 export async function compileCourse(
   config: CourseConfig,
-  locals: Locals
+  locals: AuthenticatedLocals
 ): Promise<CourseConfig> {
   const meta = await compileCourseMeta(config);
   const stages = await Promise.all(
@@ -25,25 +25,30 @@ export async function compileCourseMeta(
 }
 
 async function compileStage(
-  this: Locals | void,
+  this: AuthenticatedLocals | void,
   stage: CourseConfig["stages"][number],
   includeActions: boolean = true
 ): Promise<CourseConfig["stages"][number]> {
   const summary = await getMarkdown(stage.summary);
   const actions = includeActions
-    ? await Promise.all(stage.actions.map(compileAction.bind(this as Locals)))
+    ? await Promise.all(
+        stage.actions.map(compileAction.bind(this as AuthenticatedLocals))
+      )
     : [];
   return { ...stage, summary, actions };
 }
 
 async function compileAction(
-  this: Locals,
+  this: AuthenticatedLocals,
   action: CourseConfig["stages"][number]["actions"][number]
 ): Promise<CourseConfig["stages"][number]["actions"][number]> {
-  const { passed } = action;
-  const passedResult =
-    typeof passed === "function" ? Boolean(await passed(this)) : passed;
-  return { ...action, passed: passedResult };
+  const passed =
+    typeof action.passed === "function"
+      ? Boolean(await action.passed(this))
+      : action.passed;
+  const url =
+    typeof action.url === "function" ? await action.url(this) : action.url;
+  return { ...action, url, passed };
 }
 
 async function getMarkdown(relativePath: string) {
