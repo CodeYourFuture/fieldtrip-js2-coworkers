@@ -3,6 +3,7 @@ import { types, flow } from "mobx-state-tree";
 import { User } from "./user";
 import { Course } from "./course";
 import { router } from "src/utils/router";
+import { toaster } from "evergreen-ui";
 
 export const Root = types
   .model({
@@ -14,7 +15,11 @@ export const Root = types
       try {
         const user = yield fetch("/api/user").then((res) => res.json());
         self.user = user;
-      } catch {}
+      } catch (err: any) {
+        if (err.status === 401) {
+          toaster.danger("Failed to load user");
+        }
+      }
     }),
     loadCourse: flow(function* (courseId) {
       try {
@@ -22,8 +27,12 @@ export const Root = types
           res.json()
         );
         self.courses.put(course);
-      } catch {
-        router.replace("/404");
+      } catch (err: any) {
+        if (err.status === 404) {
+          router.replace("/404");
+        } else {
+          toaster.danger("Failed to load course");
+        }
       }
     }),
   }))
