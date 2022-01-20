@@ -29,7 +29,13 @@ export const CourseStage: FC<Props> = ({ stage }) => (
             <Button
               size="sm"
               className="float-right bg-emerald-500"
-              onClick={() => (window.location.href = action.url)}
+              onClick={() => {
+                if (action.url.startsWith("http")) {
+                  window.open(action.url, "_blank");
+                } else {
+                  window.location.href = action.url;
+                }
+              }}
             >
               Start
             </Button>
