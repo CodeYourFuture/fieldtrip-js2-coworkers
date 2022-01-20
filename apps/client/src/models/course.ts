@@ -1,6 +1,7 @@
 import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
 import { types, flow } from "mobx-state-tree";
 import { getRoot } from "src/store";
+import { toaster } from "evergreen-ui";
 
 export const Course = types
   .model({
@@ -14,15 +15,19 @@ export const Course = types
   .actions((self) => ({
     enroll: flow(function* () {
       try {
+        toaster.notify("Creating course repository...", {
+          id: "enroll",
+          duration: 120,
+        });
         const res = yield fetch(`/api/courses/${self.id}`, {
           method: "POST",
         });
+        toaster.success("Course repository created!", { id: "enroll" });
         self.enrolled = true;
-        // @todo: do something better on catch
-        // cannot yield here otherwise self-reference breaks types
-        getRoot(self).loadCourse(self.id).catch(console.error);
+        getRoot(self).loadCourse(self.id);
       } catch (err) {
         console.log(err);
+        toaster.danger("Failed to enroll in course", { id: "enroll" });
       }
     }),
   }));

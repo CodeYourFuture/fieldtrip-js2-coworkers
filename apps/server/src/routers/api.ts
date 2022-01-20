@@ -7,7 +7,7 @@ export const api = Router();
 api.get("/user", async (req, res) => {
   const { user } = req.locals;
   if (!user) {
-    res.sendStatus(403);
+    res.sendStatus(401);
   } else {
     res.json({
       login: user.login,
