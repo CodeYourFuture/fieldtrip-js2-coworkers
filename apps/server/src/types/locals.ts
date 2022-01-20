@@ -1,9 +1,9 @@
+import { ProbotOctokit } from "probot";
 import type { Probot } from "probot";
 import type { Bots } from "./";
-import { getUserOctokit } from "../utils";
 
 export type User = {
-  octokit: ReturnType<typeof getUserOctokit>;
+  octokit: InstanceType<typeof ProbotOctokit>;
   [key: string]: any;
 };
 

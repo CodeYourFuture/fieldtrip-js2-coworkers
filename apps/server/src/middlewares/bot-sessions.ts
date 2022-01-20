@@ -7,6 +7,7 @@ export const botSessions: RequestHandler = async (req, _, next) => {
   // Only authorise bots if the user is logged in
   if (!req.locals.user) return next();
 
+  // Object.keys does not have generic types so needs to be cast
   const botNames = Object.keys(bots) as (keyof Bots)[];
   const botSessions = Object.entries(req.session.bots || {}) as [
     keyof Bots,
@@ -41,7 +42,7 @@ export const botSessions: RequestHandler = async (req, _, next) => {
   for (const botName of botNames) {
     if (req.locals.bots[botName]) continue;
 
-    // Check user doesn't have bot installed i.e. if session for bot is missing
+    // Check users that with no session if they have a previous installation we can use
     try {
       const bot = bots[botName];
       const authedBot = await bot.instance.auth();
@@ -66,6 +67,8 @@ export const botSessions: RequestHandler = async (req, _, next) => {
 
   // At some point I'll need to check the bot is installed in the correct repo
   // GET /repos/{owner}/{repo}/installation should hopefully work
+  // Or, making a request to the user repo on behalf of the bot would presumably
+  // tell us by the status code whether it exists or we have access to it
   // For now we can just assume users are installing the bot in the correct repo
 
   next();
