@@ -3,7 +3,7 @@ import type { Stage } from "../../types";
 export const week1: Stage = {
   key: "week-1",
   label: "Week 1",
-  summary: "./week1.md",
+  summary: "./week1/week1.md",
   actions: [
     {
       label: "Add Malachi Bot to your repo",
