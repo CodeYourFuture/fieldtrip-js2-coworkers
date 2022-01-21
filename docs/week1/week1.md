@@ -1,3 +1,5 @@
-Over the next three weeks you will build this tool, starting with a simple solution that provides value to the company (called a Minimum Viable Product or MVP).
+Over the next three weeks you'll build a set of tools, starting with a simple solution that immediately provides some value to the organisation (called an [MVP](https://en.wikipedia.org/wiki/Minimum_viable_product)).
 
-In each subsequent week you will respond to new requirements to add extra features.
+Then, in each subsequent week you'll respond to new requirements to add extra features.
+
+Alright, let's get you started and introduced to your virtual team!
