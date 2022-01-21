@@ -1,6 +1,6 @@
 import { Probot } from "probot";
 import { createProbot } from "../utils";
-import * as config from "../config";
+import { bots } from "../config";
 
 export const app = (app: Probot) => {
   app.on(["installation_repositories.added"], async (context) => {
@@ -28,7 +28,8 @@ export const app = (app: Probot) => {
   });
 };
 
-export const instance = createProbot(config.bots.malachi);
+export const instance = createProbot(bots.malachi);
+export const config = bots.malachi;
 
 function getFirstIssue() {
   return `Hi! My job is to understand users' needs so that we can build a product that really helps people. I do this by talking to users and stakeholders to find out what problems need to be solved and learn about how users are currently solving these problems.

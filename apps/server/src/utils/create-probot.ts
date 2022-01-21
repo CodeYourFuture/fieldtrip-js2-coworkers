@@ -17,7 +17,6 @@ export const createProbot = (botConfig: BotConfig) => {
       appId: botConfig.APP_ID,
       privateKey: botConfig.PRIVATE_KEY,
       secret: botConfig.WEBHOOK_SECRET,
-      webhookPath: botConfig.WEBHOOK_PATH,
       log: getLog(),
     },
   });

@@ -1,6 +1,6 @@
 import { Probot } from "probot";
 import { createProbot } from "../utils";
-import * as config from "../config";
+import { bots } from "../config";
 
 export const app = (app: Probot) => {
   app.on("issues.opened", async (context) => {
@@ -15,4 +15,5 @@ export const app = (app: Probot) => {
   });
 };
 
-export const instance = createProbot(config.bots.root);
+export const instance = createProbot(bots.root);
+export const config = bots.root;
