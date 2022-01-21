@@ -38,7 +38,7 @@ export const Course = types
           "Deleting the course will PERMANENTLY delete your repo from GitHub.",
           "Any work you've done will be lost unless you have backed it up.",
           "Are you sure you want to do this?",
-        ].join("\n")
+        ].join("\n\n")
       );
       if (!confirmed) return;
       try {

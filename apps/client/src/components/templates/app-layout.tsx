@@ -3,7 +3,7 @@ import { Header } from "src/components/app";
 
 export const AppLayout: FC = ({ children }) => {
   return (
-    <div>
+    <div className="mb-16">
       <Header />
       <main>{children}</main>
     </div>

@@ -6,7 +6,7 @@ type Props = {
   stage: ICourse["stages"][number];
 };
 
-export const CourseStage: FC<Props> = ({ stage }) => (
+export const CourseActions: FC<Props> = ({ stage }) => (
   <div className="border">
     <div className="px-4 py-3 bg-slate-50">
       <H4>Onboarding steps</H4>

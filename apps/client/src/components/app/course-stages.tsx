@@ -1,5 +1,6 @@
 import { Markdown, Tab, Tabs, TabPage } from "src/components/library";
-import { CourseStage } from ".";
+import { CourseActions } from ".";
+
 import type { ICourseStage } from "src/models";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 
 export const CourseStages = ({ stages, enrolled }: Props) => (
   <div>
-    <div className="mb-4">
+    <div className="mb-6">
       <Tabs>
         {stages.map((stage, i) => (
           <Tab key={stage.key} to={stage.key} default={i === 0}>
@@ -18,13 +19,17 @@ export const CourseStages = ({ stages, enrolled }: Props) => (
         ))}
       </Tabs>
     </div>
-    {stages.map((stage) => (
-      <TabPage key={stage.key} match={stage.key}>
-        {Boolean(stage.actions.length) && enrolled && (
-          <CourseStage stage={stage} />
-        )}
-        <Markdown>{"### Course description\n".concat(stage.summary)}</Markdown>
-      </TabPage>
-    ))}
+    <div>
+      {stages.map((stage) => (
+        <TabPage key={stage.key} match={stage.key}>
+          <div className="space-y-8">
+            <Markdown>{stage.summary}</Markdown>
+            {Boolean(stage.actions.length) && enrolled && (
+              <CourseActions stage={stage} />
+            )}
+          </div>
+        </TabPage>
+      ))}
+    </div>
   </div>
 );
