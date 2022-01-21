@@ -10,7 +10,8 @@ type Props = {
 
 export const CourseStages = ({ stages, enrolled }: Props) => (
   <div>
-    <div className="mb-6">
+    <div className="relative mb-6">
+      <div className="absolute bottom-0 w-full h-1 border-b -z-10"></div>
       <Tabs>
         {stages.map((stage, i) => (
           <Tab key={stage.key} to={stage.key} default={i === 0}>
@@ -19,17 +20,15 @@ export const CourseStages = ({ stages, enrolled }: Props) => (
         ))}
       </Tabs>
     </div>
-    <div>
-      {stages.map((stage) => (
-        <TabPage key={stage.key} match={stage.key}>
-          <div className="space-y-8">
-            <Markdown>{stage.summary}</Markdown>
-            {Boolean(stage.actions.length) && enrolled && (
-              <CourseActions stage={stage} />
-            )}
-          </div>
-        </TabPage>
-      ))}
-    </div>
+    {stages.map((stage) => (
+      <TabPage key={stage.key} match={stage.key}>
+        <div className="space-y-8">
+          <Markdown>{stage.summary}</Markdown>
+          {stage.actions.length > 0 && enrolled && (
+            <CourseActions stage={stage} />
+          )}
+        </div>
+      </TabPage>
+    ))}
   </div>
 );
