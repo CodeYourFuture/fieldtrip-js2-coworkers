@@ -1,6 +1,7 @@
 export {
   Button,
   Progress,
+  Link,
   Tab,
   Tabs,
   TabPage,

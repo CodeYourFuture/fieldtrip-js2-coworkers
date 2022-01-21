@@ -10,24 +10,52 @@ export const Course = types
     module: types.string,
     summary: types.string,
     stages: types.array(types.late(() => CourseStage)),
-    enrolled: types.boolean,
+    enrollment: types.maybeNull(types.late(() => CourseEnrollment)),
   })
   .actions((self) => ({
     enroll: flow(function* () {
+      const root = getRoot(self);
       try {
         toaster.notify("Creating course repository...", {
           id: "enroll",
           duration: 120,
         });
-        const res = yield fetch(`/api/courses/${self.id}`, {
+        yield fetch(`/api/courses/${self.id}`, {
           method: "POST",
         });
+        // Workaround to avoid circular types
+        const loadCourse = (): Promise<void> => root.loadCourse(self.id);
+        yield loadCourse();
         toaster.success("Course repository created!", { id: "enroll" });
-        self.enrolled = true;
-        getRoot(self).loadCourse(self.id);
       } catch (err) {
         console.log(err);
-        toaster.danger("Failed to enroll in course", { id: "enroll" });
+        toaster.danger("Failed to enroll on course", { id: "enroll" });
+      }
+    }),
+    delete: flow(function* () {
+      const confirmed = window.confirm(
+        [
+          "Deleting the course will PERMANENTLY delete your repo from GitHub.",
+          "Any work you've done will be lost unless you have backed it up.",
+          "Are you sure you want to do this?",
+        ].join("\n")
+      );
+      if (!confirmed) return;
+      try {
+        toaster.success("Deleting course repository... ", {
+          id: "delete",
+          duration: 120,
+        });
+        const res = yield fetch(`/api/courses/${self.id}`, {
+          method: "DELETE",
+        });
+        if (res.status !== 204) throw res;
+        self.enrollment = null;
+        getRoot(self).loadCourse(self.id);
+        toaster.success("Course deleted!", { id: "delete" });
+      } catch (err) {
+        console.log(err);
+        toaster.danger("Failed to delete course");
       }
     }),
   }));
@@ -56,6 +84,12 @@ export const CourseAction = types.model({
   passed: types.boolean,
 });
 
+export const CourseEnrollment = types.model({
+  repoUrl: types.string,
+});
+
 export interface ICourse extends Instance<typeof Course> {}
+export interface ICourseStage extends Instance<typeof CourseStage> {}
+export interface ICourseEnrollment extends Instance<typeof CourseEnrollment> {}
 export interface ICourseSnapshotIn extends SnapshotIn<typeof Course> {}
 export interface ICourseSnapshotOut extends SnapshotOut<typeof Course> {}

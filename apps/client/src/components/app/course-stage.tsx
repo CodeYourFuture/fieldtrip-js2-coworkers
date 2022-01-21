@@ -12,10 +12,10 @@ export const CourseStage: FC<Props> = ({ stage }) => (
       <H4>Onboarding steps</H4>
     </div>
     {stage.actionsWithUnlocked.map((action, i) => (
-      <div
-        key={i}
-        className={`px-4 py-3 border-t ${!action.unlocked && "opacity-40"}`}
-      >
+      <div key={i} className="relative px-4 py-3 border-t">
+        {!action.unlocked && (
+          <div className="absolute inset-0 bg-white opacity-50"></div>
+        )}
         <span className="mr-3 text-lg font-medium text-gray-400">
           {String(i + 1)}
         </span>

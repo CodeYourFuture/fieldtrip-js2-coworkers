@@ -14,7 +14,7 @@ export const CourseHero: FC<Props> = ({ course, authenticated }) => (
       <H1>{course.title}</H1>
     </div>
     {authenticated ? (
-      course.enrolled ? (
+      course.enrollment ? (
         <Button variant="outline" disabled>
           Course started
         </Button>

@@ -1,4 +1,4 @@
-import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
+import { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
 import { types, flow } from "mobx-state-tree";
 import { User } from "./user";
 import { Course } from "./course";
@@ -13,12 +13,13 @@ export const Root = types
   .actions((self) => ({
     loadUser: flow(function* () {
       try {
-        const user = yield fetch("/api/user").then((res) => res.json());
+        const res = yield fetch("/api/user");
+        if (res.status === 401) return;
+        const user = yield res.json();
         self.user = user;
       } catch (err: any) {
-        if (err.status === 401) {
-          toaster.danger("Failed to load user");
-        }
+        console.log(err);
+        toaster.danger("Failed to load user");
       }
     }),
     loadCourse: flow(function* (courseId) {
