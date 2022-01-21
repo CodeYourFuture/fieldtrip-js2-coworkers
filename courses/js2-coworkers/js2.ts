@@ -5,7 +5,7 @@ const config: CourseConfig = {
   id: "js2",
   title: "Co-worker Discovery Tools",
   module: "JS2",
-  summary: "./summary.md",
+  summary: "./js2.md",
   stages: [week1],
 };
 

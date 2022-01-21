@@ -1,6 +1,5 @@
-import path from "path";
-import { promises as fs } from "fs";
 import type { AuthenticatedLocals, CourseConfig } from "../types";
+import { getMarkdown } from ".";
 
 export async function compileCourse(
   config: CourseConfig,
@@ -49,13 +48,4 @@ async function compileAction(
   const url =
     typeof action.url === "function" ? await action.url(this) : action.url;
   return { ...action, url, passed };
-}
-
-async function getMarkdown(relativePath: string) {
-  const resolvePath = path.resolve(
-    process.cwd(),
-    "../../courses/js2-coworkers/docs",
-    relativePath
-  );
-  return await fs.readFile(resolvePath, { encoding: "utf-8" });
 }
