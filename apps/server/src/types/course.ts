@@ -1,21 +1,21 @@
-import { AuthenticatedLocals } from "./";
+import { AuthenticatedLocals, Locals } from "./";
 
 export type CourseConfig = {
   id: string;
   title: string;
   module: string;
   summary: string;
-  stages: Stage[];
+  stages: CourseStage[];
 };
 
-export type Stage = {
+export type CourseStage = {
   key: string;
   label: string;
-  summary: string;
-  actions: Action[];
+  summary: ((context: Locals) => string) | string;
+  actions: CourseAction[];
 };
 
-export type Action = {
+export type CourseAction = {
   label: string;
   url: ((context: AuthenticatedLocals) => string) | string;
   passed: ((context: AuthenticatedLocals) => boolean) | boolean;

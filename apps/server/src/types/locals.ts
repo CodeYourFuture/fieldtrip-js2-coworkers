@@ -16,6 +16,9 @@ export type Locals = {
           installationId: number;
         };
       };
+  enrollment: {
+    repoUrl: string;
+  };
 };
 
 export type User = {

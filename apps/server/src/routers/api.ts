@@ -26,26 +26,25 @@ api.get("/courses/:id", async (req, res, next) => {
   const courseConfig = courses[req.params.id as keyof typeof courses];
 
   if (!courseConfig) {
-    res.status(404).send("Course not found");
-    return;
+    return res.status(404).send("Course not found");
   }
-
-  const courseMeta = await compileCourseMeta(courseConfig);
 
   if (!user) {
-    res.send({ ...courseMeta, enrollment: null });
-    return;
+    const courseMeta = await compileCourseMeta(courseConfig, req.locals);
+    return res.send({ ...courseMeta, enrollment: null });
   }
 
-  let repo;
   try {
-    repo = await user.octokit.request("GET /repos/{username}/{name}", {
+    const repo = await user.octokit.request("GET /repos/{username}/{name}", {
       username: user.login,
       name: req.params.id,
     });
+    req.locals.enrollment = {
+      repoUrl: repo.data.html_url,
+    };
   } catch (err) {
-    res.send({ ...courseMeta, enrollment: null });
-    return;
+    const courseMeta = await compileCourseMeta(courseConfig, req.locals);
+    return res.send({ ...courseMeta, enrollment: null });
   }
 
   const courseEnrolled = await compileCourse(
@@ -53,11 +52,7 @@ api.get("/courses/:id", async (req, res, next) => {
     req.locals as AuthenticatedLocals
   );
 
-  const enrollment = {
-    repoUrl: repo.data.html_url,
-  };
-
-  res.send({ ...courseEnrolled, enrollment });
+  res.send({ ...courseEnrolled, enrollment: req.locals.enrollment });
 });
 
 api.post("/courses/:id", async (req, res, next) => {

@@ -1,11 +1,17 @@
-import type { AuthenticatedLocals, CourseConfig } from "../types";
+import type {
+  AuthenticatedLocals,
+  CourseConfig,
+  CourseStage,
+  CourseAction,
+  Locals,
+} from "../types";
 import { getMarkdown } from ".";
 
 export async function compileCourse(
   config: CourseConfig,
   locals: AuthenticatedLocals
 ): Promise<CourseConfig> {
-  const meta = await compileCourseMeta(config);
+  const meta = await compileCourseMeta(config, locals);
   const stages = await Promise.all(
     config.stages.map((stage) => compileStage.bind(locals)(stage))
   );
@@ -13,34 +19,42 @@ export async function compileCourse(
 }
 
 export async function compileCourseMeta(
-  config: CourseConfig
+  config: CourseConfig,
+  locals: Locals
 ): Promise<CourseConfig> {
   const summary = await getMarkdown(config.summary);
   const stages = await Promise.all(
-    config.stages.map((stage) => compileStage(stage, false))
+    config.stages.map(compileStageMeta.bind(locals))
   );
 
   return { ...config, summary, stages };
 }
 
+async function compileStageMeta(
+  this: Locals,
+  stage: CourseStage
+): Promise<CourseStage> {
+  const summaryPath =
+    typeof stage.summary === "function" ? stage.summary(this) : stage.summary;
+  const summary = await getMarkdown(summaryPath);
+  return { ...stage, summary, actions: [] };
+}
+
 async function compileStage(
-  this: AuthenticatedLocals | void,
-  stage: CourseConfig["stages"][number],
-  includeActions: boolean = true
-): Promise<CourseConfig["stages"][number]> {
-  const summary = await getMarkdown(stage.summary);
-  const actions = includeActions
-    ? await Promise.all(
-        stage.actions.map(compileAction.bind(this as AuthenticatedLocals))
-      )
-    : [];
-  return { ...stage, summary, actions };
+  this: AuthenticatedLocals,
+  stage: CourseStage
+): Promise<CourseStage> {
+  const meta = await compileStageMeta.apply(this, [stage]);
+  const actions = await Promise.all(
+    stage.actions.map(compileAction.bind(this))
+  );
+  return { ...meta, actions };
 }
 
 async function compileAction(
   this: AuthenticatedLocals,
-  action: CourseConfig["stages"][number]["actions"][number]
-): Promise<CourseConfig["stages"][number]["actions"][number]> {
+  action: CourseAction
+): Promise<CourseAction> {
   const passed =
     typeof action.passed === "function"
       ? Boolean(await action.passed(this))

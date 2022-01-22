@@ -1,9 +1,10 @@
-import type { Stage } from "../../types";
+import type { CourseStage } from "../../types";
 
-export const week1: Stage = {
+export const week1: CourseStage = {
   key: "week-1",
   label: "Week 1",
-  summary: "./meta/week1.md",
+  summary: (context) =>
+    context.enrollment ? "./meta/week1-enrolled.md" : "./meta/week1.md",
   actions: [
     {
       label: "Add Malachi Bot to your repo",
