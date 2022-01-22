@@ -10,7 +10,7 @@ type Props = {
 
 export const CourseStages = ({ stages, enrolled }: Props) => (
   <div>
-    <div className="relative mb-6">
+    <div className="relative mb-7">
       <div className="absolute bottom-0 w-full h-1 border-b -z-10"></div>
       <Tabs>
         {stages.map((stage, i) => (

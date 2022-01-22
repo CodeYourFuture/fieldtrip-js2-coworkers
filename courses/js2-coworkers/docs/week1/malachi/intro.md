@@ -1,4 +1,4 @@
-Hi!
+Hi {{user}}!
 
 My job is to understand users' needs so that we can build a product that really helps people. I do this by talking to users and stakeholders to find out what problems need to be solved and learn about how users are currently solving these problems.
 
