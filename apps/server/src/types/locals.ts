@@ -18,7 +18,7 @@ export type Locals = {
       };
   enrollment: {
     repoUrl: string;
-  };
+  } | null;
 };
 
 export type User = {
