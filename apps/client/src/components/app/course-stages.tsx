@@ -1,6 +1,6 @@
 import { Markdown, Tab, Tabs, TabPage } from "src/components/library";
 import { CourseActions } from ".";
-
+import { observer } from "mobx-react-lite";
 import type { ICourseStage } from "src/models";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   stages: ICourseStage[];
 };
 
-export const CourseStages = ({ stages, enrolled }: Props) => (
+export const CourseStages = observer(({ stages, enrolled }: Props) => (
   <div>
     <div className="relative mb-7">
       <div className="absolute bottom-0 w-full h-1 border-b -z-10"></div>
@@ -31,4 +31,4 @@ export const CourseStages = ({ stages, enrolled }: Props) => (
       </TabPage>
     ))}
   </div>
-);
+));
