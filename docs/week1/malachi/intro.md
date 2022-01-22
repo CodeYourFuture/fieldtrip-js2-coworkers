@@ -1,13 +1,21 @@
 Hi {{user}}!
 
-My job is to understand users' needs so that we can build a product that really helps people. I do this by talking to users and stakeholders to find out what problems need to be solved and learn about how users are currently solving these problems.
+## About me
 
-From these discussions I create user stories, which describe how particular users will be able to solve their problems once the work is done.
+I am the virtual product onwer for this project. My job is to understand users' needs so that we can build a product that really helps people.
 
-What I don't do is describe how a story should be built – I leave that to the designers and developers. My job is all about people!
+How do I do this? By talking to users and stakeholders to find out what problems they need solved, and to learn about how people are currently solving their problems.
 
-## Next Steps
+From these discussions I create _user stories_, which describe how particular users will be able to solve their problems once the work is done.
 
-I've create a board for our project where we can track changes.
+What I don't do is describe how a something should be built – I leave that to the designers and developers. My job is all about people!
 
-To complete this step, head over to the projects board and assign the highest priority task to yourself.
+## Working together
+
+To keep track of our progress, I've created a project board where I will add tasks and users stories. (You can find it by going to the projects tab).
+
+We'll talk about the project board more once the rest of the team have joined the project.
+
+## Next steps
+
+To mark the current step as done just close this issue. You can then return to the CYF Learning Lab to complete your next onboarding step.
