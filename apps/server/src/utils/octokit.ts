@@ -20,14 +20,14 @@ export const getUser = (context: Context) => context.payload.sender;
 export const createIssue = async (params: {
   context: Context;
   title: string;
-  filePath: string;
+  body: string;
 }) => {
-  const { context, title, filePath } = params;
+  const { context, title, body } = params;
   return context.octokit.issues.create({
     owner: context.payload.installation.account.login,
     repo: "js2",
     title,
-    body: await getMarkdown(filePath, getMarkdownOptions(context)),
+    body: await maybeMarkdown(body, context),
   });
 };
 
@@ -43,4 +43,40 @@ export const createProject = async (params: {
     name,
     body,
   });
+};
+
+export const createProjectColumn = async (params: {
+  context: Context;
+  projectId: number;
+  name: string;
+}) => {
+  const { context, projectId, name } = params;
+  return context.octokit.projects.createColumn({
+    owner: context.payload.installation.account.login,
+    repo: "js2",
+    project_id: projectId,
+    name,
+  });
+};
+
+export const createProjectCard = async (params: {
+  context: Context;
+  columnId: number;
+  issueNumber: number;
+}) => {
+  const { context, columnId, issueNumber } = params;
+  return context.octokit.projects.createCard({
+    owner: context.payload.installation.account.login,
+    repo: "js2",
+    column_id: columnId,
+    content_id: issueNumber,
+    content_type: "Issue",
+  });
+};
+
+export const maybeMarkdown = async (body: string, context: Context) => {
+  if (body.endsWith(".md")) {
+    return getMarkdown(body, getMarkdownOptions(context));
+  }
+  return body;
 };

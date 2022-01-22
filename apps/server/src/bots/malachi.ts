@@ -1,24 +1,52 @@
 import { Probot } from "probot";
 import { createProbot } from "../utils";
 import { bots } from "../config";
-import { isRepo, createIssue, createProject } from "../utils/octokit";
+import {
+  isRepo,
+  createIssue,
+  createProject,
+  createProjectColumn,
+  createProjectCard,
+} from "../utils/octokit";
 import type { Context } from "../utils/octokit";
 
 const actions = {
   setup: async (context: Context) => {
-    const [issue, project] = await Promise.all([
-      createIssue({
-        context,
-        title: "Introducing your product owner",
-        filePath: "week1/malachi/intro.md",
-      }),
-      createProject({
-        context,
-        name: "Co-worker tools",
-        body: "A collection of tools for co-workers",
-      }),
-    ]);
-    context.log(project);
+    const project = await createProject({
+      context,
+      name: "Co-worker tools",
+      body: "A collection of tools for co-workers",
+    });
+
+    const columnNames = ["Todo", "In progress", "Blocked", "Done"];
+
+    const [todoCol] = await Promise.all(
+      columnNames.map((columnName) =>
+        createProjectColumn({
+          context,
+          projectId: project.data.id,
+          name: columnName,
+        })
+      )
+    );
+
+    const cardIssue = await createIssue({
+      context,
+      title: "Do some work",
+      body: "Details",
+    });
+
+    await createProjectCard({
+      context,
+      columnId: todoCol.data.id,
+      issueNumber: cardIssue.data.id,
+    });
+
+    await createIssue({
+      context,
+      title: "Introducing your product owner",
+      body: "week1/malachi/intro.md",
+    });
   },
 };
 
