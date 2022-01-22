@@ -14,7 +14,7 @@ export const week1: CourseStage = {
     {
       label: "Meet Malachi",
       url: (context) => `https://github.com/${context.user.login}/js2/issues/1`,
-      // @todo project card is assigned to user
+      // passed: (context) => context.repo.issueIsClose({ issueNumber: 1 }),
       passed: () => false,
     },
     {
