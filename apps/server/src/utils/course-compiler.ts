@@ -61,10 +61,16 @@ export class Course extends CourseMeta {
     if (!Course.isAuthed(this.locals)) {
       throw new Error("Cannot compile action. User is not authenticated");
     }
-    const passed =
-      typeof action.passed === "function"
-        ? Boolean(await action.passed(this.locals))
-        : action.passed;
+
+    let passed;
+    if (typeof action.passed === "function") {
+      passed = await action.passed(this.locals);
+    } else if (typeof action.passed === "boolean") {
+      passed = action.passed;
+    } else {
+      passed = this.wasTriggered(action.passed);
+    }
+
     const url =
       typeof action.url === "function"
         ? await action.url(this.locals)
@@ -77,4 +83,15 @@ export class Course extends CourseMeta {
   ): locals is AuthenticatedLocals {
     return locals.user !== undefined;
   }
+
+  private wasTriggered = (passed: Record<string, (...args: any) => any>) => {
+    return Object.entries(passed).every(([event, handler]) => {
+      const triggerKey = Course.createTriggerKey(event, handler);
+      return this.locals.meta.triggers.includes(triggerKey);
+    });
+  };
+
+  static createTriggerKey = (event: string, handler: (...args: any) => any) => {
+    return `${event}::${handler.toString().replaceAll(" ", "")}`;
+  };
 }

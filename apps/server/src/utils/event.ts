@@ -11,9 +11,9 @@ export class Event {
   context: EventContext;
   repo: string;
 
-  constructor(context: EventContext) {
+  constructor(context: EventContext, repo: string) {
     this.context = context;
-    this.repo = "js2";
+    this.repo = repo;
   }
 
   private async maybeMarkdown(body: string) {

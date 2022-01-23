@@ -6,9 +6,10 @@ import * as config from "./config";
 
 const app = express();
 
+app.use(mw.locals);
 app.use(mw.session);
 app.use(["/api/user", "/api/courses/:id"], mw.userSession);
-app.get("/api/courses/:id", mw.botSessions);
+app.get("/api/courses/:id", [mw.botSessions, mw.meta]);
 
 app.use(mw.probot(bots.amber));
 app.use(mw.probot(bots.malachi));

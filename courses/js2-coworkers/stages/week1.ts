@@ -13,9 +13,11 @@ export const week1: CourseStage = {
     },
     {
       label: "Meet Malachi",
-      url: (context) => `https://github.com/${context.user.login}/js2/issues/1`,
-      // passed: (context) => context.repo.issueIsClose({ issueNumber: 1 }),
-      passed: () => false,
+      url: (context) =>
+        `https://github.com/${context.user.login}/${context.repo}/issues/1`,
+      passed: {
+        "issues.closed": (event) => event.issue.number === 1,
+      },
     },
     {
       label: "Add Amber Bot to your repo",

@@ -1,55 +1,36 @@
 import { Probot } from "probot";
-import { createProbot } from "../utils";
+import { Course, createProbot } from "../utils";
 import { bots } from "../config";
-import { Event } from "../utils/event";
-
-const actions = {
-  setup: async (event: Event) => {
-    const project = await event.createProject({
-      name: "Co-worker tools",
-      body: "A collection of tools for co-workers",
-    });
-
-    const columnNames = ["Todo", "In progress", "Blocked", "Done"];
-
-    const [todoCol] = await Promise.all(
-      columnNames.map((columnName) =>
-        event.createProjectColumn({
-          projectId: project.data.id,
-          name: columnName,
-        })
-      )
-    );
-
-    await event.createIssue({
-      title: "Introducing your product owner",
-      body: "week1/malachi/intro.md",
-    });
-
-    const task = await event.createIssue({
-      title: "Set up repo",
-      body: "./week1/tasks/set-up-repo.md",
-    });
-
-    await event.createProjectCard({
-      columnId: todoCol.data.id,
-      issueNumber: task.data.id,
-    });
-  },
-};
+import { Event, metadata } from "../utils";
+import { actions, repo, triggers } from "../course";
 
 export const app = (app: Probot) => {
-  app.on(["installation_repositories.added"], async (context) => {
-    const event = new Event(context);
-    if (event.shouldBeIgnored) return;
-    await actions.setup(event);
-  });
+  app.on(
+    ["installation_repositories.added", "installation.created"],
+    async (context) => {
+      const event = new Event(context, repo);
+      if (event.shouldBeIgnored) return;
+      await actions.malachi.setup(event);
+    }
+  );
 
-  app.on(["installation.created"], async (context) => {
-    const event = new Event(context);
-    if (event.shouldBeIgnored) return;
-    await actions.setup(event);
-  });
+  for (const [eventName, handler] of Object.entries(triggers)) {
+    app.on(eventName as any, async (context) => {
+      if (context.payload.repository.name !== repo) return;
+
+      const passed = (handler as any)(context.payload);
+      if (!passed) return;
+
+      const kv = await metadata(context.octokit, {
+        owner: context.payload.repository.owner.login,
+        repo,
+        issue_number: 1,
+      });
+
+      const triggerValue = Course.createTriggerKey(eventName, handler);
+      await kv.push("triggers", triggerValue);
+    });
+  }
 };
 
 export const instance = createProbot(bots.malachi);
