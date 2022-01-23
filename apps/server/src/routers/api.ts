@@ -47,7 +47,7 @@ api.get("/courses/:id", async (req, res) => {
     return res.send({ ...courseMeta, enrollment: null });
   }
 
-  const courseEnrolled = course.compile();
+  const courseEnrolled = await course.compile();
 
   res.send({ ...courseEnrolled, enrollment: req.locals.enrollment });
 });
