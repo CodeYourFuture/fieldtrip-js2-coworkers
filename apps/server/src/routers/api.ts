@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { compileCourse, compileCourseMeta } from "../utils";
+import { Course } from "../utils";
 import courses from "@packages/courses";
-import { AuthenticatedLocals } from "@packages/courses/types";
 
 export const api = Router();
 
@@ -21,16 +20,17 @@ api.get("/courses", async (req, res) => {
   res.json(Object.keys(courses));
 });
 
-api.get("/courses/:id", async (req, res, next) => {
+api.get("/courses/:id", async (req, res) => {
   const { user } = req.locals;
   const courseConfig = courses[req.params.id as keyof typeof courses];
+  const course = new Course(courseConfig, req.locals);
 
   if (!courseConfig) {
     return res.status(404).send("Course not found");
   }
 
   if (!user) {
-    const courseMeta = await compileCourseMeta(courseConfig, req.locals);
+    const courseMeta = await course.compileMeta();
     return res.send({ ...courseMeta, enrollment: null });
   }
 
@@ -43,14 +43,11 @@ api.get("/courses/:id", async (req, res, next) => {
       repoUrl: repo.data.html_url,
     };
   } catch (err) {
-    const courseMeta = await compileCourseMeta(courseConfig, req.locals);
+    const courseMeta = await course.compileMeta();
     return res.send({ ...courseMeta, enrollment: null });
   }
 
-  const courseEnrolled = await compileCourse(
-    courseConfig,
-    req.locals as AuthenticatedLocals
-  );
+  const courseEnrolled = course.compile();
 
   res.send({ ...courseEnrolled, enrollment: req.locals.enrollment });
 });

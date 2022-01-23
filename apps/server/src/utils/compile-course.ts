@@ -7,59 +7,74 @@ import type {
 } from "../types";
 import { getMarkdown } from ".";
 
-export async function compileCourse(
-  config: CourseConfig,
-  locals: AuthenticatedLocals
-): Promise<CourseConfig> {
-  const meta = await compileCourseMeta(config, locals);
-  const stages = await Promise.all(
-    config.stages.map((stage) => compileStage.bind(locals)(stage))
-  );
-  return { ...meta, stages };
+class CourseMeta {
+  config: CourseConfig;
+  locals: Locals;
+
+  constructor(config: CourseConfig, locals: Locals) {
+    this.config = config;
+    this.locals = locals;
+  }
+
+  compileMeta = async (): Promise<CourseConfig> => {
+    const summary = await getMarkdown(this.config.summary);
+    const stages = await Promise.all(
+      this.config.stages.map(this.compileStageMeta)
+    );
+
+    return { ...this.config, summary, stages };
+  };
+
+  compileStageMeta = async (stage: CourseStage): Promise<CourseStage> => {
+    const summaryPath =
+      typeof stage.summary === "function"
+        ? stage.summary(this.locals)
+        : stage.summary;
+    const summary = await getMarkdown(summaryPath);
+    return { ...stage, summary, actions: [] };
+  };
 }
 
-export async function compileCourseMeta(
-  config: CourseConfig,
-  locals: Locals
-): Promise<CourseConfig> {
-  const summary = await getMarkdown(config.summary);
-  const stages = await Promise.all(
-    config.stages.map(compileStageMeta.bind(locals))
-  );
+export class Course extends CourseMeta {
+  config: CourseConfig;
+  locals: Locals | AuthenticatedLocals;
 
-  return { ...config, summary, stages };
-}
+  constructor(config: CourseConfig, locals: Locals | AuthenticatedLocals) {
+    super(config, locals);
+    this.config = config;
+    this.locals = locals;
+  }
 
-async function compileStageMeta(
-  this: Locals,
-  stage: CourseStage
-): Promise<CourseStage> {
-  const summaryPath =
-    typeof stage.summary === "function" ? stage.summary(this) : stage.summary;
-  const summary = await getMarkdown(summaryPath);
-  return { ...stage, summary, actions: [] };
-}
+  async compile(): Promise<CourseConfig> {
+    const meta = await this.compileMeta();
+    const stages = await Promise.all(this.config.stages.map(this.compileStage));
+    return { ...meta, stages };
+  }
 
-async function compileStage(
-  this: AuthenticatedLocals,
-  stage: CourseStage
-): Promise<CourseStage> {
-  const meta = await compileStageMeta.apply(this, [stage]);
-  const actions = await Promise.all(
-    stage.actions.map(compileAction.bind(this))
-  );
-  return { ...meta, actions };
-}
+  compileStage = async (stage: CourseStage): Promise<CourseStage> => {
+    const meta = await this.compileStageMeta(stage);
+    const actions = await Promise.all(stage.actions.map(this.compileAction));
+    return { ...meta, actions };
+  };
 
-async function compileAction(
-  this: AuthenticatedLocals,
-  action: CourseAction
-): Promise<CourseAction> {
-  const passed =
-    typeof action.passed === "function"
-      ? Boolean(await action.passed(this))
-      : action.passed;
-  const url =
-    typeof action.url === "function" ? await action.url(this) : action.url;
-  return { ...action, url, passed };
+  compileAction = async (action: CourseAction): Promise<CourseAction> => {
+    if (!Course.isAuthed(this.locals)) {
+      throw new Error("Cannot compile action. User is not authenticated");
+    }
+    const passed =
+      typeof action.passed === "function"
+        ? Boolean(await action.passed(this.locals))
+        : action.passed;
+    const url =
+      typeof action.url === "function"
+        ? await action.url(this.locals)
+        : action.url;
+    return { ...action, url, passed };
+  };
+
+  private static isAuthed(
+    locals: Locals | AuthenticatedLocals
+  ): locals is AuthenticatedLocals {
+    return locals.user !== undefined;
+  }
 }
