@@ -24,7 +24,7 @@ export const Course: FC<Props> = observer(({ id }) => {
       </section>
       <Container>
         <section>
-          <div className="grid grid-cols-3 gap-10">
+          <div className="grid gap-10 md:grid-cols-3">
             <div className="col-span-2">
               <CourseStages
                 stages={course.stages}

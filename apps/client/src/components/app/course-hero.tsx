@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const CourseHero: FC<Props> = ({ course, authenticated }) => (
-  <div className="grid grid-cols-3 grid-gap-8">
+  <div className="grid gap-4 md:gap-0 md:grid-cols-3">
     <div className="col-span-2">
       <div className="space-y-6">
         <div>
@@ -40,8 +40,12 @@ export const CourseHero: FC<Props> = ({ course, authenticated }) => (
         </div>
       </div>
     </div>
-    <div className="col-span-1">
-      <img src={coworkers} alt="coworkers" className="w-full h-full" />
+    <div className="order-first col-span-1 md:order-last">
+      <img
+        src={coworkers}
+        alt="coworkers"
+        className="w-full h-full sm:max-w-sm md:max-w-full"
+      />
     </div>
   </div>
 );
