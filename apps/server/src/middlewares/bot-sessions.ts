@@ -15,23 +15,13 @@ export const botSessions: RequestHandler = async (req, _, next) => {
   ][];
 
   // Authorised bots with an installation ID in the session
-  for (const [botName] of botSessions) {
+  for (const [botName, installationId] of botSessions) {
     const bot = bots[botName];
     try {
-      const authedBot = await bot.instance.auth();
-      const res = await authedBot.request(
-        "GET /users/{username}/installation",
-        {
-          username: req.locals.user.login,
-        }
-      );
-      req.session!.bots = {
-        ...req.session!.bots,
-        [botName]: res.data.id,
-      };
+      const authedBot = await bot.instance.auth(installationId);
       req.locals.bots[botName] = {
         octokit: authedBot,
-        installationId: res.data.id,
+        installationId,
       };
     } catch {
       delete req.session.bots![botName];
@@ -42,18 +32,17 @@ export const botSessions: RequestHandler = async (req, _, next) => {
   for (const botName of botNames) {
     if (req.locals.bots[botName]) continue;
 
-    // Check users that with no session if they have a previous installation we can use
+    // Check users with no session if they have a previous installation we can use
     try {
       const bot = bots[botName];
       const authedBot = await bot.instance.auth();
-      // @todo: can I check from the previous API call if the bot is installed?
-      // if I can then I can skip this API call and only run it when no bot session is found
       const res = await authedBot.request(
         "GET /users/{username}/installation",
         {
           username: req.locals.user.login,
         }
       );
+      const fullyAuthedBot = await bot.instance.auth(res.data.id);
       req.session!.bots = {
         ...req.session!.bots,
         [botName]: res.data.id,
