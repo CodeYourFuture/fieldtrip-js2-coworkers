@@ -18,4 +18,13 @@ export const io = (server: HTTPServer) => {
     mw.session(socket.request as any, {} as any, next as any);
   });
 
+  io.on("connection", (socket) => {
+    // @ts-ignore
+    const username = socket.request.session.user.login;
+    emitter.on("clientUpdate", (data) => {
+      if (data.username === username) {
+        socket.emit(data.type, data);
+      }
+    });
+  });
 };

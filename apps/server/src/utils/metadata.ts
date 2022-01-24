@@ -1,5 +1,6 @@
 /**
  * Based on https://github.com/probot/metadata
+ * With support added for arrays and quasi sets
  * Store metadata in issues and pull requests.
  */
 
@@ -16,64 +17,74 @@ type Issue = {
 
 const regex = /\n\n<!-- probot = (.*) -->/;
 
-export const metadata = (octokit: Octokit, issue: Issue) => {
-  return {
-    async get(key?: Key) {
-      let body = issue.body;
+export class Metadata {
+  octokit: Octokit;
+  issue: Issue;
 
-      if (!body) {
-        body = (await octokit.issues.get(issue)).data.body || "";
-      }
+  constructor(octokit: Octokit, issue: Issue) {
+    this.octokit = octokit;
+    this.issue = issue;
+  }
 
-      const match = body.match(regex);
+  async get(key?: Key) {
+    const data = await this.getData();
+    return key ? data && data[key] : data;
+  }
 
-      if (match) {
-        const data = JSON.parse(match[1]);
-        return key ? data && data[key] : data;
-      }
-    },
+  async set(key: Key, value: any) {
+    const data = await this.getData();
+    data[key] = value;
+    const body = await this.getIssueBody(data);
+    await this.updateIssue(body);
+    return data[key];
+  }
 
-    async set(key: Key, value: any) {
-      let body = issue.body;
-      let data: Record<Key, any> = {};
+  async push(key: Key, value: any) {
+    const data = await this.getData();
+    if (!data[key]) data[key] = [];
+    if (!Array.isArray(data[key])) throw new Error("Property is not an array");
+    data[key].push(value);
+    const body = await this.getIssueBody(data);
+    await this.updateIssue(body);
+    return data[key];
+  }
 
-      if (!body) body = (await octokit.issues.get(issue)).data.body || "";
+  async add(key: Key, value: any) {
+    const data = await this.getData();
+    if (!data[key]) data[key] = [];
+    if (!Array.isArray(data[key])) throw new Error("Property is not an array");
+    if (data[key].includes(value)) return false;
+    data[key].push(value);
+    const body = await this.getIssueBody(data);
+    await this.updateIssue(body);
+    return true;
+  }
 
-      body = body.replace(regex, (_, json) => {
-        data = JSON.parse(json);
-        return "";
-      });
+  private async getData() {
+    const body = await this.getIssueBody();
+    const match = body.match(regex);
+    if (match) {
+      return JSON.parse(match[1]);
+    }
+    return {};
+  }
 
-      if (!data) data = {};
+  private async getIssueBody(data?: Record<Key, any>) {
+    let body = this.issue.body;
+    if (!body) {
+      body = (await this.octokit.issues.get(this.issue)).data.body || "";
+    }
+    if (data) {
+      body = body.replace(
+        regex,
+        () => `\n\n<!-- probot = ${JSON.stringify(data)} -->`
+      );
+    }
+    return body;
+  }
 
-      data[key] = value;
-
-      body = `${body}\n\n<!-- probot = ${JSON.stringify(data)} -->`;
-
-      const { owner, repo, issue_number } = issue;
-      return octokit.issues.update({ owner, repo, issue_number, body });
-    },
-
-    async push(key: Key, value: any) {
-      let body = issue.body;
-      let data: Record<Key, any> = {};
-
-      if (!body) body = (await octokit.issues.get(issue)).data.body || "";
-
-      body = body.replace(regex, (_, json) => {
-        data = JSON.parse(json);
-        return "";
-      });
-
-      if (!data) data = {};
-
-      if (!data[key]) data[key] = [];
-      data[key].push(value);
-
-      body = `${body}\n\n<!-- probot = ${JSON.stringify(data)} -->`;
-
-      const { owner, repo, issue_number } = issue;
-      return octokit.issues.update({ owner, repo, issue_number, body });
-    },
-  };
-};
+  private async updateIssue(body: string) {
+    const { owner, repo, issue_number } = this.issue;
+    return this.octokit.issues.update({ owner, repo, issue_number, body });
+  }
+}

@@ -10,6 +10,6 @@ export const api = {
   user: () => api.fetch("user"),
   courses: () => api.fetch("courses"),
   course: (id: string) => api.fetch(`courses/${id}`),
-  enroll: (id: string) => api.fetch(`courses/${id}/enroll`, { method: "POST" }),
+  enroll: (id: string) => api.fetch(`courses/${id}`, { method: "POST" }),
   delete: (id: string) => api.fetch(`courses/${id}`, { method: "DELETE" }),
 };

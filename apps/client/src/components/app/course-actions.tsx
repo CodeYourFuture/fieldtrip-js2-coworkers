@@ -21,12 +21,12 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
           {String(i + 1)}
         </span>
         {action.label}
-        {action.passed ? (
-          <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">
-            Done
-          </span>
-        ) : (
-          action.unlocked && (
+        {action.unlocked &&
+          (action.passed ? (
+            <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">
+              Done
+            </span>
+          ) : (
             <Button
               size="sm"
               className="float-right bg-emerald-500"
@@ -40,8 +40,7 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
             >
               Start
             </Button>
-          )
-        )}
+          ))}
       </div>
     ))}
   </div>

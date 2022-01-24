@@ -1,17 +1,18 @@
 import { RequestHandler } from "express";
-import { metadata } from "../utils/metadata";
+import { Metadata } from "../utils/metadata";
 
 export const meta: RequestHandler = async (req, res, next) => {
   const { bots, user, repo } = req.locals;
   if (!bots.root || !user) return next();
 
   try {
-    const kv = await metadata(bots.root.octokit, {
+    const metadataIssue = {
       issue_number: 1,
       owner: user.login,
       repo,
-    });
-    req.locals.meta = await kv.get();
+    };
+    const metadata = new Metadata(bots.root.octokit, metadataIssue);
+    req.locals.meta = await metadata.get();
   } catch {}
 
   next();

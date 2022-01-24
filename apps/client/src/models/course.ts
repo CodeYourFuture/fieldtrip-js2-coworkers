@@ -55,6 +55,14 @@ export const Course = types
         toaster.danger("Failed to delete course");
       }
     }),
+  }))
+  .views((self) => ({
+    getActionById(id: string): ICourseAction | void {
+      const allActions = self.stages.flatMap(
+        (stage) => stage.actions
+      ) as ICourseAction[];
+      return allActions.find((action) => action.id === id);
+    },
   }));
 
 export const CourseStage = types
@@ -69,17 +77,24 @@ export const CourseStage = types
       let prevPassed = true;
       return self.actions.map((item) => {
         const action = { ...item, unlocked: prevPassed };
-        prevPassed = item.passed;
+        if (prevPassed) prevPassed = item.passed;
         return action;
       });
     },
   }));
 
-export const CourseAction = types.model({
-  label: types.string,
-  url: types.string,
-  passed: types.boolean,
-});
+export const CourseAction = types
+  .model({
+    id: types.string,
+    label: types.string,
+    url: types.string,
+    passed: types.boolean,
+  })
+  .actions((self) => ({
+    setPassed: (passed: boolean) => {
+      self.passed = passed;
+    },
+  }));
 
 export const CourseEnrollment = types.model({
   repoUrl: types.string,
@@ -87,6 +102,8 @@ export const CourseEnrollment = types.model({
 
 export interface ICourse extends Instance<typeof Course> {}
 export interface ICourseStage extends Instance<typeof CourseStage> {}
+export interface ICourseAction extends Instance<typeof CourseAction> {}
 export interface ICourseEnrollment extends Instance<typeof CourseEnrollment> {}
+
 export interface ICourseSnapshotIn extends SnapshotIn<typeof Course> {}
 export interface ICourseSnapshotOut extends SnapshotOut<typeof Course> {}

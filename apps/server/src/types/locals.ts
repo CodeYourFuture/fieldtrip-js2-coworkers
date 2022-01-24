@@ -13,7 +13,7 @@ export type Locals = {
     repoUrl: string;
   } | null;
   meta: {
-    triggers: string[];
+    triggers?: string[];
   };
 };
 

@@ -1,8 +1,4 @@
-import { AuthenticatedLocals, Locals } from "./";
-import {
-  EmitterWebhookEventName,
-  EmitterWebhookEvent,
-} from "@octokit/webhooks";
+import type { AuthenticatedLocals, Locals } from "./";
 
 export type CourseConfig = {
   id: string;
@@ -20,16 +16,13 @@ export type CourseStage = {
 };
 
 export type CourseAction = {
+  id: string;
   label: string;
   url: ((context: AuthenticatedLocals) => string) | string;
-  passed:
-    | boolean
-    | ((context: AuthenticatedLocals) => boolean)
-    | {
-        [EventName in EmitterWebhookEventName]?: HandlerFunction<EventName>;
-      };
+  passed: boolean | ((context: AuthenticatedLocals) => boolean) | ActionTrigger;
 };
 
-export type HandlerFunction<TName extends EmitterWebhookEventName> = (
-  event: EmitterWebhookEvent<TName>["payload"]
-) => any;
+export type ActionTrigger = {
+  event: string;
+  handler: (...args: any) => boolean;
+};

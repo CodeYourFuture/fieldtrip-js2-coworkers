@@ -1,8 +1,8 @@
 import { Probot } from "probot";
-import { Course, createProbot } from "../utils";
+import { emitter } from "../emitter";
+import { Event, Course, Metadata, createProbot } from "../utils";
+import { course, actions, repo } from "../course";
 import { bots } from "../config";
-import { Event, metadata } from "../utils";
-import { actions, repo, triggers } from "../course";
 
 export const app = (app: Probot) => {
   app.on(
@@ -10,25 +10,36 @@ export const app = (app: Probot) => {
     async (context) => {
       const event = new Event(context, repo);
       if (event.shouldBeIgnored) return;
+      // @todo await repo creation (I think there might be a race condition here)
       await actions.malachi.setup(event);
     }
   );
 
-  for (const [eventName, handler] of Object.entries(triggers)) {
-    app.on(eventName as any, async (context) => {
+  const triggerActions = Course.getTriggers(course);
+  for (const action of triggerActions) {
+    const { event, handler } = action.passed;
+    app.on(event as any, async (context) => {
       if (context.payload.repository.name !== repo) return;
 
       const passed = (handler as any)(context.payload);
       if (!passed) return;
 
-      const kv = await metadata(context.octokit, {
+      const metadataIssue = {
         owner: context.payload.repository.owner.login,
         repo,
         issue_number: 1,
-      });
+      };
+      const metadata = new Metadata(context.octokit, metadataIssue);
+      const added = await metadata.add("triggers", action.id);
 
-      const triggerValue = Course.createTriggerKey(eventName, handler);
-      await kv.push("triggers", triggerValue);
+      if (added) {
+        emitter.emit("clientUpdate", {
+          type: "trigger:passed",
+          username: context.payload.sender.login,
+          repo,
+          actionId: action.id,
+        });
+      }
     });
   }
 };

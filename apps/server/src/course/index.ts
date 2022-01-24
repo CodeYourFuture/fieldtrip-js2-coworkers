@@ -1,3 +1,4 @@
+import courses from "@packages/courses";
 export * from "./actions";
-export * from "./triggers";
 export const repo = "js2";
+export const course = courses.js2;

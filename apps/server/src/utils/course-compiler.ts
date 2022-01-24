@@ -3,6 +3,7 @@ import type {
   CourseConfig,
   CourseStage,
   CourseAction,
+  ActionTrigger,
   Locals,
 } from "../types";
 import { getMarkdown } from ".";
@@ -68,7 +69,7 @@ export class Course extends CourseMeta {
     } else if (typeof action.passed === "boolean") {
       passed = action.passed;
     } else {
-      passed = this.wasTriggered(action.passed);
+      passed = this.wasTriggered(action.id);
     }
 
     const url =
@@ -84,14 +85,21 @@ export class Course extends CourseMeta {
     return locals.user !== undefined;
   }
 
-  private wasTriggered = (passed: Record<string, (...args: any) => any>) => {
-    return Object.entries(passed).every(([event, handler]) => {
-      const triggerKey = Course.createTriggerKey(event, handler);
-      return this.locals.meta.triggers.includes(triggerKey);
-    });
+  private wasTriggered = (id: string) => {
+    return this.locals.meta.triggers?.includes(id) || false;
   };
 
-  static createTriggerKey = (event: string, handler: (...args: any) => any) => {
-    return `${event}::${handler.toString().replaceAll(" ", "")}`;
+  private static isTrigger = (
+    action: CourseAction
+  ): action is CourseAction & { passed: ActionTrigger } => {
+    return typeof action.passed === "object";
+  };
+
+  static getTriggers = (
+    course: CourseConfig
+  ): (CourseAction & { passed: ActionTrigger })[] => {
+    return course.stages
+      .flatMap((stage) => stage.actions)
+      .filter(Course.isTrigger);
   };
 }

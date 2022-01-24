@@ -12,7 +12,6 @@ export const userSession: RequestHandler = async (req, _, next) => {
         octokit,
       };
     } catch (err) {
-      console.log("User credentials expired");
       delete req.session.user;
     }
   }

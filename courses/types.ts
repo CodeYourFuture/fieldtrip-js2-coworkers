@@ -1,5 +1,5 @@
 /**
- * This is a bit awkward, but it's not possible to import directly from server
+ * This is a bit awkward, but it's not possible to import directly from server (as a monorepo package)
  * because to have server as a dependency would create a circular dependency between it and courses.
  * Ultimately, we probably do want to export types from the server and have it as a dependency of courses.
  * The server could then either pull course as a package built in a separate workflow outside the monorepo
