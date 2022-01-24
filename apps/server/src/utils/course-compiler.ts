@@ -7,6 +7,7 @@ import type {
   Locals,
 } from "../types";
 import { getMarkdown } from ".";
+import { HOST } from "../config";
 
 class CourseMeta {
   config: CourseConfig;
@@ -72,10 +73,15 @@ export class Course extends CourseMeta {
       passed = this.wasTriggered(action.id);
     }
 
-    const url =
+    let url =
       typeof action.url === "function"
         ? await action.url(this.locals)
         : action.url;
+
+    if (url.startsWith("/auth")) {
+      url = HOST + url;
+    }
+
     return { ...action, url, passed };
   };
 
