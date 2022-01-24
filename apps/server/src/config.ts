@@ -14,6 +14,8 @@ function getEnv(key: string, required = true) {
 
 export const HOST = getEnv("HOST");
 export const PORT = getEnv("PORT");
+export const CLIENT_HOST = getEnv("CLIENT_HOST");
+export const COOKIE_DOMAIN = getEnv("COOKIE_DOMAIN");
 
 export const SESSION_KEY1 = getEnv("SESSION_KEY1");
 export const SESSION_KEY2 = getEnv("SESSION_KEY2");

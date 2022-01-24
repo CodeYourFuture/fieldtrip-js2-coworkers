@@ -2,6 +2,7 @@ import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
 import { types, flow } from "mobx-state-tree";
 import { getRoot } from "src/store";
 import { toaster } from "evergreen-ui";
+import { api } from "src/utils/api";
 
 export const Course = types
   .model({
@@ -20,9 +21,7 @@ export const Course = types
           id: "enroll",
           duration: 120,
         });
-        yield fetch(`/api/courses/${self.id}`, {
-          method: "POST",
-        });
+        yield api.enroll(self.id);
         // Workaround to avoid circular types
         const loadCourse = (): Promise<void> => root.loadCourse(self.id);
         yield loadCourse();
@@ -46,9 +45,7 @@ export const Course = types
           id: "delete",
           duration: 120,
         });
-        const res = yield fetch(`/api/courses/${self.id}`, {
-          method: "DELETE",
-        });
+        const res = yield api.delete(self.id);
         if (res.status !== 204) throw res;
         self.enrollment = null;
         getRoot(self).loadCourse(self.id);

@@ -10,5 +10,6 @@ export const session = cookieSession({
     "base64"
   ),
   maxAge: 24 * 60 * 60 * 1000,
+  domain: config.COOKIE_DOMAIN,
   httpOnly: true,
 });

@@ -1,8 +1,9 @@
 import type { FC } from "react";
 import { observer } from "mobx-react-lite";
 import { Container } from "src/components/library";
-import logo from "src/assets/logo.png";
+import { LOGIN_URL } from "src/config";
 import { useMst } from "src/store";
+import logo from "src/assets/logo.png";
 
 export const Header: FC = observer(() => {
   const { user } = useMst();
@@ -24,7 +25,7 @@ export const Header: FC = observer(() => {
             />
           )}
           {!user && (
-            <a href="/auth/login" className="text-sm">
+            <a href={LOGIN_URL} className="text-sm">
               Sign In
             </a>
           )}

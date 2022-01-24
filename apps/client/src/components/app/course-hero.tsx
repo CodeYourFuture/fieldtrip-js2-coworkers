@@ -2,6 +2,7 @@ import { Button, H1, H4, Markdown } from "src/components/library";
 import githubIcon from "src/assets/github.svg";
 import type { ICourse } from "src/models";
 import type { FC } from "react";
+import { LOGIN_URL } from "src/config";
 import coworkers from "src/assets/coworkers.svg";
 
 type Props = {
@@ -26,7 +27,7 @@ export const CourseHero: FC<Props> = ({ course, authenticated }) => (
             <Button onClick={course.enroll}>Start Project</Button>
           )
         ) : (
-          <Button onClick={() => (window.location.href = "/auth/login")}>
+          <Button onClick={() => (window.location.href = LOGIN_URL)}>
             <img
               src={githubIcon}
               alt="Github mark"

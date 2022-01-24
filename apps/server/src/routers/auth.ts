@@ -56,7 +56,7 @@ auth.get("/login/cb", async (req, res, next) => {
       return;
     }
 
-    res.redirect("/");
+    res.redirect(config.CLIENT_HOST);
   } catch (err: any) {
     next(err);
   }
@@ -92,5 +92,5 @@ auth.get("/install/:bot/cb", async (req, res, next) => {
     [botName]: installationId,
   };
 
-  res.redirect("/");
+  res.redirect(config.CLIENT_HOST);
 });

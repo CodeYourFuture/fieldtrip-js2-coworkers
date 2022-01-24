@@ -4,6 +4,8 @@ import { User } from "./user";
 import { Course } from "./course";
 import { router } from "src/utils/router";
 import { toaster } from "evergreen-ui";
+import { socket } from "src/socket";
+import { api } from "src/utils/api";
 
 export const Root = types
   .model({
@@ -13,7 +15,7 @@ export const Root = types
   .actions((self) => ({
     loadUser: flow(function* () {
       try {
-        const res = yield fetch("/api/user");
+        const res = yield api.user();
         if (res.status === 401) return;
         const user = yield res.json();
         self.user = user;
@@ -24,9 +26,8 @@ export const Root = types
     }),
     loadCourse: flow(function* (courseId) {
       try {
-        const course = yield fetch(`/api/courses/${courseId}`).then((res) =>
-          res.json()
-        );
+        const res = yield api.course(courseId);
+        const course = yield res.json();
         self.courses.put(course);
       } catch (err: any) {
         if (err.status === 404) {
