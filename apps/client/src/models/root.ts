@@ -42,8 +42,11 @@ export const Root = types
     // lazy loading i.e. load everything up front so I don't have to implement loading states :)
     init: flow(function* () {
       yield self.loadUser();
-      yield router.match("/courses/:id/*", ({ params }) => {
-        self.loadCourse(params.id);
+      yield router.match("/courses/:id/*", async ({ params }) => {
+        await self.loadCourse(params.id);
+        if (self.user) {
+          socket.connect();
+        }
       });
     }),
   }));

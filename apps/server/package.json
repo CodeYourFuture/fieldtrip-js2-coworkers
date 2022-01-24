@@ -16,7 +16,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "keygrip": "^1.1.0",
-    "probot": "^12.2.1"
+    "probot": "^12.2.1",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "@swc/core": "^1.2.133",

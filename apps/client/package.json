@@ -10,7 +10,8 @@
     "mobx-react-lite": "^3.2.3",
     "mobx-state-tree": "^5.1.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
     "@djgrant/components": "^0.4.1",
