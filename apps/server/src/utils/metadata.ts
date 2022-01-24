@@ -75,10 +75,8 @@ export class Metadata {
       body = (await this.octokit.issues.get(this.issue)).data.body || "";
     }
     if (data) {
-      body = body.replace(
-        regex,
-        () => `\n\n<!-- probot = ${JSON.stringify(data)} -->`
-      );
+      body = body.replace(regex, "");
+      body += `\n\n<!-- probot = ${JSON.stringify(data)} -->`;
     }
     return body;
   }
