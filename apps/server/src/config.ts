@@ -35,7 +35,7 @@ export const createBotConfig = (i: number) => ({
 });
 
 export const bots = {
-  root: createBotConfig(1),
+  cyf: createBotConfig(1),
   amber: createBotConfig(2),
   malachi: createBotConfig(3),
   uma: createBotConfig(4),

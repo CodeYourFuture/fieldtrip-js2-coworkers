@@ -11,10 +11,10 @@ app.use(mw.session);
 app.use(["/api/user", "/api/courses/:id"], mw.userSession);
 app.get("/api/courses/:id", [mw.botSessions, mw.meta]);
 
+app.use(mw.probot(bots.cyf));
 app.use(mw.probot(bots.amber));
 app.use(mw.probot(bots.malachi));
 app.use(mw.probot(bots.uma));
-app.use(mw.probot(bots.root));
 
 app.use("/api", routers.api);
 app.use("/auth", routers.auth);

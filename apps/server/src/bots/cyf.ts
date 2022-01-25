@@ -4,8 +4,8 @@ import { Course, Metadata, createProbot } from "../utils";
 import { course, repo } from "../course";
 import { bots } from "../config";
 
-export const instance = createProbot(bots.root);
-export const config = bots.root;
+export const instance = createProbot(bots.cyf);
+export const config = bots.cyf;
 
 export const app = (app: Probot) => {
   const triggerActions = Course.getTriggers(course);

@@ -9,7 +9,7 @@ export const auth = Router();
 
 auth.get("/login", async (_, res) => {
   const params = querystring.stringify({
-    client_id: config.bots.root.GITHUB_CLIENT_ID,
+    client_id: config.bots.cyf.GITHUB_CLIENT_ID,
     redirect_uri: `${config.HOST}/auth/login/cb`,
   });
   const url = `https://github.com/login/oauth/authorize?${params}`;
@@ -19,8 +19,8 @@ auth.get("/login", async (_, res) => {
 auth.get("/login/cb", async (req, res, next) => {
   try {
     const getUserAuth = createOAuthUserAuth({
-      clientId: config.bots.root.GITHUB_CLIENT_ID,
-      clientSecret: config.bots.root.GITHUB_CLIENT_SECRET,
+      clientId: config.bots.cyf.GITHUB_CLIENT_ID,
+      clientSecret: config.bots.cyf.GITHUB_CLIENT_SECRET,
       code: req.query.code as string,
     });
 
@@ -36,10 +36,10 @@ auth.get("/login/cb", async (req, res, next) => {
 
     try {
       const getAppAuth = createAppAuth({
-        appId: config.bots.root.APP_ID,
-        privateKey: config.bots.root.PRIVATE_KEY,
-        clientId: config.bots.root.GITHUB_CLIENT_ID,
-        clientSecret: config.bots.root.GITHUB_CLIENT_SECRET,
+        appId: config.bots.cyf.APP_ID,
+        privateKey: config.bots.cyf.PRIVATE_KEY,
+        clientId: config.bots.cyf.GITHUB_CLIENT_ID,
+        clientSecret: config.bots.cyf.GITHUB_CLIENT_SECRET,
       });
       const appAuth = await getAppAuth({ type: "app" });
       const appOctokit = new ProbotOctokit({ auth: appAuth });
@@ -51,7 +51,7 @@ auth.get("/login/cb", async (req, res, next) => {
         res.sendStatus(500);
         return;
       }
-      const installUrl = `https://github.com/apps/${config.bots.root.NAME}/installations/new`;
+      const installUrl = `https://github.com/apps/${config.bots.cyf.NAME}/installations/new`;
       res.redirect(installUrl);
       return;
     }
