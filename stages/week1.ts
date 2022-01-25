@@ -21,16 +21,23 @@ export const week1: CourseStage = {
       passed: on("issues.closed", (event) => event.issue.number === 1),
     },
     {
+      id: "add-uma",
+      label: "Add Uma Bot to your repo",
+      url: "/auth/install/uma",
+      passed: (context) => Object.keys(context.bots).includes("uma"),
+    },
+    {
+      id: "meet-uma",
+      label: "Meet Uma",
+      url: (context) =>
+        `https://github.com/${context.user.login}/${context.repo}/issues/2`,
+      passed: on("issues.closed", (event) => event.issue.number === 2),
+    },
+    {
       id: "add-amber",
       label: "Add Amber Bot to your repo",
       url: "/auth/install/amber",
       passed: (context) => Object.keys(context.bots).includes("amber"),
-    },
-    {
-      id: "add-uma",
-      label: "Add Uma Bot to your repo",
-      url: "/auth/install/amber",
-      passed: (context) => Object.keys(context.bots).includes("uma"),
     },
   ],
 };
