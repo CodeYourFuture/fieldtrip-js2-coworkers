@@ -9,15 +9,21 @@ export const config = bots.root;
 
 export const app = (app: Probot) => {
   const triggerActions = Course.getTriggers(course);
+
   for (const action of triggerActions) {
     const { event, handler } = action.passed;
+
     app.on(event as any, async (context) => {
-      if (context.payload.repository.name !== repo) return;
+      if (context.repo().repo !== repo) return;
 
       const passed = (handler as any)(context.payload);
       if (!passed) return;
 
-      const metadata = new Metadata(context.octokit, getMetaIssue(context));
+      const metadata = new Metadata(
+        context.octokit,
+        context.issue({ issue_number: 1 })
+      );
+
       const added = await metadata.add("triggers", action.id);
 
       if (added) {
@@ -31,11 +37,3 @@ export const app = (app: Probot) => {
     });
   }
 };
-
-function getMetaIssue(context: any) {
-  return {
-    owner: context.payload.repository.owner.login,
-    repo,
-    issue_number: 1,
-  };
-}

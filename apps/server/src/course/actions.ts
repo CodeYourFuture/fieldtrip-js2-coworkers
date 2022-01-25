@@ -1,16 +1,24 @@
-import { Event } from "../utils/event";
+import { Event, Metadata } from "../utils";
 
 export const actions = {
   malachi: {
-    setup: async (event: Event) => {
+    intro: async (event: Event) => {
+      await event.createIssue({
+        title: "Introducing your product owner",
+        body: "week1/malachi/intro.md",
+      });
+    },
+    setupBoard: async (event: Event) => {
       const project = await event.createProject({
         name: "Co-worker tools",
         body: "A collection of tools for co-workers",
       });
 
+      await event.meta.set("projectId", project.data.id);
+
       const columnNames = ["Todo", "In progress", "Blocked", "Done"];
 
-      const [todoCol] = await Promise.all(
+      const columns = await Promise.all(
         columnNames.map((columnName) =>
           event.createProjectColumn({
             projectId: project.data.id,
@@ -19,10 +27,13 @@ export const actions = {
         )
       );
 
-      await event.createIssue({
-        title: "Introducing your product owner",
-        body: "week1/malachi/intro.md",
-      });
+      await event.meta.set(
+        "columns",
+        columns.map((column) => ({
+          id: column.data.id,
+          name: column.data.name,
+        }))
+      );
 
       const task = await event.createIssue({
         title: "Set up repo",
@@ -30,8 +41,33 @@ export const actions = {
       });
 
       await event.createProjectCard({
-        columnId: todoCol.data.id,
+        columnId: columns[0].data.id,
         issueNumber: task.data.id,
+      });
+    },
+  },
+  uma: {
+    intro: async (event: Event) => {
+      await event.createIssue({
+        title: "Introducing your technical lead",
+        body: "week1/uma/intro.md",
+      });
+    },
+    createSetupPR: async (event: Event) => {
+      await event.createBranch("setup-repo");
+
+      await event.updateFile({
+        path: "README.md",
+        content: "#JS",
+        branch: "setup-repo",
+      });
+
+      await event.createPullRequest({
+        from: "setup-repo",
+        to: "main",
+        title: "Setup repo",
+        body: "Setup repo",
+        reviewers: [event.user.login],
       });
     },
   },

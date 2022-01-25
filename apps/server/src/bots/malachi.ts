@@ -10,7 +10,8 @@ export const app = (app: Probot) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       const event = new Event(context, repo);
       if (event.shouldBeIgnored) return;
-      await actions.malachi.setup(event);
+      await actions.malachi.intro(event);
+      await actions.malachi.setupBoard(event);
     }
   );
 };

@@ -4,7 +4,9 @@
  * Store metadata in issues and pull requests.
  */
 
+import type { Context } from "probot";
 import type { Octokit } from "@octokit/rest";
+import { SupportedEvents } from "./event";
 
 type Key = string | number | symbol;
 

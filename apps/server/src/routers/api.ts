@@ -58,6 +58,7 @@ api.post("/courses/:id", async (req, res, next) => {
   try {
     await user.octokit.request("POST /user/repos", {
       name: req.params.id,
+      auto_init: true,
     });
     res.sendStatus(201);
   } catch (err) {
