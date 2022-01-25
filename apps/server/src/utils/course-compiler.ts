@@ -3,6 +3,7 @@ import type {
   CourseConfig,
   CourseStage,
   CourseAction,
+  CourseMilestone,
   ActionTrigger,
   Locals,
 } from "../types";
@@ -33,7 +34,7 @@ class CourseMeta {
         ? stage.summary(this.locals)
         : stage.summary;
     const summary = await getMarkdown(summaryPath);
-    return { ...stage, summary, actions: [] };
+    return { ...stage, summary, actions: [], milestones: [] };
   };
 }
 
@@ -55,23 +56,40 @@ export class Course extends CourseMeta {
 
   compileStage = async (stage: CourseStage): Promise<CourseStage> => {
     const meta = await this.compileStageMeta(stage);
-    const actions = await Promise.all(stage.actions.map(this.compileAction));
-    return { ...meta, actions };
+    const actions = await Promise.all(
+      (stage.actions || []).map(this.compileAction)
+    );
+    const milestones = await Promise.all(
+      (stage.milestones || []).map(this.compileMiestone)
+    );
+    return { ...meta, actions, milestones };
+  };
+
+  compileMiestone = async (
+    milestone: CourseMilestone
+  ): Promise<CourseMilestone> => {
+    if (!Course.isAuthed(this.locals)) {
+      throw new Error("Cannot compile milestone. User is not authenticated");
+    }
+
+    let passed;
+    if (typeof milestone.passed === "function") {
+      passed = await milestone.passed(this.locals);
+    } else if (typeof milestone.passed === "boolean") {
+      passed = milestone.passed;
+    } else {
+      passed = this.wasTriggered(milestone.id);
+    }
+
+    return { ...milestone, passed };
   };
 
   compileAction = async (action: CourseAction): Promise<CourseAction> => {
     if (!Course.isAuthed(this.locals)) {
-      throw new Error("Cannot compile action. User is not authenticated");
+      throw new Error("Cannot compile milestone. User is not authenticated");
     }
 
-    let passed;
-    if (typeof action.passed === "function") {
-      passed = await action.passed(this.locals);
-    } else if (typeof action.passed === "boolean") {
-      passed = action.passed;
-    } else {
-      passed = this.wasTriggered(action.id);
-    }
+    const { passed } = await this.compileMiestone(action);
 
     let url =
       typeof action.url === "function"
@@ -96,16 +114,19 @@ export class Course extends CourseMeta {
   };
 
   private static isTrigger = (
-    action: CourseAction
-  ): action is CourseAction & { passed: ActionTrigger } => {
+    action: CourseMilestone
+  ): action is CourseMilestone & { passed: ActionTrigger } => {
     return typeof action.passed === "object";
   };
 
   static getTriggers = (
     course: CourseConfig
-  ): (CourseAction & { passed: ActionTrigger })[] => {
+  ): (CourseMilestone & { passed: ActionTrigger })[] => {
     return course.stages
-      .flatMap((stage) => stage.actions)
+      .flatMap((stage) => [
+        ...(stage.actions || []),
+        ...(stage.milestones || []),
+      ])
       .filter(Course.isTrigger);
   };
 }

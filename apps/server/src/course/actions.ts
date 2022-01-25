@@ -1,4 +1,4 @@
-import { Event, Metadata } from "../utils";
+import { Event } from "../utils";
 
 export const actions = {
   malachi: {
@@ -65,8 +65,8 @@ export const actions = {
       await event.createPullRequest({
         from: "setup-repo",
         to: "main",
-        title: "Setup repo",
-        body: "Setup repo",
+        title: "Set up repo",
+        body: "Set up repo",
         reviewers: [event.user.login],
       });
     },

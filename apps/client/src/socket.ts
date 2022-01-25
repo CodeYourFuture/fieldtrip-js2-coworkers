@@ -10,7 +10,7 @@ export const socket = io(SERVER_URL!, {
 });
 
 socket.on("trigger:passed", ({ repo, actionId }) => {
-  const action = store.courses.get(repo)?.getActionById(actionId);
+  const action = store.courses.get(repo)?.getPassableById(actionId);
   if (action) {
     action.setPassed(true);
     const originalTitle = document.title;

@@ -1,8 +1,10 @@
 import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
+import type { ICourseAction } from ".";
 import { types, flow } from "mobx-state-tree";
 import { getRoot } from "src/store";
 import { toaster } from "evergreen-ui";
 import { api } from "src/utils/api";
+import { CourseStage } from ".";
 
 export const Course = types
   .model({
@@ -57,42 +59,12 @@ export const Course = types
     }),
   }))
   .views((self) => ({
-    getActionById(id: string): ICourseAction | void {
-      const allActions = self.stages.flatMap(
-        (stage) => stage.actions
-      ) as ICourseAction[];
+    getPassableById(id: string): ICourseAction | void {
+      const allActions = self.stages.flatMap((stage) => [
+        ...stage.actions,
+        ...stage.milestones,
+      ]) as ICourseAction[];
       return allActions.find((action) => action.id === id);
-    },
-  }));
-
-export const CourseStage = types
-  .model({
-    key: types.string,
-    label: types.string,
-    summary: types.string,
-    actions: types.array(types.late(() => CourseAction)),
-  })
-  .views((self) => ({
-    get actionsWithUnlocked() {
-      let prevPassed = true;
-      return self.actions.map((item) => {
-        const action = { ...item, unlocked: prevPassed };
-        if (prevPassed) prevPassed = item.passed;
-        return action;
-      });
-    },
-  }));
-
-export const CourseAction = types
-  .model({
-    id: types.string,
-    label: types.string,
-    url: types.string,
-    passed: types.boolean,
-  })
-  .actions((self) => ({
-    setPassed: (passed: boolean) => {
-      self.passed = passed;
     },
   }));
 
@@ -101,8 +73,6 @@ export const CourseEnrollment = types.model({
 });
 
 export interface ICourse extends Instance<typeof Course> {}
-export interface ICourseStage extends Instance<typeof CourseStage> {}
-export interface ICourseAction extends Instance<typeof CourseAction> {}
 export interface ICourseEnrollment extends Instance<typeof CourseEnrollment> {}
 
 export interface ICourseSnapshotIn extends SnapshotIn<typeof Course> {}

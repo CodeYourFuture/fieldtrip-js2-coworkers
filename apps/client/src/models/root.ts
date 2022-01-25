@@ -34,6 +34,7 @@ export const Root = types
           router.replace("/404");
         } else {
           toaster.danger("Failed to load course");
+          console.log(err);
         }
       }
     }),

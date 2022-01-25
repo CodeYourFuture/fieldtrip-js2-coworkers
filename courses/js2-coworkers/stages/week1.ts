@@ -18,7 +18,10 @@ export const week1: CourseStage = {
       label: "Meet Malachi",
       url: (context) =>
         `https://github.com/${context.user.login}/${context.repo}/issues/1`,
-      passed: on("issues.closed", (event) => event.issue.number === 1),
+      passed: on(
+        "issues.closed",
+        (event) => event.issue.title === "Introducing your product owner"
+      ),
     },
     {
       id: "add-uma",
@@ -31,13 +34,26 @@ export const week1: CourseStage = {
       label: "Meet Uma",
       url: (context) =>
         `https://github.com/${context.user.login}/${context.repo}/issues/2`,
-      passed: on("issues.closed", (event) => event.issue.number === 2),
+      passed: on(
+        "issues.closed",
+        (event) => event.issue.title === "Introducing your technical lead"
+      ),
     },
     {
       id: "add-amber",
       label: "Add Amber Bot to your repo",
       url: "/auth/install/amber",
       passed: (context) => Object.keys(context.bots).includes("amber"),
+    },
+  ],
+  milestones: [
+    {
+      id: "merge-setup-pr",
+      label: "Merge setup PR",
+      passed: on(
+        "pull_request.closed",
+        (event) => event.pull_request.title === "Set up repo"
+      ),
     },
   ],
 };

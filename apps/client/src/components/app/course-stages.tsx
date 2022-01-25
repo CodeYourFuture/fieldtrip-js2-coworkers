@@ -1,5 +1,5 @@
 import { Markdown, Tab, Tabs, TabPage } from "src/components/library";
-import { CourseActions } from ".";
+import { CourseActions, CourseMilestones } from ".";
 import { observer } from "mobx-react-lite";
 import type { ICourseStage } from "src/models";
 
@@ -26,6 +26,9 @@ export const CourseStages = observer(({ stages, enrolled }: Props) => (
           <Markdown>{stage.summary}</Markdown>
           {stage.actions.length > 0 && enrolled && (
             <CourseActions stage={stage} />
+          )}
+          {stage.milestones.length > 0 && enrolled && (
+            <CourseMilestones stage={stage} />
           )}
         </div>
       </TabPage>
