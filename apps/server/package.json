@@ -14,8 +14,10 @@
     "@packages/courses": "1.0.0",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
+    "eventemitter3": "^4.0.7",
     "express": "^4.17.2",
     "keygrip": "^1.1.0",
+    "p-queue": "^6.6.2",
     "probot": "^12.2.1",
     "socket.io": "^4.4.1"
   },

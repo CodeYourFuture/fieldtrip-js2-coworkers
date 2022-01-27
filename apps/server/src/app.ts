@@ -9,7 +9,7 @@ app.use(mw.cors);
 app.use(mw.locals);
 app.use(mw.session);
 app.use(["/api/user", "/api/courses/:id"], mw.userSession);
-app.get("/api/courses/:id", [mw.botSessions, mw.meta]);
+app.use("/api/courses/:id", [mw.botSessions, mw.store]);
 
 app.use(mw.probot(bots.cyf));
 app.use(mw.probot(bots.amber));

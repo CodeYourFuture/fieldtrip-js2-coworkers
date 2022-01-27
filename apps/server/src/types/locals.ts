@@ -2,24 +2,26 @@ import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-meth
 import type { Probot } from "probot";
 import type { Octokit } from "@octokit/rest";
 import type { Bots } from "./";
+import { Store } from "../utils";
 
-export type Locals = {
-  repo: string;
-  user: User | null;
+export type Locals = UnauthenticatedLocals | AuthenticatedLocals;
+
+export type UnauthenticatedLocals = {
+  repo: string | null;
+  user: null;
   bots: {
-    [botName in keyof Bots]?: Bot;
+    [K in any]: never;
   };
-  enrollment: {
-    repoUrl: string;
-  } | null;
-  meta: {
-    triggers?: string[];
-  };
+  store: null;
 };
 
-export type AuthenticatedLocals = Locals & {
-  user: NonNullable<Locals["user"]>;
-  bots: Locals["bots"] & { root: Bot };
+export type AuthenticatedLocals = {
+  repo: string;
+  user: User;
+  bots: { cyf: Bot } & {
+    [botName in keyof Bots]?: Bot;
+  };
+  store: Store;
 };
 
 export type Bot = {

@@ -1,4 +1,4 @@
-import type { AuthenticatedLocals, Locals } from "./";
+import type { StoreData } from "./";
 
 export type CourseConfig = {
   id: string;
@@ -6,12 +6,15 @@ export type CourseConfig = {
   module: string;
   summary: string;
   stages: CourseStage[];
+  enrollment?: {
+    repoUrl: string;
+  };
 };
 
 export type CourseStage = {
   key: string;
   label: string;
-  summary: ((context: Locals) => string) | string;
+  summary: ((context: StoreData | null) => string) | string;
   actions?: CourseAction[];
   milestones?: CourseMilestone[];
 };
@@ -19,7 +22,7 @@ export type CourseStage = {
 export type CourseAction = {
   id: string;
   label: string;
-  url: ((context: AuthenticatedLocals) => string) | string;
+  url: ((context: StoreData) => string) | string;
   passed: Passed;
 };
 
@@ -37,4 +40,4 @@ export type ActionTrigger = {
 export type Passed =
   | boolean
   | ActionTrigger
-  | ((context: AuthenticatedLocals) => boolean);
+  | ((context: StoreData) => boolean);

@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { Course } from "../utils";
 import courses from "@packages/courses";
+import { Router } from "express";
+import { Course, Store } from "../utils";
 
 export const api = Router();
 
@@ -20,51 +20,51 @@ api.get("/courses", async (req, res) => {
   res.json(Object.keys(courses));
 });
 
-api.get("/courses/:id", async (req, res) => {
-  const { user } = req.locals;
+api.get("/courses/:id", async (req, res, next) => {
   const courseConfig = courses[req.params.id as keyof typeof courses];
-  const course = new Course(courseConfig, req.locals);
-
-  if (!courseConfig) {
-    return res.status(404).send("Course not found");
-  }
-
-  if (!user) {
-    const courseMeta = await course.compileMeta();
-    return res.send({ ...courseMeta, enrollment: null });
-  }
-
   try {
-    const repo = await user.octokit.request("GET /repos/{username}/{name}", {
-      username: user.login,
-      name: req.params.id,
-    });
-    req.locals.enrollment = {
-      repoUrl: repo.data.html_url,
-    };
+    const storeData = await req.locals.store?.getAll();
+    const course = new Course(courseConfig, storeData);
+    const compiledCourse = await course.compile();
+    res.send(compiledCourse);
   } catch (err) {
-    const courseMeta = await course.compileMeta();
-    return res.send({ ...courseMeta, enrollment: null });
+    console.log(err);
+    next(err);
   }
-
-  const courseEnrolled = await course.compile();
-
-  res.send({ ...courseEnrolled, enrollment: req.locals.enrollment });
 });
 
 api.post("/courses/:id", async (req, res, next) => {
   const { user } = req.locals;
+
   if (!user) return res.send(403);
+
+  const store = new Store({
+    repo: req.params.id,
+    owner: user.login,
+  });
+
   try {
-    await user.octokit.request("POST /user/repos", {
+    const { data: repo } = await user.octokit.request("POST /user/repos", {
       name: req.params.id,
       auto_init: true,
     });
+
+    await store.init({
+      courseId: req.params.id,
+      triggers: [],
+      installedBots: [],
+      enrollment: {
+        username: user.login,
+        repoUrl: repo.html_url,
+      },
+    });
+
     res.sendStatus(201);
   } catch (err) {
     // if this fails it could mean:
     // a) repo already exists
     // b) user uninstall the root app, but didn't revoke its oauth privileges
+    // c) the store did not initilise
     next(err);
   }
 });
@@ -77,6 +77,7 @@ api.delete("/courses/:id", async (req, res, next) => {
       username: user.login,
       name: req.params.id,
     });
+    await req.locals.store.set("enrollment", null);
     res.sendStatus(204);
   } catch (err) {
     next(err);

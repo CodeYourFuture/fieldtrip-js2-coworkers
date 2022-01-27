@@ -42,7 +42,6 @@ export const botSessions: RequestHandler = async (req, _, next) => {
           username: req.locals.user.login,
         }
       );
-      const fullyAuthedBot = await bot.instance.auth(res.data.id);
       req.session!.bots = {
         ...req.session!.bots,
         [botName]: res.data.id,

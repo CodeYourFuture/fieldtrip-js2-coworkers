@@ -1,5 +1,4 @@
 import type { Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree";
-import type { ICourseAction } from ".";
 import { types, flow } from "mobx-state-tree";
 import { getRoot } from "src/store";
 import { toaster } from "evergreen-ui";
@@ -57,15 +56,6 @@ export const Course = types
         toaster.danger("Failed to delete course");
       }
     }),
-  }))
-  .views((self) => ({
-    getPassableById(id: string): ICourseAction | void {
-      const allActions = self.stages.flatMap((stage) => [
-        ...stage.actions,
-        ...stage.milestones,
-      ]) as ICourseAction[];
-      return allActions.find((action) => action.id === id);
-    },
   }));
 
 export const CourseEnrollment = types.model({

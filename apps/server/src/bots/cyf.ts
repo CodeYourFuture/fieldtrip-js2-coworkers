@@ -1,6 +1,5 @@
 import { Probot } from "probot";
-import { emitter } from "../emitter";
-import { Course, Metadata, createProbot } from "../utils";
+import { Course, Store, createProbot } from "../utils";
 import { course, repo } from "../course";
 import { bots } from "../config";
 
@@ -16,24 +15,12 @@ export const app = (app: Probot) => {
     app.on(event as any, async (context) => {
       if (context.repo().repo !== repo) return;
 
+      const store = new Store(context.repo());
+
       const passed = (handler as any)(context.payload);
       if (!passed) return;
 
-      const metadata = new Metadata(
-        context.octokit,
-        context.issue({ issue_number: 1 })
-      );
-
-      const added = await metadata.add("triggers", action.id);
-
-      if (added) {
-        emitter.emit("clientUpdate", {
-          type: "trigger:passed",
-          username: context.payload.sender.login,
-          repo,
-          actionId: action.id,
-        });
-      }
+      await store.add("triggers", action.id);
     });
   }
 };

@@ -1,6 +1,6 @@
 import type { Context as BaseContext } from "probot";
 import { getMarkdown } from ".";
-import { Metadata } from "./metadata";
+import { Store } from "./store";
 
 export type EventContext = BaseContext<SupportedEvents>;
 
@@ -14,18 +14,18 @@ export class Event {
   context: EventContext;
   octokit: EventContext["octokit"];
   repo: string;
-  meta: Metadata;
+  meta: Store;
 
   constructor(context: EventContext, repo: string) {
     this.context = context;
     this.octokit = context.octokit;
     this.repo = repo;
-    this.meta = new Metadata(this.octokit, this.metaIssue);
     this.context.repo = <T>(o?: T): any => ({
       owner: this.user.login,
       repo: this.repo,
       ...o,
     });
+    this.meta = new Store(this.context.repo());
   }
 
   private async maybeMarkdown(body: string) {
@@ -52,14 +52,6 @@ export class Event {
       return this.context.repo().repo !== this.repo;
     }
     return Boolean(this.installedRepos?.find((r) => r.name === this.repo));
-  }
-
-  get metaIssue() {
-    return {
-      owner: this.user.login,
-      repo: this.repo,
-      issue_number: 1,
-    };
   }
 
   async createIssue(params: { title: string; body: string }) {

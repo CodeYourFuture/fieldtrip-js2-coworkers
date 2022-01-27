@@ -14,8 +14,6 @@ export const actions = {
         body: "A collection of tools for co-workers",
       });
 
-      await event.meta.set("projectId", project.data.id);
-
       const columnNames = ["Todo", "In progress", "Blocked", "Done"];
 
       const columns = await Promise.all(
@@ -27,8 +25,9 @@ export const actions = {
         )
       );
 
+      await event.meta.set("projectId", project.data.id);
       await event.meta.set(
-        "columns",
+        "projectColumns",
         columns.map((column) => ({
           id: column.data.id,
           name: column.data.name,

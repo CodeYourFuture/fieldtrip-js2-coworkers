@@ -43,7 +43,7 @@ auth.get("/login/cb", async (req, res, next) => {
       });
       const appAuth = await getAppAuth({ type: "app" });
       const appOctokit = new ProbotOctokit({ auth: appAuth });
-      const res = await appOctokit.apps.getUserInstallation({
+      await appOctokit.apps.getUserInstallation({
         username: user.login,
       });
     } catch (err: any) {
