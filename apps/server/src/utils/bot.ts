@@ -54,12 +54,17 @@ export class Bot {
     return Boolean(this.installedRepos?.find((r) => r.name === this.repo));
   }
 
-  async createIssue(params: { title: string; body: string }) {
+  async createIssue(params: {
+    title: string;
+    body: string;
+    assignee?: string;
+  }) {
     const { title, body } = params;
     const { data } = await this.octokit.issues.create(
       this.context.repo({
         title,
         body: await this.maybeMarkdown(body),
+        assignee: params.assignee,
       })
     );
     return data;
