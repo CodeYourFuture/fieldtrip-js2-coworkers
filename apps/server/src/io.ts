@@ -22,8 +22,9 @@ export const io = (server: HTTPServer) => {
   });
 
   io.on("connection", (socket) => {
-    // @ts-ignore
-    const username = socket.request.session.user.login;
+    // @ts-ignore @todo add socket.io types
+    const username = socket.request.session.user?.login;
+    if (!username) return;
     emitter.on(`${username}:store:updated`, async (data: StoreData) => {
       if (!data.courseId && !data.enrollment) return;
       const courseConfig = courses[data.courseId as any];
