@@ -65,7 +65,7 @@ export const week1Hooks: CourseHook[] = [
 
         const studentIssue = await malachi.createIssue({
           title: "Store member data for use in digital tools",
-          body: "./week1/tasks/set-up-repo.md",
+          body: "./week1/tasks/store-data.md",
         });
 
         const studentCard = await malachi.createProjectCard({
