@@ -17,6 +17,8 @@ socket.on("course:update", ({ courseId, course }) => {
   console.log(course);
 });
 
+// @todo find a way to observe changes
+// a bit tricky as mobx.reaction etc. do not work with applySnapshot
 function onStepPassed(label: string) {
   const originalTitle = document.title;
   document.title = `Step Completed!`;
