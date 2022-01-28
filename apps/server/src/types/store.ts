@@ -6,8 +6,9 @@ export type StoreData = {
     username: string;
     repoUrl: string;
   };
-  triggers: string[];
-  installedBots: (keyof Bots)[];
-  projectId?: string;
-  projectColumns?: { id: number; name: string }[];
+  passed: string[];
+  installedBots: Bots[];
+  // @todo provide generic function for creating course configs
+  // to type hook results
+  hooks: Record<string, any>;
 };

@@ -6,7 +6,6 @@
  * Requirements grew out of hand. Should be replaced with a DB.
  */
 
-import type { Octokit } from "@octokit/rest";
 import PQueue from "p-queue";
 import { promises as fs } from "fs";
 import { emitter } from "../emitter";
@@ -44,11 +43,16 @@ export class Store {
     return data[key];
   }
 
-  async set(key: keyof StoreData, value: any) {
+  async set(key: keyof StoreData | [keyof StoreData, string], value: any) {
     const data = await this.readData();
-    data[key] = value;
+    if (Array.isArray(key)) {
+      const [k1, k2] = key;
+      if (!data[k1]) (data as any)[k1] = {};
+      (data as any)[k1][k2] = value;
+    } else {
+      data[key] = value;
+    }
     await this.writeData(data);
-    return data[key];
   }
 
   async push(key: KeysMatching<StoreData, Array<any>>, value: any) {

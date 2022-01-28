@@ -3,11 +3,15 @@ import type {
   CourseStage,
   CourseAction,
   CourseMilestone,
-  ActionTrigger,
+  CourseHook,
+  EventAssertion,
   StoreData,
 } from "../types";
 import { getMarkdown } from ".";
 import { HOST } from "../config";
+
+const notNull = (value: any): value is NonNullable<typeof value> =>
+  value !== null && value !== undefined;
 
 export class Course {
   config: CourseConfig;
@@ -48,21 +52,25 @@ export class Course {
     return { ...stage, summary, actions: [], milestones: [] };
   };
 
-  private static isTrigger = (
-    action: CourseMilestone
-  ): action is CourseMilestone & { passed: ActionTrigger } => {
-    return typeof action.passed === "object";
+  private static toHook = (
+    hook: CourseHook | CourseMilestone | CourseAction
+  ): { id: string; hook: EventAssertion } | null => {
+    const hookHandler = "hook" in hook ? hook.hook : hook.passed;
+    if (typeof hookHandler === "object") {
+      return { id: hook.id, hook: hookHandler };
+    }
+    return null;
   };
 
-  static getTriggers = (
-    course: CourseConfig
-  ): (CourseMilestone & { passed: ActionTrigger })[] => {
+  static getHooks = (course: CourseConfig): CourseHook[] => {
     return course.stages
       .flatMap((stage) => [
         ...(stage.actions || []),
         ...(stage.milestones || []),
+        ...(stage.hooks || []),
       ])
-      .filter(CourseAuthed.isTrigger);
+      .map(CourseAuthed.toHook)
+      .filter(notNull);
   };
 }
 
@@ -92,7 +100,12 @@ class CourseAuthed extends Course {
   ): Promise<CourseMilestone> => {
     let passed;
     if (typeof milestone.passed === "function") {
-      passed = await milestone.passed(this.store);
+      try {
+        passed = await milestone.passed(this.store);
+      } catch {
+        // @todo handle null
+        passed = false;
+      }
     } else if (typeof milestone.passed === "boolean") {
       passed = milestone.passed;
     } else {
@@ -105,10 +118,17 @@ class CourseAuthed extends Course {
   compileAction = async (action: CourseAction): Promise<CourseAction> => {
     const { passed } = await this.compileMilestone(action);
 
-    let url =
-      typeof action.url === "function"
-        ? await action.url(this.store)
-        : action.url;
+    let url;
+    if (typeof action.url === "function") {
+      try {
+        url = await action.url(this.store);
+      } catch {
+        // @todo handle null
+        url = "";
+      }
+    } else {
+      url = action.url;
+    }
 
     if (url.startsWith("/auth")) {
       url = HOST + url;
@@ -118,6 +138,6 @@ class CourseAuthed extends Course {
   };
 
   private wasTriggered = (id: string) => {
-    return this.store.triggers.includes(id) || false;
+    return this.store.passed.includes(id) || false;
   };
 }

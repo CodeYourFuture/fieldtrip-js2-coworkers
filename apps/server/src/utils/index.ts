@@ -1,5 +1,5 @@
 export * from "./course-compiler";
-export * from "./event";
+export * from "./bot";
 export * from "./logger";
 export * from "./markdown";
 export * from "./store";

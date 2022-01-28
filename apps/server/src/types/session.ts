@@ -8,6 +8,6 @@ export type Session = {
     auth: OAuthAppAuthentication;
   };
   bots?: {
-    [botName in keyof Bots]?: number;
+    [botName in Bots]?: number;
   };
 };

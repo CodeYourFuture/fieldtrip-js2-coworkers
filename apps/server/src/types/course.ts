@@ -1,5 +1,7 @@
 import type { StoreData } from "./";
 
+// @todo break these into input and generated types
+
 export type CourseConfig = {
   id: string;
   title: string;
@@ -17,6 +19,7 @@ export type CourseStage = {
   summary: ((context: StoreData | null) => string) | string;
   actions?: CourseAction[];
   milestones?: CourseMilestone[];
+  hooks?: CourseHook[];
 };
 
 export type CourseAction = {
@@ -32,12 +35,25 @@ export type CourseMilestone = {
   passed: Passed;
 };
 
-export type ActionTrigger = {
-  event: string;
-  handler: (...args: any) => boolean;
+export type CourseHook = {
+  id: string;
+  hook: Hook;
 };
 
 export type Passed =
   | boolean
-  | ActionTrigger
+  | EventAssertion
   | ((context: StoreData) => boolean);
+
+export type Hook = {
+  event: string;
+  predicate: (...args: any) => boolean;
+  action: (...args: any) => Promise<unknown>;
+  botName: string;
+};
+
+export type EventAssertion = {
+  event: string;
+  predicate: (...args: any) => boolean;
+  botName: string;
+};

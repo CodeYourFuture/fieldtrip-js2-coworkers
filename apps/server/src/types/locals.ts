@@ -9,18 +9,14 @@ export type Locals = UnauthenticatedLocals | AuthenticatedLocals;
 export type UnauthenticatedLocals = {
   repo: string | null;
   user: null;
-  bots: {
-    [K in any]: never;
-  };
+  bots: Record<any, never>;
   store: null;
 };
 
 export type AuthenticatedLocals = {
   repo: string;
   user: User;
-  bots: { cyf: Bot } & {
-    [botName in keyof Bots]?: Bot;
-  };
+  bots: Record<Bots, Bot>;
   store: Store;
 };
 

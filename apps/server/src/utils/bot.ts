@@ -10,7 +10,7 @@ export type SupportedEvents =
   | "issues.opened"
   | "issues.closed";
 
-export class Event {
+export class Bot {
   context: EventContext;
   octokit: EventContext["octokit"];
   repo: string;
@@ -47,7 +47,7 @@ export class Event {
     return this.context.payload.sender;
   }
 
-  get shouldBeIgnored() {
+  get eventShouldBeIgnored() {
     if (this.context.repo) {
       return this.context.repo().repo !== this.repo;
     }
@@ -56,43 +56,47 @@ export class Event {
 
   async createIssue(params: { title: string; body: string }) {
     const { title, body } = params;
-    return this.octokit.issues.create(
+    const { data } = await this.octokit.issues.create(
       this.context.repo({
         title,
         body: await this.maybeMarkdown(body),
       })
     );
+    return data;
   }
 
   async createProject(params: { name: string; body: string }) {
     const { name, body } = params;
-    return this.octokit.projects.createForRepo(
+    const { data } = await this.octokit.projects.createForRepo(
       this.context.repo({
         name,
         body: await this.maybeMarkdown(body),
       })
     );
+    return data;
   }
 
-  createProjectColumn(params: { projectId: number; name: string }) {
+  async createProjectColumn(params: { projectId: number; name: string }) {
     const { projectId, name } = params;
-    return this.octokit.projects.createColumn(
+    const { data } = await this.octokit.projects.createColumn(
       this.context.repo({
         project_id: projectId,
         name,
       })
     );
+    return data;
   }
 
-  createProjectCard(params: { columnId: number; issueNumber: number }) {
+  async createProjectCard(params: { columnId: number; issueNumber: number }) {
     const { columnId, issueNumber } = params;
-    return this.octokit.projects.createCard(
+    const { data } = await this.octokit.projects.createCard(
       this.context.repo({
         column_id: columnId,
         content_id: issueNumber,
         content_type: "Issue",
       })
     );
+    return data;
   }
 
   async createPullRequest(params: {
@@ -117,7 +121,7 @@ export class Event {
         reviewers: params.reviewers,
       })
     );
-    return pull;
+    return pull.data;
   }
 
   async createBranch(branchName: string) {
