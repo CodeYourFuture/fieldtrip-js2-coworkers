@@ -10,7 +10,7 @@ export const week1Hooks: CourseHook[] = [
       (malachi) => {
         return malachi.createIssue({
           title: "Introducing your product owner",
-          body: "week1/malachi/intro.md",
+          body: "week1/issues/malachi-intro.md",
         });
       }
     ),
@@ -85,7 +85,7 @@ export const week1Hooks: CourseHook[] = [
       (uma) => {
         return uma.createIssue({
           title: "Introducing your technical lead",
-          body: "week1/uma/intro.md",
+          body: "week1/issues/uma-intro.md",
         });
       }
     ),
@@ -100,7 +100,13 @@ export const week1Hooks: CourseHook[] = [
 
         await uma.updateFile({
           path: "README.md",
-          content: "#JS",
+          content: "week1/prs/repo-setup/README.md",
+          branch: "setup-repo",
+        });
+
+        await uma.updateFile({
+          path: "members.js",
+          content: "week1/prs/repo-setup/members.js",
           branch: "setup-repo",
         });
 
@@ -108,7 +114,7 @@ export const week1Hooks: CourseHook[] = [
           from: "setup-repo",
           to: "main",
           title: "Set up repo",
-          body: "Set up repo",
+          body: "week1/prs/repo-setup/description.md",
           reviewers: [uma.user.login],
         });
       }

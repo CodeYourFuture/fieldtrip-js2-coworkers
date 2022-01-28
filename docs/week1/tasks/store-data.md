@@ -1,4 +1,4 @@
-### Problem
+### Problem
 
 At the moment people data within the organisation is not stored in a well-organised way and members of the organisation do not have access to it. This makes it hard for members to do things like:
 
