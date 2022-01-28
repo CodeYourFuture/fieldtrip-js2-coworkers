@@ -1,5 +1,6 @@
 import { Button, H4 } from "src/components/library";
 import { observer } from "mobx-react-lite";
+import * as config from "src/config";
 import type { FC } from "react";
 import type { ICourse } from "src/models";
 
@@ -31,7 +32,10 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
               size="sm"
               className="float-right bg-emerald-500"
               onClick={() => {
-                if (action.url.startsWith("http")) {
+                if (
+                  action.url.startsWith("http") &&
+                  !action.url.startsWith(config.SERVER_URL!)
+                ) {
                   window.open(action.url, "_blank");
                 } else {
                   window.location.href = action.url;
