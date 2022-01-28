@@ -144,6 +144,22 @@ export class Bot {
     );
   }
 
+  async createFile(params: {
+    path: string;
+    message?: string;
+    content: string;
+    branch: string;
+  }) {
+    return this.octokit.repos.createOrUpdateFileContents(
+      this.context.repo({
+        path: params.path,
+        message: params.message || `Create ${params.path}`,
+        content: Buffer.from(params.content).toString("base64"),
+        branch: params.branch,
+      })
+    );
+  }
+
   async updateFile(params: {
     path: string;
     message?: string;

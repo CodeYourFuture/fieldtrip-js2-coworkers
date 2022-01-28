@@ -104,7 +104,7 @@ export const week1Hooks: CourseHook[] = [
           branch: "setup-repo",
         });
 
-        await uma.updateFile({
+        await uma.createFile({
           path: "members.js",
           content: "week1/prs/repo-setup/members.js",
           branch: "setup-repo",
