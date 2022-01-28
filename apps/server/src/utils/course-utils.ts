@@ -2,6 +2,7 @@ import type {
   EmitterWebhookEventName,
   EmitterWebhookEvent,
 } from "@octokit/webhooks";
+import { StoreData } from "@packages/courses/types";
 
 export function on<EventName extends EmitterWebhookEventName>(
   event: EventName,
@@ -11,5 +12,6 @@ export function on<EventName extends EmitterWebhookEventName>(
 }
 
 export type HandlerFunction<TName extends EmitterWebhookEventName> = (
-  event: EmitterWebhookEvent<TName>["payload"]
+  event: EmitterWebhookEvent<TName>["payload"],
+  state: StoreData
 ) => boolean;

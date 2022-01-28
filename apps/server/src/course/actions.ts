@@ -14,7 +14,7 @@ export const actions = {
         body: "A collection of tools for co-workers",
       });
 
-      const columnNames = ["Todo", "In progress", "Blocked", "Done"];
+      const columnNames = ["Todo", "In Progress", "Blocked", "Done"];
 
       const columns = await Promise.all(
         columnNames.map((columnName) =>

@@ -16,8 +16,9 @@ export const app = (app: Probot) => {
       if (context.repo().repo !== repo) return;
 
       const store = new Store(context.repo());
+      const state = await store.getAll();
 
-      const passed = (handler as any)(context.payload);
+      const passed = (handler as any)(context.payload, state);
       if (!passed) return;
 
       await store.add("triggers", action.id);

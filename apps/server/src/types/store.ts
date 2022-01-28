@@ -9,5 +9,5 @@ export type StoreData = {
   triggers: string[];
   installedBots: (keyof Bots)[];
   projectId?: string;
-  projectColumns?: string[];
+  projectColumns?: { id: number; name: string }[];
 };
