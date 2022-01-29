@@ -45,6 +45,16 @@ export const week1: CourseStage = {
       url: "/auth/install/amber",
       passed: (state) => state.installedBots.includes("amber"),
     },
+    {
+      id: "meet-amber",
+      label: "Meet Amber",
+      url: (state) =>
+        `${state.enrollment.repoUrl}/issues/${state.hooks.amberIntro.number}`,
+      passed: on(
+        "issues.closed",
+        (event, state) => event.issue.number === state.hooks.amberIntro.number
+      ),
+    },
   ],
   milestones: [
     {
@@ -60,7 +70,7 @@ export const week1: CourseStage = {
       label: "Assign first issue to self",
       passed: on(
         "issues.assigned",
-        (event, state) => event.issue.id === state.hooks.storeDataCard.issue.id
+        (event, state) => event.issue.id === state.hooks.storeDataIssue.id
       ),
     },
     {
@@ -69,8 +79,8 @@ export const week1: CourseStage = {
       passed: on(
         "project_card.moved",
         (event, state) =>
-          event.project_card.id === state.hooks.storeDataCard.card.id &&
-          event.project_card.column_id === state.hooks.board.columns[1].id
+          event.project_card.id === state.hooks.storeDataCard.id &&
+          event.project_card.column_id === state.hooks.board.columns.doing.id
       ),
     },
   ],
