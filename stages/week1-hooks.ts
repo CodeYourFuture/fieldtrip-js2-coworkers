@@ -48,35 +48,46 @@ export const week1Hooks: CourseHook[] = [
     ),
   },
   {
-    id: "initialCards",
+    id: "setupCard",
     hook: on.malachi(
       ["installation_repositories.added", "installation.created"],
       () => true,
       async (malachi, state) => {
-        const umaIssue = await malachi.createIssue({
+        const issue = await malachi.createIssue({
           title: "Set up repo (Uma)",
           body: "./week1/tasks/set-up-repo.md",
         });
 
-        await malachi.createProjectCard({
+        const card = await malachi.createProjectCard({
           columnId: state.hooks.board.columns[0].id,
-          issueNumber: umaIssue.id,
+          issueId: issue.id,
         });
 
-        const studentIssue = await malachi.createIssue({
+        return { issue, card };
+      }
+    ),
+  },
+  {
+    id: "storeDataCard",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      async (malachi, state) => {
+        const issue = await malachi.createIssue({
           title: "Store member data for use in digital tools",
           body: "./week1/tasks/store-data.md",
         });
 
-        const studentCard = await malachi.createProjectCard({
+        const card = await malachi.createProjectCard({
           columnId: state.hooks.board.columns[0].id,
-          issueNumber: studentIssue.id,
+          issueId: issue.id,
         });
 
-        return { issue: studentIssue, card: studentCard };
+        return { issue: issue, card: card };
       }
     ),
   },
+
   {
     id: "umaIntro",
     hook: on.uma(
@@ -93,9 +104,12 @@ export const week1Hooks: CourseHook[] = [
   {
     id: "initialPr",
     hook: on.uma(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      async (uma) => {
+      "issues.opened",
+      // @todo can't use the ouput of initialCards because the event fires before the hook result is stored
+      // so either need to put all events in a queue so they are processed after the results of the previous step are stored
+      // or could emit the end of a hook to all other hooks so declare dependencies on each other
+      (event) => event.issue.title === "Set up repo (Uma)",
+      async (uma, state) => {
         await uma.createBranch("setup-repo");
 
         await uma.updateFile({
@@ -114,8 +128,8 @@ export const week1Hooks: CourseHook[] = [
           from: "setup-repo",
           to: "main",
           title: "Set up repo",
-          body: "week1/prs/repo-setup/description.md",
-          reviewers: [uma.user.login],
+          body: `week1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupCard.issue.number}`,
+          reviewers: [uma.username],
         });
       }
     ),

@@ -60,7 +60,7 @@ export const week1: CourseStage = {
       label: "Assign first issue to self",
       passed: on(
         "issues.assigned",
-        (event, state) => event.issue.id === state.hooks.initialCards.issue.id
+        (event, state) => event.issue.id === state.hooks.storeDataCard.issue.id
       ),
     },
     {
@@ -69,7 +69,7 @@ export const week1: CourseStage = {
       passed: on(
         "project_card.moved",
         (event, state) =>
-          event.project_card.id === state.hooks.initialCards.card.id &&
+          event.project_card.id === state.hooks.storeDataCard.card.id &&
           event.project_card.column_id === state.hooks.board.columns[1].id
       ),
     },

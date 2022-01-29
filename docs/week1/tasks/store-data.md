@@ -8,14 +8,14 @@ At the moment people data within the organisation is not stored in a well-organi
 
 ### User Story
 
-As a member of the organisation, I would like to see member data in one place.
+1. As a member of the organisation, I would like to see member data in one place.
 
-As a developer, I would like to be able to access member data in order to build digital tools.
+2. As a developer, I would like to be able to access member data in order to build digital tools.
 
 ### Acceptance Criteria
 
-- The data should be stored in a JavaScript array/object
-- The data should be store in a logical format
+1. The data should be stored in a JavaScript array/object
+2. The data should be store in a logical format
 
 ### Attachments
 
