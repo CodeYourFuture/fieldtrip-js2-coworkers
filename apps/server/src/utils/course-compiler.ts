@@ -7,7 +7,7 @@ import type {
   EventAssertion,
   StoreData,
 } from "../types";
-import { getMarkdown } from ".";
+import { getFile } from ".";
 import { HOST } from "../config";
 
 const notNull = (value: any): value is NonNullable<typeof value> =>
@@ -35,7 +35,7 @@ export class Course {
   }
 
   compileMeta = async (): Promise<CourseConfig> => {
-    const summary = await getMarkdown(this.config.summary);
+    const summary = await getFile(this.config.summary);
     const stages = await Promise.all(
       this.config.stages.map(this.compileStageMeta)
     );
@@ -48,7 +48,7 @@ export class Course {
       typeof stage.summary === "function"
         ? stage.summary(this.store)
         : stage.summary;
-    const summary = await getMarkdown(summaryPath);
+    const summary = await getFile(summaryPath);
     return { ...stage, summary, actions: [], milestones: [] };
   };
 

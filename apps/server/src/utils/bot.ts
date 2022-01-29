@@ -1,37 +1,70 @@
 import type { Context as BaseContext } from "probot";
-import { getMarkdown } from ".";
+import { getFile } from ".";
 import { Store } from "./store";
 
-export type EventContext = BaseContext<SupportedEvents>;
+export type EventContext =
+  | BaseContext<InstallationEvents>
+  | BaseContext<RepoEvents>;
 
-export type SupportedEvents =
+type InstallationEvents =
   | "installation.created"
-  | "installation_repositories.added"
-  | "issues.opened"
-  | "issues.closed";
+  | "installation_repositories.added";
+
+type RepoEvents = "issues.opened" | "issues.closed";
 
 export class Bot {
   context: EventContext;
   octokit: EventContext["octokit"];
-  repo: string;
-  meta: Store;
+  state: Store;
+  repoName: string;
 
   constructor(context: EventContext, repo: string) {
     this.context = context;
     this.octokit = context.octokit;
-    this.repo = repo;
-    this.context.repo = <T>(o?: T): any => ({
-      owner: this.user.login,
-      repo: this.repo,
-      ...o,
-    });
-    this.meta = new Store(this.context.repo());
+    this.repoName = repo;
+    this.state = new Store(this.repo());
+  }
+
+  // Unfortunately, can't add a Type guard here as it's too complex for the compiler
+  private isInstallationEvent() {
+    return (
+      this.context.name === "installation" ||
+      this.context.name === "installation_repositories"
+    );
+  }
+
+  get eventShouldBeIgnored() {
+    if (this.isInstallationEvent()) {
+      return (
+        this.installedRepos?.filter((r) => r.name === this.repoName).length ===
+        0
+      );
+    }
+    return this.context.repo().repo !== this.repoName;
+  }
+
+  repo<T>(o?: T): any {
+    if (this.isInstallationEvent()) {
+      return {
+        owner: this.context.payload.sender.login,
+        repo: this.repoName,
+        ...o,
+      };
+    }
+    return this.context.repo(o);
   }
 
   private async maybeMarkdown(body: string) {
-    return body.endsWith(".md")
-      ? getMarkdown(body, { user: `@${this.user.login}` })
-      : body;
+    if (body.split("?")[0]?.endsWith(".md")) {
+      const props = { user: `@${this.username}` };
+      return getFile(body, props);
+    }
+    return body;
+  }
+
+  private async fileToBase64(path: string) {
+    const content = await getFile(path);
+    return Buffer.from(content).toString("base64");
   }
 
   get installedRepos() {
@@ -43,15 +76,8 @@ export class Bot {
     }
   }
 
-  get user() {
-    return this.context.payload.sender;
-  }
-
-  get eventShouldBeIgnored() {
-    if (this.context.repo) {
-      return this.context.repo().repo !== this.repo;
-    }
-    return Boolean(this.installedRepos?.find((r) => r.name === this.repo));
+  get username() {
+    return this.repo().owner;
   }
 
   async createIssue(params: {
@@ -61,7 +87,7 @@ export class Bot {
   }) {
     const { title, body } = params;
     const { data } = await this.octokit.issues.create(
-      this.context.repo({
+      this.repo({
         title,
         body: await this.maybeMarkdown(body),
         assignee: params.assignee,
@@ -73,7 +99,7 @@ export class Bot {
   async createProject(params: { name: string; body: string }) {
     const { name, body } = params;
     const { data } = await this.octokit.projects.createForRepo(
-      this.context.repo({
+      this.repo({
         name,
         body: await this.maybeMarkdown(body),
       })
@@ -84,7 +110,7 @@ export class Bot {
   async createProjectColumn(params: { projectId: number; name: string }) {
     const { projectId, name } = params;
     const { data } = await this.octokit.projects.createColumn(
-      this.context.repo({
+      this.repo({
         project_id: projectId,
         name,
       })
@@ -92,12 +118,12 @@ export class Bot {
     return data;
   }
 
-  async createProjectCard(params: { columnId: number; issueNumber: number }) {
-    const { columnId, issueNumber } = params;
+  async createProjectCard(params: { columnId: number; issueId: number }) {
+    const { columnId, issueId } = params;
     const { data } = await this.octokit.projects.createCard(
-      this.context.repo({
+      this.repo({
         column_id: columnId,
-        content_id: issueNumber,
+        content_id: issueId,
         content_type: "Issue",
       })
     );
@@ -112,16 +138,16 @@ export class Bot {
     reviewers?: string[];
   }) {
     const pull = await this.octokit.pulls.create(
-      this.context.repo({
+      this.repo({
         title: params.title,
-        body: params.body,
+        body: await this.maybeMarkdown(params.body),
         reviewers: params.reviewers,
         head: params.from,
         base: params.to,
       })
     );
     await this.octokit.pulls.requestReviewers(
-      this.context.repo({
+      this.repo({
         pull_number: pull.data.number,
         reviewers: params.reviewers,
       })
@@ -131,13 +157,13 @@ export class Bot {
 
   async createBranch(branchName: string) {
     const ref = await this.octokit.git.getRef(
-      this.context.repo({
+      this.repo({
         ref: "heads/main",
       })
     );
 
     return await this.octokit.git.createRef(
-      this.context.repo({
+      this.repo({
         ref: `refs/heads/${branchName}`,
         sha: ref.data.object.sha,
       })
@@ -151,10 +177,10 @@ export class Bot {
     branch: string;
   }) {
     return this.octokit.repos.createOrUpdateFileContents(
-      this.context.repo({
+      this.repo({
         path: params.path,
         message: params.message || `Create ${params.path}`,
-        content: Buffer.from(params.content).toString("base64"),
+        content: await this.fileToBase64(params.content),
         branch: params.branch,
       })
     );
@@ -167,16 +193,16 @@ export class Bot {
     branch: string;
   }) {
     const currentFile = await this.octokit.repos.getContent(
-      this.context.repo({
+      this.repo({
         path: params.path,
       })
     );
 
     return this.octokit.repos.createOrUpdateFileContents(
-      this.context.repo({
+      this.repo({
         path: params.path,
         message: params.message || `Update ${params.path}`,
-        content: Buffer.from(params.content).toString("base64"),
+        content: await this.fileToBase64(params.content),
         branch: params.branch,
         sha: Array.isArray(currentFile.data)
           ? currentFile.data[0].sha

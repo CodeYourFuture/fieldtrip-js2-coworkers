@@ -15,32 +15,45 @@ const hooksByBotName = hooks.reduce((acc, hook) => {
   return acc;
 }, {} as Record<string, ReturnType<typeof Course.getHooks>>);
 
+// @todo this should probably be refactored into a proper queue
+// so that it can be guaranteed that steps will be excecuted in their declared order
+const q = new PQueue({ concurrency: 1 });
+
 const createBot = (botName: Bots) => {
   const botHooks = hooksByBotName[botName];
-  const q = new PQueue({ concurrency: 1 });
 
   const app = (app: Probot) => {
     if (!botHooks) return;
 
-    for (const hook of botHooks) {
+    for (let i = 0; i < botHooks.length; i++) {
+      const hook = botHooks[i];
       const { event, predicate, action } = hook.hook;
 
       app.on(event as any, async (context) => {
         const bot = new Bot(context, repo);
         if (bot.eventShouldBeIgnored) return;
-        const store = new Store(context.repo());
+        const store = new Store(bot.repo());
         const state = await store.getAll();
 
-        const passed = predicate(context.payload, state, bot);
+        let passed;
+        try {
+          passed = predicate(context.payload, state, bot);
+        } catch {
+          passed = false;
+        }
         if (!passed) return;
 
         if (!action) {
           await store.add("passed", hook.id);
         } else {
-          await q.add(async () => {
-            const result = await action(bot, await store.getAll());
-            await store.set(["hooks", hook.id], result);
-          });
+          await q.add(
+            async () => {
+              console.log(`Executing ${hook.id}`);
+              const result = await action(bot, await store.getAll());
+              await store.set(["hooks", hook.id], result);
+            },
+            { priority: botHooks.length - i }
+          );
         }
       });
     }
