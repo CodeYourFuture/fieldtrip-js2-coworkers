@@ -38,7 +38,8 @@ const createBot = (botName: Bots) => {
         let passed;
         try {
           passed = predicate(context.payload, state, bot);
-        } catch {
+        } catch (err) {
+          console.log("Caught error in predicate:", err);
           passed = false;
         }
         if (!passed) return;

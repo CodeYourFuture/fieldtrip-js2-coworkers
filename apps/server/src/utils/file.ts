@@ -9,10 +9,8 @@ export async function getFile(
   const [relativeFilePath, query] = relativePath.split("?");
   const queryProps = qs.parse(query);
 
-  const allProps = Object.entries({ ...props, ...queryProps }).reduce(
-    (acc, [key, value]) => (value ? { ...acc, [key]: value } : acc),
-    {}
-  );
+  const allProps = { ...props, ...queryProps } as typeof queryProps &
+    typeof props;
 
   const absPath = path.resolve(
     process.cwd(),

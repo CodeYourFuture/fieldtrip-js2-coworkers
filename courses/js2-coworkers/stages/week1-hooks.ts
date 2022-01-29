@@ -26,56 +26,27 @@ export const week1Hooks: CourseHook[] = [
           body: "A collection of tools for co-workers",
         });
 
-        const columnNames = [
-          "Todo",
-          "In Progress",
-          "Review/QA",
-          "Blocked",
-          "Done",
-        ];
+        const columnNames = {
+          todo: "Todo",
+          doing: "In Progress",
+          review: "Review/QA",
+          blocked: "Blocked",
+          done: "Done",
+        };
 
-        const columns = await Promise.all(
-          columnNames.map((columnName) =>
-            malachi.createProjectColumn({
-              projectId: project.id,
-              name: columnName,
-            })
-          )
-        );
+        const columns = {} as { [key: string]: any };
+
+        for (const columnName of Object.values(columnNames)) {
+          columns[columnName] = await malachi.createProjectColumn({
+            projectId: project.id,
+            name: columnName,
+          });
+        }
 
         return {
           id: project.id,
-          columns: columns.map((column) => ({
-            id: column.id,
-            name: column.name,
-          })),
+          columns,
         };
-      }
-    ),
-  },
-  {
-    id: "setupIssue",
-    hook: on.malachi(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      async (malachi) => {
-        return malachi.createIssue({
-          title: "Set up repo (Uma)",
-          body: "./week1/tasks/set-up-repo.md",
-        });
-      }
-    ),
-  },
-  {
-    id: "setupCard",
-    hook: on.malachi(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.setupIssue.id,
-      async (malachi, state) => {
-        return malachi.createProjectCard({
-          columnId: state.hooks.board.columns[0].id,
-          issueId: state.hooks.setupIssue.issue.id,
-        });
       }
     ),
   },
@@ -100,8 +71,76 @@ export const week1Hooks: CourseHook[] = [
       (malachi, state) => {
         const issue = state.hooks.storeDataIssue;
         return malachi.createProjectCard({
-          columnId: state.hooks.board.columns[0].id,
+          columnId: state.hooks.board.columns.todo.id,
           issueId: issue.id,
+          position: "top",
+        });
+      }
+    ),
+  },
+  {
+    id: "listCommandIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (malachi) => {
+        return malachi.createIssue({
+          title: "Create CLI command to list members",
+          body: "./week1/tasks/list-command.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "listCommandCard",
+    hook: on.malachi(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.listCommandIssue.id,
+      (malachi, state) => {
+        const issue = state.hooks.listCommandIssue;
+        return malachi.createProjectCard({
+          columnId: state.hooks.board.columns.todo.id,
+          issueId: issue.id,
+          position: "bottom",
+        });
+      }
+    ),
+  },
+  {
+    id: "storeDataCardComment",
+    hook: on.uma(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      async (uma, state) => {
+        await uma.createIssueComment({
+          issueNumber: state.hooks.storeDataIssue.number,
+          body: "./week1/tasks/store-data-comment.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "setupIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      async (malachi) => {
+        return malachi.createIssue({
+          title: "Set up repo (Uma)",
+          body: "./week1/tasks/set-up-repo.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "setupCard",
+    hook: on.malachi(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.setupIssue.id,
+      async (malachi, state) => {
+        return malachi.createProjectCard({
+          columnId: state.hooks.board.columns.todo.id,
+          issueId: state.hooks.setupIssue.id,
         });
       }
     ),
@@ -156,21 +195,65 @@ export const week1Hooks: CourseHook[] = [
           from: "setup-repo",
           to: "main",
           title: "Set up repo",
-          body: `week1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupCard.issue.number}`,
+          body: `week1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue.number}`,
           reviewers: [uma.username],
         });
       }
     ),
   },
   {
-    id: "storeDataCardComment",
+    id: "cliPr",
+    hook: on(
+      "project_card.moved",
+      (event, state) => {
+        const cols = state.hooks.board.columns;
+        const isDataCard =
+          event.project_card.id === state.hooks.storeDataCard.id;
+        const devDone = [cols.review.id, cols.done.id].includes(
+          event.project_card.column_id
+        );
+        return isDataCard && devDone;
+      },
+      async (uma, state) => {
+        await uma.createBranch("setup-cli");
+
+        await uma.updateFile({
+          path: "README.md",
+          content: "week1/prs/cli-setup/README.md",
+          branch: "setup-cli",
+        });
+
+        await uma.createFile({
+          path: "members.js",
+          content: "week1/prs/cli-setup/cli.js",
+          branch: "setup-cli",
+        });
+
+        await uma.createFile({
+          path: "package.json",
+          content: "week1/prs/cli-setup/package.json",
+          branch: "setup-cli",
+        });
+
+        return uma.createPullRequest({
+          from: "setup-cli",
+          to: "main",
+          title: "Set up repo",
+          body: `week1/prs/cli-setup/description.md?issueNumber=${state.hooks.listCommandIssue.number}`,
+          reviewers: [uma.username],
+        });
+      }
+    ),
+  },
+  {
+    id: "listCommandCardComment",
     hook: on.uma(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      "pull_request.opened",
+      (event, state) => event.pull_request.id === state.hooks.cliPr.id,
       async (uma, state) => {
         await uma.createIssueComment({
           issueNumber: state.hooks.storeDataIssue.number,
-          body: "./week1/tasks/store-data-comment.md",
+          body: `./week1/tasks/list-command-comment.md?prNumber=${state.hooks.cliPr.number}`,
         });
       }
     ),
