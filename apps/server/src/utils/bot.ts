@@ -96,6 +96,17 @@ export class Bot {
     return data;
   }
 
+  async createIssueComment(params: { issueNumber: number; body: string }) {
+    const { issueNumber, body } = params;
+    const { data } = await this.octokit.issues.createComment(
+      this.repo({
+        issue_number: issueNumber,
+        body: await this.maybeMarkdown(body),
+      })
+    );
+    return data;
+  }
+
   async createProject(params: { name: string; body: string }) {
     const { name, body } = params;
     const { data } = await this.octokit.projects.createForRepo(

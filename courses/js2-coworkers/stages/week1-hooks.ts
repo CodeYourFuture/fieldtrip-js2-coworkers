@@ -48,42 +48,55 @@ export const week1Hooks: CourseHook[] = [
     ),
   },
   {
-    id: "setupCard",
+    id: "setupIssue",
     hook: on.malachi(
       ["installation_repositories.added", "installation.created"],
       () => true,
-      async (malachi, state) => {
-        const issue = await malachi.createIssue({
+      async (malachi) => {
+        return malachi.createIssue({
           title: "Set up repo (Uma)",
           body: "./week1/tasks/set-up-repo.md",
         });
-
-        const card = await malachi.createProjectCard({
+      }
+    ),
+  },
+  {
+    id: "setupCard",
+    hook: on.malachi(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.setupIssue.id,
+      async (malachi, state) => {
+        return malachi.createProjectCard({
           columnId: state.hooks.board.columns[0].id,
-          issueId: issue.id,
+          issueId: state.hooks.setupIssue.issue.id,
         });
-
-        return { issue, card };
+      }
+    ),
+  },
+  {
+    id: "storeDataIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (malachi) => {
+        return malachi.createIssue({
+          title: "Store member data for use in digital tools",
+          body: "./week1/tasks/store-data.md",
+        });
       }
     ),
   },
   {
     id: "storeDataCard",
     hook: on.malachi(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      async (malachi, state) => {
-        const issue = await malachi.createIssue({
-          title: "Store member data for use in digital tools",
-          body: "./week1/tasks/store-data.md",
-        });
-
-        const card = await malachi.createProjectCard({
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      (malachi, state) => {
+        const issue = state.hooks.storeDataIssue;
+        return malachi.createProjectCard({
           columnId: state.hooks.board.columns[0].id,
           issueId: issue.id,
         });
-
-        return { issue: issue, card: card };
       }
     ),
   },
@@ -117,10 +130,7 @@ export const week1Hooks: CourseHook[] = [
     id: "initialPr",
     hook: on.uma(
       "issues.opened",
-      // @todo can't use the ouput of initialCards because the event fires before the hook result is stored
-      // so either need to put all events in a queue so they are processed after the results of the previous step are stored
-      // or could emit the end of a hook to all other hooks so declare dependencies on each other
-      (event) => event.issue.title === "Set up repo (Uma)",
+      (event, state) => event.issue.id === state.hooks.setupIssue.id,
       async (uma, state) => {
         await uma.createBranch("setup-repo");
 
@@ -142,6 +152,19 @@ export const week1Hooks: CourseHook[] = [
           title: "Set up repo",
           body: `week1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupCard.issue.number}`,
           reviewers: [uma.username],
+        });
+      }
+    ),
+  },
+  {
+    id: "storeDataCardComment",
+    hook: on.uma(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      async (uma, state) => {
+        await uma.createIssueComment({
+          issueNumber: state.hooks.storeDataIssue.number,
+          body: "./week1/tasks/store-data-comment.md",
         });
       }
     ),
