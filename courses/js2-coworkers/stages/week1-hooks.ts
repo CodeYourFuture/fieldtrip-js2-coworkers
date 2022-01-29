@@ -26,7 +26,13 @@ export const week1Hooks: CourseHook[] = [
           body: "A collection of tools for co-workers",
         });
 
-        const columnNames = ["Todo", "In Progress", "Blocked", "Done"];
+        const columnNames = [
+          "Todo",
+          "In Progress",
+          "Review/QA",
+          "Blocked",
+          "Done",
+        ];
 
         const columns = await Promise.all(
           columnNames.map((columnName) =>

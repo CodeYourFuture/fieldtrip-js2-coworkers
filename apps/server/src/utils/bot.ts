@@ -56,7 +56,11 @@ export class Bot {
 
   private async maybeMarkdown(body: string) {
     if (body.split("?")[0]?.endsWith(".md")) {
-      const props = { user: `@${this.username}` };
+      const props = {
+        user: `@${this.username}`,
+        username: this.username,
+        repo: this.repoName,
+      };
       return getFile(body, props);
     }
     return body;
