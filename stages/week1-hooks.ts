@@ -87,7 +87,6 @@ export const week1Hooks: CourseHook[] = [
       }
     ),
   },
-
   {
     id: "umaIntro",
     hook: on.uma(
@@ -97,6 +96,19 @@ export const week1Hooks: CourseHook[] = [
         return uma.createIssue({
           title: "Introducing your technical lead",
           body: "week1/issues/uma-intro.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "amberIntro",
+    hook: on.amber(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (amber) => {
+        return amber.createIssue({
+          title: "Introducing your scrum master",
+          body: "week1/issues/amber-intro.md",
         });
       }
     ),
