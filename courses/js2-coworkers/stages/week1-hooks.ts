@@ -107,6 +107,19 @@ export const week1Hooks: CourseHook[] = [
     ),
   },
   {
+    id: "storeDataCardComment",
+    hook: on.uma(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      async (uma, state) => {
+        await uma.createIssueComment({
+          issueNumber: state.hooks.storeDataIssue.number,
+          body: "./week1/tasks/store-data-comment.md",
+        });
+      }
+    ),
+  },
+  {
     id: "umaIntro",
     hook: on.uma(
       ["installation_repositories.added", "installation.created"],
@@ -163,14 +176,85 @@ export const week1Hooks: CourseHook[] = [
     ),
   },
   {
-    id: "storeDataCardComment",
-    hook: on.uma(
+    id: "listCommandIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (malachi) => {
+        return malachi.createIssue({
+          title: "Create CLI command to list members",
+          body: "./week1/tasks/list-command.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "listCommandCard",
+    hook: on.malachi(
       "issues.opened",
-      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      (event, state) => event.issue.id === state.hooks.listCommandIssue.id,
+      (malachi, state) => {
+        const issue = state.hooks.listCommandIssue;
+        return malachi.createProjectCard({
+          columnId: state.hooks.board.columns[0].id,
+          issueId: issue.id,
+        });
+      }
+    ),
+  },
+  {
+    id: "cliPr",
+    hook: on.uma(
+      "project_card.moved",
+      (event, state) => {
+        const cols = state.hooks.storeDataCard.columns;
+        const isDataCard =
+          event.project_card.id === state.hooks.storeDataCard.id;
+        const isAlmostDone = [cols[2].id, cols[4]].includes(
+          event.project_card.column_id
+        );
+        return isDataCard && isAlmostDone;
+      },
+      async (uma, state) => {
+        await uma.createBranch("setup-cli");
+
+        await uma.updateFile({
+          path: "README.md",
+          content: "week1/prs/cli-setup/README.md",
+          branch: "setup-cli",
+        });
+
+        await uma.createFile({
+          path: "members.js",
+          content: "week1/prs/cli-setup/cli.js",
+          branch: "setup-cli",
+        });
+
+        await uma.createFile({
+          path: "package.json",
+          content: "week1/prs/cli-setup/package.json",
+          branch: "setup-cli",
+        });
+
+        return uma.createPullRequest({
+          from: "setup-cli",
+          to: "main",
+          title: "Set up repo",
+          body: `week1/prs/cli-setup/description.md?issueNumber=${state.hooks.listCommandIssue.issue.number}`,
+          reviewers: [uma.username],
+        });
+      }
+    ),
+  },
+  {
+    id: "listCommandCardComment",
+    hook: on.uma(
+      "pull_request.opened",
+      (event, state) => event.pull_request.id === state.hooks.cliPr.id,
       async (uma, state) => {
         await uma.createIssueComment({
           issueNumber: state.hooks.storeDataIssue.number,
-          body: "./week1/tasks/store-data-comment.md",
+          body: `./week1/tasks/list-command-comment.md?prNumber=${state.hooks.cliPr.number}`,
         });
       }
     ),

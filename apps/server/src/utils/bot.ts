@@ -54,20 +54,20 @@ export class Bot {
     return this.context.repo(o);
   }
 
-  private async maybeMarkdown(body: string) {
-    if (body.split("?")[0]?.endsWith(".md")) {
+  private async maybeMarkdown(pathOrBody: string) {
+    if (pathOrBody.split("?")[0]?.endsWith(".md")) {
       const props = {
         user: `@${this.username}`,
         username: this.username,
         repo: this.repoName,
       };
-      return getFile(body, props);
+      return getFile(pathOrBody, props);
     }
-    return body;
+    return pathOrBody;
   }
 
-  private async fileToBase64(path: string) {
-    const content = await getFile(path);
+  private async fileToBase64(path: string, props?: Record<string, string>) {
+    const content = await getFile(path, props);
     return Buffer.from(content).toString("base64");
   }
 
@@ -217,7 +217,10 @@ export class Bot {
       this.repo({
         path: params.path,
         message: params.message || `Update ${params.path}`,
-        content: await this.fileToBase64(params.content),
+        content: await this.fileToBase64(params.content, {
+          // @ts-ignore
+          content: currentFile.data.content,
+        }),
         branch: params.branch,
         sha: Array.isArray(currentFile.data)
           ? currentFile.data[0].sha
