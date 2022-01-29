@@ -18,6 +18,6 @@ Every week we'll take some of the user stories Malachi has created and commit to
 
 2. Find the highest priority task in the project board (we place the most important tasks at the top), and assign it your self.
 
-3. Once you have assigned the card to yourself, drag it to the In Progress column.
+3. Once you have assigned the card to yourself, drag it to the _In Progress_ column.
 
 4. Read the description carefully and use Uma's advice in the comment to complete the task.
