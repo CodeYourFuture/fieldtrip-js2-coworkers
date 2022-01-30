@@ -2,9 +2,10 @@ import type {
   EmitterWebhookEventName,
   EmitterWebhookEvent,
 } from "@octokit/webhooks";
+import type { PullRequest, Issue } from "@octokit/webhooks-types";
+import type { Hook, EventAssertion } from "../types/course";
 import { StoreData } from "@packages/courses/types";
 import { Github } from "../services";
-import type { Hook, EventAssertion } from "../types/course";
 
 export type Predicate<E extends EmitterWebhookEventName> = (
   event: EmitterWebhookEvent<E>["payload"],
@@ -37,3 +38,8 @@ export function on<E extends EmitterWebhookEventName>(
 on.amber = on.bind("amber");
 on.malachi = on.bind("malachi");
 on.uma = on.bind("uma");
+
+export const prRefsIssue = (pr: PullRequest, issue: Issue) => {
+  const links = [`#${issue.number}`, issue.html_url];
+  return links.some((substr) => substr.includes(pr.body || ""));
+};

@@ -1,10 +1,12 @@
 import { Probot } from "probot";
 import PQueue from "p-queue";
 import courses from "@packages/courses";
-import { Course, Github, Store } from "../services";
+import { Course } from "../services/course";
+import { Github } from "../services/github";
+import { Store } from "../services/store";
 import { createProbot } from "../utils";
-import type { Bots } from "@packages/courses/types";
 import { bots } from "../config";
+import type { Bots } from "@packages/courses/types";
 
 // @todo get course using event payload repo
 const course = courses.js2;
@@ -31,18 +33,17 @@ export const createBot = (botName: Bots) => {
       const { event, predicate, action } = hook.hook;
 
       app.on(event as any, async (context) => {
-        const bot = new Github(context, course.repo);
-        if (bot.eventShouldBeIgnored) return;
-        const store = new Store(bot.repo());
+        const github = new Github(context, course.repo);
+        if (github.eventShouldBeIgnored) return;
+        const store = new Store(github.repo());
         const state = await store.getAll();
 
         if (state.passed.includes(hook.id)) return;
 
         let passed;
         try {
-          passed = predicate(context.payload, state, bot);
+          passed = predicate(context.payload, state, github);
         } catch (err) {
-          console.log("Caught error in predicate:", err);
           passed = false;
         }
 
@@ -52,7 +53,7 @@ export const createBot = (botName: Bots) => {
           await q.add(
             async () => {
               console.log(`Executing ${hook.id}`);
-              const result = await action(bot, await store.getAll());
+              const result = await action(github, await store.getAll());
               await store.set(["hooks", hook.id], result);
             },
             { priority: botHooks.length - i }

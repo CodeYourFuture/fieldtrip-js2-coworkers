@@ -207,8 +207,7 @@ export class Github {
           path: params.path,
         })
       );
-      console.log(currentFile);
-    } catch (err) {
+    } catch {
       // assume file doesn't exist and this is a create operation
     }
 
