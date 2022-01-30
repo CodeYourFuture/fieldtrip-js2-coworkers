@@ -1,6 +1,6 @@
 import courses from "@packages/courses";
 import { Router } from "express";
-import { Course, Store } from "../utils";
+import { Course, Store } from "../services";
 
 export const api = Router();
 

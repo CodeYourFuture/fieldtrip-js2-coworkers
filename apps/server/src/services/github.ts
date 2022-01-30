@@ -1,5 +1,5 @@
 import type { Context as BaseContext } from "probot";
-import { getFile } from ".";
+import { getFile } from "../utils";
 import { Store } from "./store";
 
 export type EventContext =
@@ -12,7 +12,7 @@ type InstallationEvents =
 
 type RepoEvents = "issues.opened" | "issues.closed";
 
-export class Bot {
+export class Github {
   context: EventContext;
   octokit: EventContext["octokit"];
   state: Store;

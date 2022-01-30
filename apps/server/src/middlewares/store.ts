@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { Store } from "../utils/store";
+import { Store } from "../services";
 
 export const store: RequestHandler = async (req, res, next) => {
   const { user, course } = req.locals;

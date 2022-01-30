@@ -3,7 +3,7 @@ import type {
   EmitterWebhookEvent,
 } from "@octokit/webhooks";
 import { StoreData } from "@packages/courses/types";
-import { Bot } from "../utils";
+import { Github } from "../services";
 import type { Hook, EventAssertion } from "../types/course";
 
 export type Predicate<E extends EmitterWebhookEventName> = (
@@ -11,7 +11,7 @@ export type Predicate<E extends EmitterWebhookEventName> = (
   state: StoreData
 ) => boolean;
 
-export type Action = (bot: Bot, state: StoreData) => Promise<unknown>;
+export type Action = (github: Github, state: StoreData) => Promise<unknown>;
 
 export function on<E extends EmitterWebhookEventName>(
   event: E | E[],

@@ -2,7 +2,7 @@ import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-meth
 import type { Probot } from "probot";
 import type { Octokit } from "@octokit/rest";
 import type { Bots, CourseConfig } from "./";
-import { Store } from "../utils";
+import { Store } from "../services";
 
 export type Locals = UnauthenticatedLocals | AuthenticatedLocals;
 

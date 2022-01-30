@@ -7,7 +7,7 @@ import type {
   EventAssertion,
   StoreData,
 } from "../types";
-import { getFile } from ".";
+import { getFile } from "../utils";
 import { HOST } from "../config";
 
 const notNull = (value: any): value is NonNullable<typeof value> =>

@@ -1,8 +1,10 @@
 import { Probot } from "probot";
 import PQueue from "p-queue";
 import courses from "@packages/courses";
+import { Course, Github, Store } from "../services";
+import { createProbot } from "../utils";
 import type { Bots } from "@packages/courses/types";
-import { Course, Store, createProbot, Bot } from "../utils";
+
 import { bots } from "../config";
 
 // @todo get course using event payload repo
@@ -19,7 +21,7 @@ const hooksByBotName = hooks.reduce((acc, hook) => {
 // so that it can be guaranteed that steps will be excecuted in their declared order
 const q = new PQueue({ concurrency: 1 });
 
-const createBot = (botName: Bots) => {
+export const createBot = (botName: Bots) => {
   const botHooks = hooksByBotName[botName];
 
   const app = (app: Probot) => {
@@ -30,7 +32,7 @@ const createBot = (botName: Bots) => {
       const { event, predicate, action } = hook.hook;
 
       app.on(event as any, async (context) => {
-        const bot = new Bot(context, course.repo);
+        const bot = new Github(context, course.repo);
         if (bot.eventShouldBeIgnored) return;
         const store = new Store(bot.repo());
         const state = await store.getAll();
@@ -66,8 +68,3 @@ const createBot = (botName: Bots) => {
     config: bots[botName],
   };
 };
-
-export const cyf = createBot("cyf");
-export const malachi = createBot("malachi");
-export const uma = createBot("uma");
-export const amber = createBot("amber");

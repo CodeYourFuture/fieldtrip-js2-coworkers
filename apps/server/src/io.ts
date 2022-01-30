@@ -1,10 +1,10 @@
 import type { Server as HTTPServer } from "http";
+import courses from "@packages/courses";
 import { Server } from "socket.io";
 import { emitter } from "./emitter";
 import * as mw from "./middlewares";
 import * as config from "./config";
-import courses from "@packages/courses";
-import { Course } from "./utils";
+import { Course } from "./services";
 import { StoreData } from "./types";
 
 export const io = (server: HTTPServer) => {

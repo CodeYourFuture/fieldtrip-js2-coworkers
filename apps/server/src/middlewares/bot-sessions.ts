@@ -1,4 +1,4 @@
-import * as bots from "../bots";
+import * as bots from "../services/bots";
 import type { RequestHandler } from "express";
 
 type Bots = typeof bots;
