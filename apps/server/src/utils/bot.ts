@@ -193,46 +193,43 @@ export class Bot {
     );
   }
 
-  async createFile(params: {
+  async putFile(params: {
     path: string;
     message?: string;
     content: string;
     branch: string;
   }) {
-    return this.octokit.repos.createOrUpdateFileContents(
-      this.repo({
-        path: params.path,
-        message: params.message || `Create ${params.path}`,
-        content: await this.fileToBase64(params.content),
-        branch: params.branch,
-      })
-    );
-  }
+    let currentFile;
+    try {
+      currentFile = await this.octokit.repos.getContent(
+        this.repo({
+          branch: params.branch,
+          path: params.path,
+        })
+      );
+      console.log(currentFile);
+    } catch (err) {
+      // assume file doesn't exist and this is a create operation
+    }
 
-  async updateFile(params: {
-    path: string;
-    message?: string;
-    content: string;
-    branch: string;
-  }) {
-    const currentFile = await this.octokit.repos.getContent(
-      this.repo({
-        path: params.path,
-      })
-    );
+    const props: Record<string, string> = {};
+    if (currentFile) {
+      // @ts-ignore content possibly doesn't exist if over a certain size
+      const content = currentFile.data.content;
+      props.old_content = Buffer.from(content, "base64").toString("utf8");
+    }
 
     return this.octokit.repos.createOrUpdateFileContents(
       this.repo({
         path: params.path,
         message: params.message || `Update ${params.path}`,
-        content: await this.fileToBase64(params.content, {
-          // @ts-ignore
-          content: currentFile.data.content,
-        }),
+        content: await this.fileToBase64(params.content, props),
         branch: params.branch,
-        sha: Array.isArray(currentFile.data)
-          ? currentFile.data[0].sha
-          : currentFile.data.sha,
+        sha:
+          currentFile &&
+          (Array.isArray(currentFile.data)
+            ? currentFile.data[0].sha
+            : currentFile.data.sha),
       })
     );
   }
