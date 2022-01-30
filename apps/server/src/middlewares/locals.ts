@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 
 export const locals: RequestHandler = (req, res, next) => {
   req.locals = {
-    repo: "js2",
+    course: null,
     user: null,
     bots: {},
     store: null,

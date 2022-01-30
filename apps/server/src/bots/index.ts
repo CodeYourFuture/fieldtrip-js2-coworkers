@@ -5,8 +5,8 @@ import type { Bots } from "@packages/courses/types";
 import { Course, Store, createProbot, Bot } from "../utils";
 import { bots } from "../config";
 
+// @todo get course using event payload repo
 const course = courses.js2;
-const repo = "js2";
 
 const hooks = Course.getHooks(course);
 const hooksByBotName = hooks.reduce((acc, hook) => {
@@ -30,7 +30,7 @@ const createBot = (botName: Bots) => {
       const { event, predicate, action } = hook.hook;
 
       app.on(event as any, async (context) => {
-        const bot = new Bot(context, repo);
+        const bot = new Bot(context, course.repo);
         if (bot.eventShouldBeIgnored) return;
         const store = new Store(bot.repo());
         const state = await store.getAll();

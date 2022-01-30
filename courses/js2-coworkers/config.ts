@@ -3,7 +3,8 @@ import type { CourseConfig } from "../types";
 
 const config: CourseConfig = {
   id: "js2",
-  title: "Co-worker Discovery Tools",
+  repo: "coworker-tools",
+  title: "Coworker Discovery Tools",
   module: "JS2",
   summary: "./meta/intro.md",
   stages: [week1, week2, week3],

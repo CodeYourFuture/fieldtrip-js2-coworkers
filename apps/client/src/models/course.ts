@@ -8,6 +8,7 @@ import { CourseStage } from ".";
 export const Course = types
   .model({
     id: types.identifier,
+    repo: types.string,
     title: types.string,
     module: types.string,
     summary: types.string,

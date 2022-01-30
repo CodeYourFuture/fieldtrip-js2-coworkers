@@ -23,7 +23,7 @@ export async function getFile(
   if (!Object.keys(allProps).length) return content;
 
   return content.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
-    if (key in allProps) {
+    if (allProps.hasOwnProperty(key)) {
       return allProps[key as keyof typeof allProps];
     }
     return "";

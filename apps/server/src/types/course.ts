@@ -4,6 +4,7 @@ import type { StoreData } from "./";
 
 export type CourseConfig = {
   id: string;
+  repo: string;
   title: string;
   module: string;
   summary: string;

@@ -22,8 +22,8 @@ export const week1Hooks: CourseHook[] = [
       () => true,
       async (malachi) => {
         const project = await malachi.createProject({
-          name: "Co-worker tools",
-          body: "A collection of tools for co-workers",
+          name: "Coworker tools",
+          body: "A collection of tools for coworkers",
         });
 
         const columnNames = {

@@ -21,7 +21,8 @@ api.get("/courses", async (req, res) => {
 });
 
 api.get("/courses/:id", async (req, res, next) => {
-  const courseConfig = courses[req.params.id as keyof typeof courses];
+  const courseConfig = req.locals.course;
+  if (!courseConfig) return res.send(404);
   try {
     const storeData = await req.locals.store?.getAll();
     const course = new Course(courseConfig, storeData);
@@ -34,18 +35,19 @@ api.get("/courses/:id", async (req, res, next) => {
 });
 
 api.post("/courses/:id", async (req, res, next) => {
-  const { user } = req.locals;
+  const { user, course } = req.locals;
 
   if (!user) return res.send(403);
+  if (!course) return res.send(404);
 
   const store = new Store({
-    repo: req.params.id,
+    repo: course.repo,
     owner: user.login,
   });
 
   try {
     const { data: repo } = await user.octokit.request("POST /user/repos", {
-      name: req.params.id,
+      name: course.repo,
       auto_init: true,
     });
 
@@ -71,12 +73,13 @@ api.post("/courses/:id", async (req, res, next) => {
 });
 
 api.delete("/courses/:id", async (req, res, next) => {
-  const { user } = req.locals;
+  const { user, course } = req.locals;
   if (!user) return res.send(403);
+  if (!course) return res.send(400);
   try {
     await user.octokit.request("DELETE /repos/{username}/{name}", {
       username: user.login,
-      name: req.params.id,
+      name: course.repo,
     });
     await req.locals.store.set("enrollment", null);
     res.sendStatus(204);

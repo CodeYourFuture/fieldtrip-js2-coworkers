@@ -1,20 +1,20 @@
 import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 import type { Probot } from "probot";
 import type { Octokit } from "@octokit/rest";
-import type { Bots } from "./";
+import type { Bots, CourseConfig } from "./";
 import { Store } from "../utils";
 
 export type Locals = UnauthenticatedLocals | AuthenticatedLocals;
 
 export type UnauthenticatedLocals = {
-  repo: string | null;
+  course: CourseConfig | null;
   user: null;
   bots: Record<any, never>;
   store: null;
 };
 
 export type AuthenticatedLocals = {
-  repo: string;
+  course: CourseConfig | null;
   user: User;
   bots: Record<Bots, Bot>;
   store: Store;

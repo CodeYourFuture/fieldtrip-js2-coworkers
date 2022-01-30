@@ -1,4 +1,4 @@
-# Co-worker Discovery Tools
+# Coworker Discovery Tools
 
 CodeYourFuture JS2 Module Project
 
