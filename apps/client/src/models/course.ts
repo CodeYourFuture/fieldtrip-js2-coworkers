@@ -54,7 +54,7 @@ export const Course = types
         toaster.success("Course deleted!", { id: "delete" });
       } catch (err) {
         console.log(err);
-        toaster.danger("Failed to delete course");
+        toaster.danger("Failed to delete course", { id: "delete" });
       }
     }),
   }));

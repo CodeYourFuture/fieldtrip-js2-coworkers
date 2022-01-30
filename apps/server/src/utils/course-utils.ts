@@ -6,6 +6,7 @@ import type { PullRequest, Issue } from "@octokit/webhooks-types";
 import type { Hook, EventAssertion } from "../types/course";
 import { StoreData } from "@packages/courses/types";
 import { Github } from "../services";
+import { Context } from "probot";
 
 export type Predicate<E extends EmitterWebhookEventName> = (
   event: EmitterWebhookEvent<E>["payload"],
@@ -41,5 +42,9 @@ on.uma = on.bind("uma");
 
 export const prRefsIssue = (pr: PullRequest, issue: Issue) => {
   const links = [`#${issue.number}`, issue.html_url];
-  return links.some((substr) => substr.includes(pr.body || ""));
+  return links.some((substr) => pr.body?.includes(substr));
+};
+
+export const prByOwner = (event: Context<"pull_request">["payload"]) => {
+  return event.repository.owner.login === event.pull_request.user.login;
 };

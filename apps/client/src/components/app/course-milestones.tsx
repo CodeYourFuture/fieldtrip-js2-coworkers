@@ -21,7 +21,7 @@ export const CourseMilestones: FC<Props> = observer(({ stage }) => (
           {String(i + 1)}
         </span>
         {action.label}
-        {action.unlocked && action.passed && (
+        {action.passed && (
           <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">
             Done
           </span>
