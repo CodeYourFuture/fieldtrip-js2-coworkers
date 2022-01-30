@@ -30,7 +30,8 @@ In GitHub:
 2. You should find a button to create a new pull request for your branch
 3. Include a clear title and description to explain your work
 4. In the description, reference the issue you are working e.g. `#4` if the issue number is 4
-5. Create the pull request and add a reviewer (a fellow student or mentor) to check your work
-6. Move the issue card to the _Review/QA_ column
-7. Once the reviewer ass approved your PR you can merge the branch by clicking the merge button
-8. Finally, move the issue to the _Done_ column 🎉
+5. Create the pull request
+6. Ask a fellow student or mentor to review your work
+7. Move the issue card to the _Review/QA_ column
+8. Once the reviewer has approved your PR you can merge the branch by clicking the merge button
+9. Finally, move the issue to the _Done_ column 🎉
