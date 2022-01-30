@@ -37,8 +37,8 @@ api.get("/courses/:id", async (req, res, next) => {
 api.post("/courses/:id", async (req, res, next) => {
   const { user, course } = req.locals;
 
-  if (!user) return res.send(403);
-  if (!course) return res.send(404);
+  if (!user) return res.sendStatus(403);
+  if (!course) return res.sendStatus(404);
 
   const store = new Store({
     repo: course.repo,
@@ -74,6 +74,8 @@ api.delete("/courses/:id", async (req, res, next) => {
       name: course.repo,
     });
     await req.locals.store.set("enrollment", null);
+    await req.locals.store.set("hooks", {});
+    await req.locals.store.set("passed", []);
     res.sendStatus(204);
   } catch (err) {
     next(err);
