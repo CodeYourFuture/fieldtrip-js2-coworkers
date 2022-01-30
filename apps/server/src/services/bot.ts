@@ -4,7 +4,6 @@ import courses from "@packages/courses";
 import { Course, Github, Store } from "../services";
 import { createProbot } from "../utils";
 import type { Bots } from "@packages/courses/types";
-
 import { bots } from "../config";
 
 // @todo get course using event payload repo
@@ -37,6 +36,8 @@ export const createBot = (botName: Bots) => {
         const store = new Store(bot.repo());
         const state = await store.getAll();
 
+        if (state.passed.includes(hook.id)) return;
+
         let passed;
         try {
           passed = predicate(context.payload, state, bot);
@@ -44,11 +45,10 @@ export const createBot = (botName: Bots) => {
           console.log("Caught error in predicate:", err);
           passed = false;
         }
+
         if (!passed) return;
 
-        if (!action) {
-          await store.add("passed", hook.id);
-        } else {
+        if (action) {
           await q.add(
             async () => {
               console.log(`Executing ${hook.id}`);
@@ -58,6 +58,8 @@ export const createBot = (botName: Bots) => {
             { priority: botHooks.length - i }
           );
         }
+
+        await store.add("passed", hook.id);
       });
     }
   };
