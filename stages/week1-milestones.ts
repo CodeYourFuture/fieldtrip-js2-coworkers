@@ -31,8 +31,11 @@ export const week1Milestones: CourseMilestone[] = [
   {
     id: "open-member-data-pr",
     label: "Opened PR, referencing Member Data issue ",
-    passed: on(["pull_request.opened", "pull_request.edited"], (event, state) =>
-      prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
+    passed: on(
+      ["pull_request.opened", "pull_request.edited"],
+      (event, state) =>
+        prByOwner(event) &&
+        prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
     ),
   },
   {
@@ -63,6 +66,7 @@ export const week1Milestones: CourseMilestone[] = [
       "pull_request.closed",
       (event, state) =>
         event.pull_request.merged &&
+        prByOwner(event) &&
         prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
     ),
   },
@@ -88,8 +92,11 @@ export const week1Milestones: CourseMilestone[] = [
   {
     id: "open-list-pr",
     label: "Opened List Command PR",
-    passed: on(["pull_request.opened", "pull_request.edited"], (event, state) =>
-      prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
+    passed: on(
+      ["pull_request.opened", "pull_request.edited"],
+      (event, state) =>
+        prByOwner(event) &&
+        prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
     ),
   },
   {
@@ -99,6 +106,7 @@ export const week1Milestones: CourseMilestone[] = [
       "pull_request.assigned",
       (event, state) =>
         event.pull_request.assignees.length > 0 &&
+        prByOwner(event) &&
         prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
     ),
   },
@@ -119,6 +127,7 @@ export const week1Milestones: CourseMilestone[] = [
       "pull_request.closed",
       (event, state) =>
         event.pull_request.merged &&
+        prByOwner(event) &&
         prRefsIssue(event.pull_request, state.hooks.listCommandCard)
     ),
   },
