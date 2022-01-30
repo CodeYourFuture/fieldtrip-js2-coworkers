@@ -38,17 +38,17 @@ export const week1Milestones: CourseMilestone[] = [
         prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
     ),
   },
-  {
-    id: "assigned-member-data-pr",
-    label: "Assigned reviewer to Member Data PR",
-    passed: on(
-      "pull_request.review_requested",
-      (event, state) =>
-        event.pull_request.requested_reviewers.length > 0 &&
-        prByOwner(event) &&
-        prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
-    ),
-  },
+  // {
+  //   id: "assigned-member-data-pr",
+  //   label: "Assigned reviewer to Member Data PR",
+  //   passed: on(
+  //     "pull_request.review_requested",
+  //     (event, state) =>
+  //       event.pull_request.requested_reviewers.length > 0 &&
+  //       prByOwner(event) &&
+  //       prRefsIssue(event.pull_request, state.hooks.storeDataIssue)
+  //   ),
+  // },
   {
     id: "member-data-card-in-review",
     label: "Moved Member Data card to In Review",
@@ -99,17 +99,17 @@ export const week1Milestones: CourseMilestone[] = [
         prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
     ),
   },
-  {
-    id: "assigned-list-pr",
-    label: "Assigned reviewer to List Command PR",
-    passed: on(
-      "pull_request.assigned",
-      (event, state) =>
-        event.pull_request.assignees.length > 0 &&
-        prByOwner(event) &&
-        prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
-    ),
-  },
+  // {
+  //   id: "assigned-list-pr",
+  //   label: "Assigned reviewer to List Command PR",
+  //   passed: on(
+  //     "pull_request.assigned",
+  //     (event, state) =>
+  //       event.pull_request.assignees.length > 0 &&
+  //       prByOwner(event) &&
+  //       prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
+  //   ),
+  // },
   {
     id: "list-card-in-review",
     label: "Moved List Command card to In Review",
