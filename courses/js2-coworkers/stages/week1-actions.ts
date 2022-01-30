@@ -12,7 +12,7 @@ export const week1Actions: CourseAction[] = [
     id: "meet-malachi",
     label: "Meet Malachi",
     url: (state) =>
-      `${state.enrollment.repoUrl}/issues/${state.hooks.malachiIntro.number}`,
+      `${state.enrollment?.repoUrl}/issues/${state.hooks.malachiIntro.number}`,
     passed: on(
       "issues.closed",
       (event, state) => event.issue.number === state.hooks.malachiIntro.number
@@ -28,7 +28,7 @@ export const week1Actions: CourseAction[] = [
     id: "meet-uma",
     label: "Meet Uma",
     url: (state) =>
-      `${state.enrollment.repoUrl}/issues/${state.hooks.umaIntro.number}`,
+      `${state.enrollment?.repoUrl}/issues/${state.hooks.umaIntro.number}`,
     passed: on(
       "issues.closed",
       (event, state) => event.issue.number === state.hooks.umaIntro.number
@@ -44,7 +44,7 @@ export const week1Actions: CourseAction[] = [
     id: "meet-amber",
     label: "Meet Amber",
     url: (state) =>
-      `${state.enrollment.repoUrl}/issues/${state.hooks.amberIntro.number}`,
+      `${state.enrollment?.repoUrl}/issues/${state.hooks.amberIntro.number}`,
     passed: on(
       "issues.closed",
       (event, state) => event.issue.number === state.hooks.amberIntro.number

@@ -5,7 +5,7 @@ export type StoreData = {
   enrollment: {
     username: string;
     repoUrl: string;
-  };
+  } | null;
   passed: string[];
   installedBots: Bots[];
   // @todo provide generic function for creating course configs

@@ -34,6 +34,15 @@ export class Store {
     this.q = qs.get(this.key);
   }
 
+  async wasInitialised() {
+    try {
+      const data = await this.readData();
+      return Boolean(data);
+    } catch {
+      return false;
+    }
+  }
+
   async getAll() {
     return this.readData();
   }
@@ -83,7 +92,7 @@ export class Store {
       try {
         return await fs
           .readFile("./store.json", { encoding: "utf-8" })
-          .then((data) => JSON.parse(data));
+          .then((data) => JSON.parse(data)[this.key]);
       } catch (err: any) {
         if (err.code === "ENOENT") return {};
         throw err;
@@ -93,7 +102,11 @@ export class Store {
 
   private async writeData(data: Record<string, unknown>) {
     const update = async () => {
-      await fs.writeFile("./store.json", JSON.stringify(data, null, 2));
+      const current = await fs
+        .readFile("./store.json", { encoding: "utf-8" })
+        .then((data) => JSON.parse(data));
+      const next = { ...current, [this.key]: data };
+      await fs.writeFile("./store.json", JSON.stringify(next, null, 2));
       emitter.emit(`${this.repo.owner}:store:updated`, data);
     };
 

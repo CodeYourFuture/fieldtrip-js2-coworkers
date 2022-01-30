@@ -53,6 +53,8 @@ export const botSessions: RequestHandler = async (req, _, next) => {
     } catch {}
   }
 
+  await req.locals.store.set("installedBots", Object.keys(req.locals.bots));
+
   // At some point I'll need to check the bot is installed in the correct repo
   // GET /repos/{owner}/{repo}/installation should hopefully work
   // Or, making a request to the user repo on behalf of the bot would presumably

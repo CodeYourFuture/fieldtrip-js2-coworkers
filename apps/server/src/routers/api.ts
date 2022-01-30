@@ -50,18 +50,10 @@ api.post("/courses/:id", async (req, res, next) => {
       name: course.repo,
       auto_init: true,
     });
-
-    await store.init({
-      courseId: req.params.id,
-      passed: [],
-      installedBots: [],
-      enrollment: {
-        username: user.login,
-        repoUrl: repo.html_url,
-      },
-      hooks: {},
+    store.set("enrollment", {
+      username: user.login,
+      repoUrl: repo.html_url,
     });
-
     res.sendStatus(201);
   } catch (err) {
     // if this fails it could mean:
