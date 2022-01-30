@@ -1,6 +1,6 @@
 /**
  * @description
- * A script for displaying information about co-workers
+ * A script for displaying information about coworkers
  * Can be called by running `npm start {command}` in the terminal
  *
  * @example

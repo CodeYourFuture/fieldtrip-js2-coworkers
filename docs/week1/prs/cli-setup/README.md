@@ -1,4 +1,4 @@
-{{content}}
+{{old_content}}
 
 ## Running the CLI
 

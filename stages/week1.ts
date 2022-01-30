@@ -62,7 +62,7 @@ export const week1: CourseStage = {
       label: "Merge setup PR",
       passed: on(
         "pull_request.closed",
-        (event, state) => event.pull_request.id === state.hooks.initialPr.id
+        (event, state) => event.pull_request.id === state.hooks.setupPr.id
       ),
     },
     {
