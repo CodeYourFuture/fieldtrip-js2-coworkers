@@ -61,7 +61,7 @@ export const week1Milestones: CourseMilestone[] = [
   },
   {
     id: "merged-member-data-pr",
-    label: "Merged Member Data PR",
+    label: "Merged Member Data PR (once peer-reviewed)",
     passed: on(
       "pull_request.closed",
       (event, state) =>
@@ -122,7 +122,7 @@ export const week1Milestones: CourseMilestone[] = [
   },
   {
     id: "list-pr-merged",
-    label: "Merged List Command PR",
+    label: "Merged List Command PR (once peer-reviewed)",
     passed: on(
       "pull_request.closed",
       (event, state) =>
