@@ -12,6 +12,7 @@ function getEnv(key: string, required = true) {
   return value;
 }
 
+export const DATABASE_URL = getEnv("DATABASE_URL");
 export const HOST = getEnv("HOST");
 export const PORT = getEnv("PORT");
 export const CLIENT_HOST = getEnv("CLIENT_HOST");

@@ -5,31 +5,37 @@ import type {
   CourseMilestone,
   CourseHook,
   EventAssertion,
-  StoreData,
 } from "../types";
 import { getFile } from "../utils";
 import { HOST } from "../config";
+import { Enrollments } from "../types";
 
 const notNull = (value: any): value is NonNullable<typeof value> =>
   value !== null && value !== undefined;
 
 export class Course {
   config: CourseConfig;
-  store: StoreData | null;
+  state: Enrollments | null;
 
-  constructor(config: CourseConfig, store: StoreData | null = null) {
+  constructor(config: CourseConfig, state: Enrollments | null = null) {
     this.config = config;
-    this.store = store;
+    this.state = state;
   }
 
   async compile(): Promise<CourseConfig> {
     const meta = await this.compileMeta();
-    if (this.store?.enrollment) {
-      const courseAuthed = new CourseAuthed(this.config, this.store);
+    if (this.state) {
+      const courseAuthed = new CourseAuthed(this.config, this.state);
       const stages = await Promise.all(
         this.config.stages.map(courseAuthed.compileStage)
       );
-      return { ...meta, stages, enrollment: this.store.enrollment };
+      return {
+        ...meta,
+        stages,
+        enrollment: {
+          repoUrl: this.state.repo_url,
+        },
+      };
     }
     return meta;
   }
@@ -46,7 +52,7 @@ export class Course {
   compileStageMeta = async (stage: CourseStage): Promise<CourseStage> => {
     const summaryPath =
       typeof stage.summary === "function"
-        ? stage.summary(this.store)
+        ? stage.summary(this.state)
         : stage.summary;
     const summary = await getFile(summaryPath);
     return { ...stage, summary, actions: [], milestones: [] };
@@ -76,12 +82,12 @@ export class Course {
 
 class CourseAuthed extends Course {
   config: CourseConfig;
-  store: StoreData;
+  state: Enrollments;
 
-  constructor(config: CourseConfig, meta: StoreData) {
-    super(config, meta);
+  constructor(config: CourseConfig, state: Enrollments) {
+    super(config, state);
     this.config = config;
-    this.store = meta;
+    this.state = state;
   }
 
   compileStage = async (stage: CourseStage): Promise<CourseStage> => {
@@ -101,7 +107,7 @@ class CourseAuthed extends Course {
     let passed;
     if (typeof milestone.passed === "function") {
       try {
-        passed = await milestone.passed(this.store);
+        passed = await milestone.passed(this.state);
       } catch {
         // @todo handle null
         passed = false;
@@ -121,7 +127,7 @@ class CourseAuthed extends Course {
     let url;
     if (typeof action.url === "function") {
       try {
-        url = await action.url(this.store);
+        url = await action.url(this.state);
       } catch {
         // @todo handle null
         url = "";
@@ -138,6 +144,6 @@ class CourseAuthed extends Course {
   };
 
   private wasTriggered = (id: string) => {
-    return this.store.passed.includes(id) || false;
+    return this.state.milestones.includes(id) || false;
   };
 }

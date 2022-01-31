@@ -1,0 +1,49 @@
+[
+  {
+    "name": "enrollments",
+    "columns": [
+      {
+        "name": "bots",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "course_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "hooks",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "milestones",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "repo_url",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "username",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      }
+    ]
+  }
+]

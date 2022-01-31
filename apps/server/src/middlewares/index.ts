@@ -4,5 +4,5 @@ export * from "./course";
 export * from "./locals";
 export * from "./bots";
 export * from "./session";
-export * from "./store";
+export * from "./db";
 export * from "./user-session";

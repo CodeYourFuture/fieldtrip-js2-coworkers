@@ -1,4 +1,4 @@
-import type { StoreData } from "./";
+import type { Enrollments } from "./";
 
 // @todo break these into input and generated types
 
@@ -17,7 +17,7 @@ export type CourseConfig = {
 export type CourseStage = {
   key: string;
   label: string;
-  summary: ((context: StoreData | null) => string) | string;
+  summary: ((context: Enrollments | null) => string) | string;
   actions?: CourseAction[];
   milestones?: CourseMilestone[];
   hooks?: CourseHook[];
@@ -26,7 +26,7 @@ export type CourseStage = {
 export type CourseAction = {
   id: string;
   label: string;
-  url: ((context: StoreData) => string) | string;
+  url: ((context: Enrollments) => string) | string;
   passed: Passed;
 };
 
@@ -44,7 +44,7 @@ export type CourseHook = {
 export type Passed =
   | boolean
   | EventAssertion
-  | ((context: StoreData) => boolean);
+  | ((context: Enrollments) => boolean);
 
 export type Hook = {
   event: string;

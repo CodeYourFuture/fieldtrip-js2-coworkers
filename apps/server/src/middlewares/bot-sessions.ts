@@ -1,5 +1,6 @@
 import * as bots from "../services/bots";
 import type { RequestHandler } from "express";
+import { enrollments, db } from "../services/db";
 
 type Bots = typeof bots;
 
@@ -53,7 +54,10 @@ export const botSessions: RequestHandler = async (req, _, next) => {
     } catch {}
   }
 
-  await req.locals.store.set("installedBots", Object.keys(req.locals.bots));
+  // await req.locals.store.set("installedBots", Object.keys(req.locals.bots));
+  await enrollments(db).update(req.locals.primaryKey, {
+    bots: Object.keys(req.locals.bots),
+  });
 
   // At some point I'll need to check the bot is installed in the correct repo
   // GET /repos/{owner}/{repo}/installation should hopefully work

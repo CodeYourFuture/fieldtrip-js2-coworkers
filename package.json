@@ -3,7 +3,6 @@
   "name": "cyf-learning-lab",
   "version": "1.0.0",
   "author": "Daniel Grant",
-  
   "homepage": "https://github.com/codeyourfuture/cyf-learning-lab",
   "workspaces": [
     "apps/*",
@@ -11,6 +10,7 @@
   ],
   "scripts": {
     "build": "lerna run build",
+    "db:types": "dotenv -- bash -c 'npx @databases/pg-schema-cli --database $DATABASE_URL --directory apps/server/src/types/generated'",
     "dev": "lerna run dev --parallel",
     "dev:packages": "lerna run dev --parallel --scope @packages/* --scope @courses/*",
     "start": "yarn workspace server start",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "babel-preset-react-app": "^10.0.1",
+    "dotenv-cli": "^4.1.1",
     "jest": "^27.4.7",
     "lerna": "^4.0.0",
     "ts-jest": "^27.1.3"

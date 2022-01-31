@@ -8,8 +8,7 @@ app.use(mw.cors);
 app.use(mw.locals);
 app.use(mw.session);
 app.use([mw.cyf, mw.amber, mw.malachi, mw.uma]);
-
 app.use(["/api/user", "/api/courses/:id"], mw.userSession);
-app.use("/api/courses/:id", [mw.course, mw.store, mw.botSessions]);
+app.use("/api/courses/:id", [mw.course, mw.db, mw.botSessions]);
 app.use("/api", routers.api);
 app.use("/auth", routers.auth);

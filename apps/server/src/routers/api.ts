@@ -1,6 +1,7 @@
 import courses from "@packages/courses";
 import { Router } from "express";
-import { Course, Store } from "../services";
+import { enrollments, db } from "../services/db";
+import { Course } from "../services";
 
 export const api = Router();
 
@@ -24,8 +25,10 @@ api.get("/courses/:id", async (req, res, next) => {
   const courseConfig = req.locals.course;
   if (!courseConfig) return res.send(404);
   try {
-    const storeData = await req.locals.store?.getAll();
-    const course = new Course(courseConfig, storeData);
+    const state = req.locals.primaryKey
+      ? await enrollments(db).findOne(req.locals.primaryKey)
+      : null;
+    const course = new Course(courseConfig, state);
     const compiledCourse = await course.compile();
     res.send(compiledCourse);
   } catch (err) {
@@ -40,19 +43,15 @@ api.post("/courses/:id", async (req, res, next) => {
   if (!user) return res.sendStatus(403);
   if (!course) return res.sendStatus(404);
 
-  const store = new Store({
-    repo: course.repo,
-    owner: user.login,
-  });
-
   try {
-    const { data: repo } = await user.octokit.request("POST /user/repos", {
+    // Insert must come first so that the row is available to webhook events
+    await enrollments(db).insert({
+      ...req.locals.primaryKey,
+      repo_url: `https://github.com/${user.login}/${course.repo}`,
+    });
+    await user.octokit.request("POST /user/repos", {
       name: course.repo,
       auto_init: true,
-    });
-    store.set("enrollment", {
-      username: user.login,
-      repoUrl: repo.html_url,
     });
     res.sendStatus(201);
   } catch (err) {
@@ -73,9 +72,7 @@ api.delete("/courses/:id", async (req, res, next) => {
       username: user.login,
       name: course.repo,
     });
-    await req.locals.store.set("enrollment", null);
-    await req.locals.store.set("hooks", {});
-    await req.locals.store.set("passed", []);
+    await enrollments(db).delete(req.locals.primaryKey);
     res.sendStatus(204);
   } catch (err) {
     next(err);

@@ -6,7 +6,7 @@ export const week1Actions: CourseAction[] = [
     id: "add-malachi",
     label: "Add Malachi Bot to your repo",
     url: "/auth/install/malachi",
-    passed: (state) => state.installedBots.includes("malachi"),
+    passed: (state) => state.bots.includes("malachi"),
   },
   {
     id: "meet-malachi",
@@ -21,7 +21,7 @@ export const week1Actions: CourseAction[] = [
     id: "add-uma",
     label: "Add Uma Bot to your repo",
     url: "/auth/install/uma",
-    passed: (state) => state.installedBots.includes("uma"),
+    passed: (state) => state.bots.includes("uma"),
   },
   {
     id: "meet-uma",
@@ -36,7 +36,7 @@ export const week1Actions: CourseAction[] = [
     id: "add-amber",
     label: "Add Amber Bot to your repo",
     url: "/auth/install/amber",
-    passed: (state) => state.installedBots.includes("amber"),
+    passed: (state) => state.bots.includes("amber"),
   },
   {
     id: "meet-amber",

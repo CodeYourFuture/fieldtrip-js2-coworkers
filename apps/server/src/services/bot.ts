@@ -3,7 +3,7 @@ import PQueue from "p-queue";
 import courses from "@packages/courses";
 import { Course } from "../services/course";
 import { Github } from "../services/github";
-import { Store } from "../services/store";
+import { db, enrollments } from "../services/db";
 import { createProbot } from "../utils";
 import { bots } from "../config";
 import type { Bots } from "@packages/courses/types";
@@ -35,10 +35,15 @@ export const createBot = (botName: Bots) => {
       app.on(event as any, async (context) => {
         const github = new Github(context, course.repo);
         if (github.eventShouldBeIgnored) return;
-        const store = new Store(github.repo());
-        const state = await store.getAll();
 
-        if (state.passed.includes(hook.id)) return;
+        const primaryKey = {
+          username: github.repo().owner,
+          course_id: course.id,
+        };
+
+        const state = await enrollments(db).findOneRequired(primaryKey);
+
+        if (state.milestones.includes(hook.id)) return;
 
         let passed;
         try {
@@ -53,14 +58,22 @@ export const createBot = (botName: Bots) => {
           await q.add(
             async () => {
               console.log(`Executing ${hook.id}`);
-              const result = await action(github, await store.getAll());
-              await store.set(["hooks", hook.id], result);
+              const latestState = await enrollments(db).findOneRequired(
+                primaryKey
+              );
+              const result = await action(github, latestState);
+              await enrollments(db).update(primaryKey, {
+                hooks: { ...latestState.hooks, [hook.id]: result },
+              });
             },
             { priority: botHooks.length - i }
           );
         }
 
-        await store.add("passed", hook.id);
+        // @todo replace this with jsonb_set
+        await enrollments(db).update(primaryKey, {
+          milestones: [...state.milestones, hook.id],
+        });
       });
     }
   };

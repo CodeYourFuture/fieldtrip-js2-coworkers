@@ -1,6 +1,5 @@
 import type { Context as BaseContext } from "probot";
 import { getFile } from "../utils";
-import { Store } from "./store";
 
 export type EventContext =
   | BaseContext<InstallationEvents>
@@ -15,14 +14,12 @@ type RepoEvents = "issues.opened" | "issues.closed";
 export class Github {
   context: EventContext;
   octokit: EventContext["octokit"];
-  state: Store;
   repoName: string;
 
   constructor(context: EventContext, repo: string) {
     this.context = context;
     this.octokit = context.octokit;
     this.repoName = repo;
-    this.state = new Store(this.repo());
   }
 
   // Unfortunately, can't add a Type guard here as it's too complex for the compiler
@@ -43,15 +40,16 @@ export class Github {
     return this.context.repo().repo !== this.repoName;
   }
 
-  repo<T>(o?: T): any {
+  repo<T extends Record<string, any>>(
+    o?: T
+  ): T & { owner: string; repo: string } {
     if (this.isInstallationEvent()) {
-      return {
+      return Object.assign({}, o, {
         owner: this.context.payload.sender.login,
         repo: this.repoName,
-        ...o,
-      };
+      });
     }
-    return this.context.repo(o);
+    return this.context.repo<T>(o);
   }
 
   private get fileProps() {

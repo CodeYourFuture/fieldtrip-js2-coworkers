@@ -5,7 +5,7 @@ import { emitter } from "./emitter";
 import * as mw from "./middlewares";
 import * as config from "./config";
 import { Course } from "./services";
-import { StoreData } from "./types";
+import { Enrollments } from "./types";
 
 export const io = (server: HTTPServer) => {
   const io = new Server(server, {
@@ -25,13 +25,13 @@ export const io = (server: HTTPServer) => {
     // @ts-ignore @todo add socket.io types
     const username = socket.request.session.user?.login;
     if (!username) return;
-    emitter.on(`${username}:store:updated`, async (data: StoreData) => {
-      if (!data.courseId && !data.enrollment) return;
-      const courseConfig = courses[data.courseId as any];
+    emitter.on(`${username}:enrollment:updated`, async (data: Enrollments) => {
+      if (!data) return;
+      const courseConfig = courses[data.course_id as any];
       const course = new Course(courseConfig, data);
       const compiledCourse = await course.compile();
       socket.emit("course:update", {
-        courseId: data.courseId,
+        courseId: data.course_id,
         course: compiledCourse,
       });
     });
