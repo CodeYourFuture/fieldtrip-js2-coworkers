@@ -6,6 +6,7 @@ import { emitter } from "../emitter";
 
 const db = createConnectionPool({
   connectionString: DATABASE_URL,
+  schema: "lab",
   onQueryResults: (_, { text }, results) => {
     if (text.startsWith("SELECT")) return;
     if (!isEnrollment(results[0])) return;
