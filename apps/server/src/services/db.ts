@@ -4,6 +4,7 @@ import DatabaseSchema, { Enrollments } from "../types/generated";
 import { DATABASE_SCHEMA, DATABASE_URL } from "../config";
 import { emitter } from "../emitter";
 import { migrations } from "../migrations";
+import databaseSchema from "../types/generated/schema.json";
 
 const db = createConnectionPool({
   connectionString: DATABASE_URL,
@@ -17,9 +18,7 @@ const db = createConnectionPool({
   },
 });
 
-const { enrollments } = tables<DatabaseSchema>({
-  databaseSchema: require("../types/generated/schema.json"),
-});
+const { enrollments } = tables<DatabaseSchema>({ databaseSchema });
 
 export { sql, db, enrollments };
 
