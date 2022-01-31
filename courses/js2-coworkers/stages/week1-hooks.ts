@@ -243,10 +243,12 @@ export const week1Hooks: CourseHook[] = [
           reviewers: [uma.username],
         });
 
-        return await uma.createIssueComment({
+        await uma.createIssueComment({
           issueNumber: state.hooks.listCommandIssue.number,
           body: `./week1/tasks/list-command-comment.md?prNumber=${pr.number}`,
         });
+
+        return pr;
       }
     ),
   },
