@@ -3,10 +3,11 @@ import tables from "@databases/pg-typed";
 import DatabaseSchema, { Enrollments } from "../types/generated";
 import { DATABASE_SCHEMA, DATABASE_URL } from "../config";
 import { emitter } from "../emitter";
+import { migrations } from "../migrations";
 
 const db = createConnectionPool({
   connectionString: DATABASE_URL,
-  schema: DATABASE_SCHEMA || "public",
+  schema: DATABASE_SCHEMA,
   onQueryResults: (_, { text }, results) => {
     if (text.startsWith("SELECT")) return;
     if (!isEnrollment(results[0])) return;
@@ -26,3 +27,6 @@ const isEnrollment = (result: any): result is Enrollments =>
   typeof result === "object" &&
   result.hasOwnProperty("course_id") &&
   result.hasOwnProperty("username");
+
+export const migrate = () =>
+  Promise.all(migrations.map((query) => db.query(query)));
