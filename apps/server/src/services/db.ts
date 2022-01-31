@@ -1,12 +1,12 @@
 import createConnectionPool, { sql } from "@databases/pg";
 import tables from "@databases/pg-typed";
 import DatabaseSchema, { Enrollments } from "../types/generated";
-import { DATABASE_URL } from "../config";
+import { DATABASE_SCHEMA, DATABASE_URL } from "../config";
 import { emitter } from "../emitter";
 
 const db = createConnectionPool({
   connectionString: DATABASE_URL,
-  schema: "lab",
+  schema: DATABASE_SCHEMA || "public",
   onQueryResults: (_, { text }, results) => {
     if (text.startsWith("SELECT")) return;
     if (!isEnrollment(results[0])) return;
