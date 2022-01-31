@@ -20,7 +20,7 @@ const hooksByBotName = hooks.reduce((acc, hook) => {
 
 // @todo this should probably be refactored into a proper queue
 // so that it can be guaranteed that steps will be excecuted in their declared order
-const q = new PQueue({ concurrency: 1 });
+const queues = new Map();
 
 export const createBot = (botName: Bots) => {
   const botHooks = hooksByBotName[botName];
@@ -41,6 +41,14 @@ export const createBot = (botName: Bots) => {
           course_id: course.id,
         };
 
+        const queueKey = JSON.stringify(primaryKey);
+
+        if (!queues.has(queueKey)) {
+          queues.set(queueKey, new PQueue({ concurrency: 1 }));
+        }
+
+        const queue = queues.get(queueKey);
+
         const state = await enrollments(db).findOneRequired(primaryKey);
 
         if (state.milestones.includes(hook.id)) return;
@@ -55,13 +63,14 @@ export const createBot = (botName: Bots) => {
         if (!passed) return;
 
         if (action) {
-          await q.add(
+          await queue.add(
             async () => {
               console.log(`Executing ${hook.id}`);
               const latestState = await enrollments(db).findOneRequired(
                 primaryKey
               );
               const result = await action(github, latestState);
+              // @todo replace this with jsonb_set query
               await enrollments(db).update(primaryKey, {
                 hooks: { ...latestState.hooks, [hook.id]: result },
               });
@@ -70,9 +79,12 @@ export const createBot = (botName: Bots) => {
           );
         }
 
-        // @todo replace this with jsonb_set
-        await enrollments(db).update(primaryKey, {
-          milestones: [...state.milestones, hook.id],
+        // @todo replace this with jsonb_set query
+        await queue.add(async () => {
+          const latestState = await enrollments(db).findOneRequired(primaryKey);
+          await enrollments(db).update(primaryKey, {
+            milestones: [...latestState.milestones, hook.id],
+          });
         });
       });
     }
