@@ -1,7 +1,7 @@
 import type { CourseAction } from "../../types";
 import { on } from "../../utils";
 
-export const week1Actions: CourseAction[] = [
+export const sprint1Actions: CourseAction[] = [
   {
     id: "add-malachi",
     label: "Add Malachi Bot to your repo",

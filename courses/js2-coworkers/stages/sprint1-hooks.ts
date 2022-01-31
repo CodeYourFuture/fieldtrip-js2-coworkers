@@ -1,7 +1,7 @@
 import type { CourseHook } from "../../types";
 import { on } from "../../utils";
 
-export const week1Hooks: CourseHook[] = [
+export const sprint1Hooks: CourseHook[] = [
   {
     id: "malachiIntro",
     hook: on.malachi(
@@ -10,7 +10,7 @@ export const week1Hooks: CourseHook[] = [
       (malachi) => {
         return malachi.createIssue({
           title: "Introducing your product owner",
-          body: "week1/issues/malachi-intro.md",
+          body: "sprint1/issues/malachi-intro.md",
         });
       }
     ),
@@ -58,7 +58,7 @@ export const week1Hooks: CourseHook[] = [
       (malachi) => {
         return malachi.createIssue({
           title: "Create CLI command to list members",
-          body: "./week1/tasks/list-command.md",
+          body: "./sprint1/tasks/list-command.md",
         });
       }
     ),
@@ -86,7 +86,7 @@ export const week1Hooks: CourseHook[] = [
       (malachi) => {
         return malachi.createIssue({
           title: "Store member data for use in digital tools",
-          body: "./week1/tasks/store-data.md",
+          body: "./sprint1/tasks/store-data.md",
         });
       }
     ),
@@ -114,7 +114,7 @@ export const week1Hooks: CourseHook[] = [
       async (uma, state) => {
         await uma.createIssueComment({
           issueNumber: state.hooks.storeDataIssue.number,
-          body: "./week1/tasks/store-data-comment.md",
+          body: "./sprint1/tasks/store-data-comment.md",
         });
       }
     ),
@@ -127,7 +127,7 @@ export const week1Hooks: CourseHook[] = [
       async (malachi) => {
         return malachi.createIssue({
           title: "Set up repo (Uma)",
-          body: "./week1/tasks/set-up-repo.md",
+          body: "./sprint1/tasks/set-up-repo.md",
         });
       }
     ),
@@ -153,7 +153,7 @@ export const week1Hooks: CourseHook[] = [
       (uma) => {
         return uma.createIssue({
           title: "Introducing your technical lead",
-          body: "week1/issues/uma-intro.md",
+          body: "sprint1/issues/uma-intro.md",
         });
       }
     ),
@@ -166,7 +166,7 @@ export const week1Hooks: CourseHook[] = [
       (amber) => {
         return amber.createIssue({
           title: "Introducing your scrum master",
-          body: "week1/issues/amber-intro.md",
+          body: "sprint1/issues/amber-intro.md",
         });
       }
     ),
@@ -181,13 +181,13 @@ export const week1Hooks: CourseHook[] = [
 
         await uma.putFile({
           path: "README.md",
-          content: "week1/prs/repo-setup/README.md",
+          content: "sprint1/prs/repo-setup/README.md",
           branch: "setup-repo",
         });
 
         await uma.putFile({
           path: "members.js",
-          content: "week1/prs/repo-setup/members.js",
+          content: "sprint1/prs/repo-setup/members.js",
           branch: "setup-repo",
         });
 
@@ -195,7 +195,7 @@ export const week1Hooks: CourseHook[] = [
           from: "setup-repo",
           to: "main",
           title: "Set up repo",
-          body: `week1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue.number}`,
+          body: `sprint1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue.number}`,
           reviewers: [uma.username],
         });
       }
@@ -219,19 +219,19 @@ export const week1Hooks: CourseHook[] = [
 
         await uma.putFile({
           path: "README.md",
-          content: "week1/prs/cli-setup/README.md",
+          content: "sprint1/prs/cli-setup/README.md",
           branch: "setup-cli",
         });
 
         await uma.putFile({
           path: "cli.js",
-          content: "week1/prs/cli-setup/cli.js",
+          content: "sprint1/prs/cli-setup/cli.js",
           branch: "setup-cli",
         });
 
         await uma.putFile({
           path: "package.json",
-          content: "week1/prs/cli-setup/package.json",
+          content: "sprint1/prs/cli-setup/package.json",
           branch: "setup-cli",
         });
 
@@ -239,13 +239,13 @@ export const week1Hooks: CourseHook[] = [
           from: "setup-cli",
           to: "main",
           title: "Set up CLI",
-          body: `week1/prs/cli-setup/description.md?issueNumber=${state.hooks.listCommandIssue.number}`,
+          body: `sprint1/prs/cli-setup/description.md?issueNumber=${state.hooks.listCommandIssue.number}`,
           reviewers: [uma.username],
         });
 
         await uma.createIssueComment({
           issueNumber: state.hooks.listCommandIssue.number,
-          body: `./week1/tasks/list-command-comment.md?prNumber=${pr.number}`,
+          body: `./sprint1/tasks/list-command-comment.md?prNumber=${pr.number}`,
         });
 
         return pr;

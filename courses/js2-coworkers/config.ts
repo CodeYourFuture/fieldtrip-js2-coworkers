@@ -1,4 +1,4 @@
-import { week1, week2, week3 } from "./stages";
+import { sprint1, sprint2, sprint3 } from "./stages";
 import type { CourseConfig } from "../types";
 
 const config: CourseConfig = {
@@ -6,8 +6,8 @@ const config: CourseConfig = {
   repo: "coworker-tools",
   title: "Coworker Discovery Tools",
   module: "JS2",
-  summary: "./meta/intro.md",
-  stages: [week1, week2, week3],
+  summary: "./website/intro.md",
+  stages: [sprint1, sprint2, sprint3],
 };
 
 export default config;

@@ -1,7 +1,7 @@
 import type { CourseMilestone } from "../../types";
 import { on, prByOwner, prRefsIssue } from "../../utils";
 
-export const week1Milestones: CourseMilestone[] = [
+export const sprint1Milestones: CourseMilestone[] = [
   {
     id: "merge-repo-setup-pr",
     label: "Merged Uma's repo setup PR",
