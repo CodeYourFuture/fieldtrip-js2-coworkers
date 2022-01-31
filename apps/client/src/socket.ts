@@ -19,8 +19,6 @@ socket.on("course:update", ({ courseId, course }) => {
 
   applySnapshot(courseModel, course);
 
-  console.log(course);
-
   // @todo is there a nicer way to do this where you can just observe changes to particular fields?
   // mobx.reaction doesn't work because applySnapshot replaces the tree
 
