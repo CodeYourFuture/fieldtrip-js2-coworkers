@@ -145,7 +145,13 @@ export class Github {
         column_id: columnId,
         content_id: issueId,
         content_type: "Issue",
-        position,
+      })
+    );
+    await this.octokit.projects.moveCard(
+      this.repo({
+        card_id: data.id,
+        position: position as string,
+        column_id: columnId,
       })
     );
     return data;

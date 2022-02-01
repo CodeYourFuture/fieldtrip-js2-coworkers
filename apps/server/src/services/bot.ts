@@ -45,10 +45,8 @@ export const createBot = (botName: Bots) => {
       const { trigger, priority } = botTrigger;
       const { event, predicate } = trigger.hook;
       const action = "action" in trigger.hook ? trigger.hook.action : null;
-      console.log(trigger, priority);
 
       app.on(event as any, async (context) => {
-        console.log(botName, event);
         const github = new Github(context, course.repo);
         if (github.eventShouldBeIgnored) return;
 
