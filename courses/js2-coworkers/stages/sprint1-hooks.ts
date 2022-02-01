@@ -109,11 +109,12 @@ export const sprint1Hooks: CourseHook[] = [
   {
     id: "storeDataCardComment",
     hook: on.uma(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      // @todo assuming malachi was installed before uma
+      ["installation_repositories.added", "installation.created"],
+      () => true,
       async (uma, state) => {
         await uma.createIssueComment({
-          issueNumber: state.hooks.storeDataIssue.number,
+          issueNumber: state.hooks.storeDataIssue?.number,
           body: "./sprint1/tasks/store-data-comment.md",
         });
       }
@@ -174,8 +175,9 @@ export const sprint1Hooks: CourseHook[] = [
   {
     id: "setupPr",
     hook: on.uma(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.setupIssue.id,
+      // @todo assuming malachi was installed before uma
+      ["installation_repositories.added", "installation.created"],
+      (event, state) => true,
       async (uma, state) => {
         await uma.createBranch("setup-repo");
 
@@ -195,7 +197,7 @@ export const sprint1Hooks: CourseHook[] = [
           from: "setup-repo",
           to: "main",
           title: "Set up repo",
-          body: `sprint1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue.number}`,
+          body: `sprint1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue?.number}`,
           reviewers: [uma.username],
         });
       }
