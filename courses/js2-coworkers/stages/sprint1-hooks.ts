@@ -51,6 +51,60 @@ export const sprint1Hooks: CourseHook[] = [
     ),
   },
   {
+    id: "setupIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      async (malachi) => {
+        return malachi.createIssue({
+          title: "Set up repo (Uma)",
+          body: "./sprint1/tasks/set-up-repo.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "setupCard",
+    hook: on.malachi(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.setupIssue.id,
+      async (malachi, state) => {
+        return malachi.createProjectCard({
+          columnId: state.hooks.board.columns.todo.id,
+          issueId: state.hooks.setupIssue.id,
+        });
+      }
+    ),
+  },
+  {
+    id: "storeDataIssue",
+    hook: on.malachi(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (malachi) => {
+        return malachi.createIssue({
+          title: "Store member data for use in digital tools",
+          body: "./sprint1/tasks/store-data.md",
+        });
+      }
+    ),
+  },
+  {
+    id: "storeDataCard",
+    hook: on.malachi(
+      "issues.opened",
+      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
+      (malachi, state) => {
+        const issue = state.hooks.storeDataIssue;
+        return malachi.createProjectCard({
+          columnId: state.hooks.board.columns.todo.id,
+          issueId: issue.id,
+          position: "bottom",
+        });
+      }
+    ),
+  },
+  {
     id: "listCommandIssue",
     hook: on.malachi(
       ["installation_repositories.added", "installation.created"],
@@ -79,73 +133,6 @@ export const sprint1Hooks: CourseHook[] = [
     ),
   },
   {
-    id: "storeDataIssue",
-    hook: on.malachi(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      (malachi) => {
-        return malachi.createIssue({
-          title: "Store member data for use in digital tools",
-          body: "./sprint1/tasks/store-data.md",
-        });
-      }
-    ),
-  },
-  {
-    id: "storeDataCard",
-    hook: on.malachi(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.storeDataIssue.id,
-      (malachi, state) => {
-        const issue = state.hooks.storeDataIssue;
-        return malachi.createProjectCard({
-          columnId: state.hooks.board.columns.todo.id,
-          issueId: issue.id,
-          position: "top",
-        });
-      }
-    ),
-  },
-  {
-    id: "storeDataCardComment",
-    hook: on.uma(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      async (uma, state) => {
-        await uma.createIssueComment({
-          issueNumber: state.hooks.storeDataIssue?.number,
-          body: "./sprint1/tasks/store-data-comment.md",
-        });
-      }
-    ),
-  },
-  {
-    id: "setupIssue",
-    hook: on.malachi(
-      ["installation_repositories.added", "installation.created"],
-      () => true,
-      async (malachi) => {
-        return malachi.createIssue({
-          title: "Set up repo (Uma)",
-          body: "./sprint1/tasks/set-up-repo.md",
-        });
-      }
-    ),
-  },
-  {
-    id: "setupCard",
-    hook: on.malachi(
-      "issues.opened",
-      (event, state) => event.issue.id === state.hooks.setupIssue.id,
-      async (malachi, state) => {
-        return malachi.createProjectCard({
-          columnId: state.hooks.board.columns.todo.id,
-          issueId: state.hooks.setupIssue.id,
-        });
-      }
-    ),
-  },
-  {
     id: "umaIntro",
     hook: on.uma(
       ["installation_repositories.added", "installation.created"],
@@ -159,14 +146,14 @@ export const sprint1Hooks: CourseHook[] = [
     ),
   },
   {
-    id: "amberIntro",
-    hook: on.amber(
+    id: "storeDataCardComment",
+    hook: on.uma(
       ["installation_repositories.added", "installation.created"],
       () => true,
-      (amber) => {
-        return amber.createIssue({
-          title: "Introducing your scrum master",
-          body: "sprint1/issues/amber-intro.md",
+      async (uma, state) => {
+        await uma.createIssueComment({
+          issueNumber: state.hooks.storeDataIssue?.number,
+          body: "./sprint1/tasks/store-data-comment.md",
         });
       }
     ),
@@ -197,6 +184,19 @@ export const sprint1Hooks: CourseHook[] = [
           title: "Set up repo",
           body: `sprint1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue?.number}`,
           reviewers: [uma.username],
+        });
+      }
+    ),
+  },
+  {
+    id: "amberIntro",
+    hook: on.amber(
+      ["installation_repositories.added", "installation.created"],
+      () => true,
+      (amber) => {
+        return amber.createIssue({
+          title: "Introducing your scrum master",
+          body: "sprint1/issues/amber-intro.md",
         });
       }
     ),

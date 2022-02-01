@@ -10,28 +10,45 @@ import type { Bots } from "@packages/courses/types";
 // @todo get course using event payload repo
 const course = courses.js2;
 
-const hooks = Course.getHooks(course);
-const hooksByBotName = hooks.reduce((acc, hook) => {
-  if (!acc[hook.hook.botName]) acc[hook.hook.botName] = [];
-  acc[hook.hook.botName].push(hook);
-  return acc;
-}, {} as Record<string, ReturnType<typeof Course.getHooks>>);
+const triggers = Course.getHooks(course);
+
+let i = 0;
+const triggersByBotName = {} as Record<
+  string,
+  { priority?: number; trigger: ReturnType<typeof Course.getHooks>[number] }[]
+>;
+for (const trigger of triggers) {
+  if (!triggersByBotName[trigger.hook.botName]) {
+    triggersByBotName[trigger.hook.botName] = [];
+  }
+  if ("action" in trigger.hook && trigger.hook.action) {
+    triggersByBotName[trigger.hook.botName].push({
+      priority: i++,
+      trigger,
+    });
+  } else {
+    triggersByBotName[trigger.hook.botName].push({ trigger });
+  }
+}
 
 // @todo this queue should be moved into the persistence layer
 // element may take days before they can be dequeued
 const queues = new Map();
 
 export const createBot = (botName: Bots) => {
-  const botHooks = hooksByBotName[botName];
+  const botTriggers = triggersByBotName[botName];
 
   const app = (app: Probot) => {
-    if (!botHooks) return;
+    if (!botTriggers) return;
 
-    for (let i = 0; i < botHooks.length; i++) {
-      const hook = botHooks[i];
-      const { event, predicate, action } = hook.hook;
+    for (const botTrigger of botTriggers) {
+      const { trigger, priority } = botTrigger;
+      const { event, predicate } = trigger.hook;
+      const action = "action" in trigger.hook ? trigger.hook.action : null;
+      console.log(trigger, priority);
 
       app.on(event as any, async (context) => {
+        console.log(botName, event);
         const github = new Github(context, course.repo);
         if (github.eventShouldBeIgnored) return;
 
@@ -50,7 +67,7 @@ export const createBot = (botName: Bots) => {
 
         const state = await enrollments(db).findOneRequired(primaryKey);
 
-        if (state.milestones.includes(hook.id)) return;
+        if (state.milestones.includes(trigger.id)) return;
 
         let passed;
         try {
@@ -64,17 +81,17 @@ export const createBot = (botName: Bots) => {
         if (action) {
           await queue.add(
             async () => {
-              console.log(`Executing ${hook.id}`);
+              console.log(`Executing ${trigger.id}`);
               const latestState = await enrollments(db).findOneRequired(
                 primaryKey
               );
               const result = await action(github, latestState);
               // @todo replace this with jsonb_set query
               await enrollments(db).update(primaryKey, {
-                hooks: { ...latestState.hooks, [hook.id]: result },
+                hooks: { ...latestState.hooks, [trigger.id]: result },
               });
             },
-            { priority: i }
+            { priority }
           );
         }
 
@@ -82,7 +99,7 @@ export const createBot = (botName: Bots) => {
         await queue.add(async () => {
           const latestState = await enrollments(db).findOneRequired(primaryKey);
           await enrollments(db).update(primaryKey, {
-            milestones: [...latestState.milestones, hook.id],
+            milestones: [...latestState.milestones, trigger.id],
           });
         });
       });

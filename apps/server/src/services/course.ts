@@ -68,7 +68,9 @@ export class Course {
     return null;
   };
 
-  static getHooks = (course: CourseConfig): CourseHook[] => {
+  static getHooks = (
+    course: CourseConfig
+  ): (CourseHook | { id: string; hook: EventAssertion })[] => {
     return course.stages
       .flatMap((stage) => [
         ...(stage.actions || []),
