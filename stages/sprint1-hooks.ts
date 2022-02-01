@@ -109,7 +109,6 @@ export const sprint1Hooks: CourseHook[] = [
   {
     id: "storeDataCardComment",
     hook: on.uma(
-      // @todo assuming malachi was installed before uma
       ["installation_repositories.added", "installation.created"],
       () => true,
       async (uma, state) => {
@@ -175,9 +174,8 @@ export const sprint1Hooks: CourseHook[] = [
   {
     id: "setupPr",
     hook: on.uma(
-      // @todo assuming malachi was installed before uma
       ["installation_repositories.added", "installation.created"],
-      (event, state) => true,
+      () => true,
       async (uma, state) => {
         await uma.createBranch("setup-repo");
 
