@@ -1,10 +1,9 @@
 import { Probot } from "probot";
-import PQueue from "p-queue";
 import courses from "@packages/courses";
 import { Course } from "../services/course";
 import { Github } from "../services/github";
 import { db, enrollments } from "../services/db";
-import { createProbot } from "../utils";
+import { createProbot, createOrderedQueue } from "../utils";
 import { bots } from "../config";
 import type { Bots } from "@packages/courses/types";
 
@@ -18,8 +17,8 @@ const hooksByBotName = hooks.reduce((acc, hook) => {
   return acc;
 }, {} as Record<string, ReturnType<typeof Course.getHooks>>);
 
-// @todo this should probably be refactored into a proper queue
-// so that it can be guaranteed that steps will be excecuted in their declared order
+// @todo this queue should be moved into the persistence layer
+// element may take days before they can be dequeued
 const queues = new Map();
 
 export const createBot = (botName: Bots) => {
@@ -44,7 +43,7 @@ export const createBot = (botName: Bots) => {
         const queueKey = JSON.stringify(primaryKey);
 
         if (!queues.has(queueKey)) {
-          queues.set(queueKey, new PQueue({ concurrency: 1 }));
+          queues.set(queueKey, createOrderedQueue());
         }
 
         const queue = queues.get(queueKey);
@@ -75,7 +74,7 @@ export const createBot = (botName: Bots) => {
                 hooks: { ...latestState.hooks, [hook.id]: result },
               });
             },
-            { priority: botHooks.length - i }
+            { priority: i }
           );
         }
 
