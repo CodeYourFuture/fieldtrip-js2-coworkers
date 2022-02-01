@@ -2,9 +2,7 @@ Hi {{user}}!
 
 ## About me
 
-As scrum master, I help the team to achieve their project goals and resolve any blockers. I do this by promiting the processes and princple of the [scrum framework](https://www.scrum.org/resources/what-is-scrum).
-
-Each day I check-in with the whole team to discuss the status of the tasks we're working on. I keep track of the progress we're making using the project board.
+As scrum master, I help the team to achieve their project goals and resolve any blockers. I do this by promoting the processes and princple of the [scrum framework](https://www.scrum.org/resources/what-is-scrum).
 
 Although I'm the one keeping an eye on the board's progress, each team member is still responsible for keeping it up-to-date.
 
