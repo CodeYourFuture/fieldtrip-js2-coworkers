@@ -2,7 +2,7 @@ Hi {{user}}!
 
 ## About me
 
-I am the virtual product onwer for this project. My job is to understand users' needs so that we can build a product that really helps people.
+I am the virtual product owner for this project. My job is to understand users' needs so that we can build a product that really helps people.
 
 How do I do this? By talking to users and stakeholders to find out what problems they need solved, and to learn about how people are currently solving their problems.
 
