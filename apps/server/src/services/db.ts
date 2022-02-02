@@ -1,31 +1,34 @@
 import createConnectionPool, { sql } from "@databases/pg";
 import tables from "@databases/pg-typed";
-import DatabaseSchema, { Enrollments } from "../types/generated";
+import DatabaseSchema, { Enrollments, Tasks } from "../types/generated";
 import { DATABASE_SCHEMA, DATABASE_URL } from "../config";
 import { emitter } from "../emitter";
-import { migrations } from "../migrations";
 import databaseSchema from "../types/generated/schema.json";
 
 const db = createConnectionPool({
+  bigIntMode: "string",
   connectionString: DATABASE_URL,
   schema: DATABASE_SCHEMA,
   onQueryResults: (_, { text }, results) => {
     if (text.startsWith("SELECT")) return;
-    if (!isEnrollment(results[0])) return;
+    if (!isUpdatedEnrollment(results[0])) return;
     const [result] = results;
     const key = `${result.username}:enrollment:updated`;
     emitter.emit(key, result);
   },
 });
 
-const { enrollments } = tables<DatabaseSchema>({ databaseSchema });
+const { enrollments, events, tasks } = tables<DatabaseSchema>({
+  databaseSchema,
+});
 
-export { sql, db, enrollments };
+export { sql, db, enrollments, events, tasks };
 
-const isEnrollment = (result: any): result is Enrollments =>
+const isUpdatedEnrollment = (result: any): result is Enrollments =>
   typeof result === "object" &&
   result.hasOwnProperty("course_id") &&
-  result.hasOwnProperty("username");
-
-export const migrate = () =>
-  Promise.all(migrations.map((query) => db.query(query)));
+  result.hasOwnProperty("username") &&
+  result.hasOwnProperty("repo_url") &&
+  result.hasOwnProperty("milestones") &&
+  result.hasOwnProperty("bots") &&
+  result.hasOwnProperty("hooks");

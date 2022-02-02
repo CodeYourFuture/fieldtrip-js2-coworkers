@@ -1,9 +1,12 @@
 import type { Context as BaseContext } from "probot";
 import { getFile } from "../utils";
 
-export type EventContext =
-  | BaseContext<InstallationEvents>
-  | BaseContext<RepoEvents>;
+export type EventContext = Pick<
+  BaseContext<InstallationEvents> | BaseContext<RepoEvents>,
+  "octokit" | "name" | "payload"
+> & {
+  repo: <T>(o?: any) => { repo: string; owner: string } & T;
+};
 
 type InstallationEvents =
   | "installation.created"
@@ -14,39 +17,60 @@ type RepoEvents = "issues.opened" | "issues.closed";
 export class Github {
   context: EventContext;
   octokit: EventContext["octokit"];
-  repoName: string;
+  targetRepo: string;
 
-  constructor(context: EventContext, repo: string) {
+  constructor(context: EventContext, options: { targetRepo: string }) {
     this.context = context;
     this.octokit = context.octokit;
-    this.repoName = repo;
+    this.targetRepo = options.targetRepo;
   }
 
   // Unfortunately, can't add a Type guard here as it's too complex for the compiler
-  private isInstallationEvent() {
+  private get isInstallationEvent() {
     return (
       this.context.name === "installation" ||
       this.context.name === "installation_repositories"
     );
   }
 
-  get eventShouldBeIgnored() {
-    if (this.isInstallationEvent()) {
-      return (
-        this.installedRepos?.filter((r) => r.name === this.repoName).length ===
-        0
-      );
+  get installedRepos() {
+    if ("repositories_added" in this.context.payload) {
+      return this.context.payload.repositories_added || [];
     }
-    return this.context.repo().repo !== this.repoName;
+    if ("repositories" in this.context.payload) {
+      return this.context.payload.repositories || [];
+    }
   }
 
+  private get eventRepo() {
+    if (this.isInstallationEvent) {
+      return null;
+    }
+    return this.context.repo().repo;
+  }
+
+  get username() {
+    return this.repo().owner;
+  }
+
+  get eventShouldBeIgnored() {
+    if (this.isInstallationEvent) {
+      return (
+        this.installedRepos?.filter((r) => r.name === this.targetRepo)
+          .length === 0
+      );
+    }
+    return this.eventRepo !== this.targetRepo;
+  }
+
+  // repo function that can be used on installation events
   repo<T extends Record<string, any>>(
     o?: T
   ): T & { owner: string; repo: string } {
-    if (this.isInstallationEvent()) {
+    if (this.isInstallationEvent) {
       return Object.assign({}, o, {
         owner: this.context.payload.sender.login,
-        repo: this.repoName,
+        repo: this.targetRepo,
       });
     }
     return this.context.repo<T>(o);
@@ -56,7 +80,7 @@ export class Github {
     return {
       user: `@${this.username}`,
       username: this.username,
-      repo: this.repoName,
+      repo: this.targetRepo,
     };
   }
 
@@ -70,19 +94,6 @@ export class Github {
   private async fileToBase64(path: string, props?: Record<string, string>) {
     const content = await getFile(path, { ...this.fileProps, ...props });
     return Buffer.from(content).toString("base64");
-  }
-
-  get installedRepos() {
-    if ("repositories_added" in this.context.payload) {
-      return this.context.payload.repositories_added || [];
-    }
-    if ("repositories" in this.context.payload) {
-      return this.context.payload.repositories || [];
-    }
-  }
-
-  get username() {
-    return this.repo().owner;
   }
 
   async createIssue(params: {
@@ -150,7 +161,7 @@ export class Github {
     await this.octokit.projects.moveCard(
       this.repo({
         card_id: data.id,
-        position: position as string,
+        position: position || "bottom",
         column_id: columnId,
       })
     );

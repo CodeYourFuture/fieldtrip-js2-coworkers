@@ -54,8 +54,7 @@ export const botSessions: RequestHandler = async (req, _, next) => {
     } catch {}
   }
 
-  // await req.locals.store.set("installedBots", Object.keys(req.locals.bots));
-  await enrollments(db).update(req.locals.primaryKey, {
+  await enrollments(db).update(req.locals.enrollmentKey, {
     bots: Object.keys(req.locals.bots),
   });
 

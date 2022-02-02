@@ -128,7 +128,7 @@ export const sprint1Milestones: CourseMilestone[] = [
       (event, state) =>
         event.pull_request.merged &&
         prByOwner(event) &&
-        prRefsIssue(event.pull_request, state.hooks.listCommandCard)
+        prRefsIssue(event.pull_request, state.hooks.listCommandIssue)
     ),
   },
   {

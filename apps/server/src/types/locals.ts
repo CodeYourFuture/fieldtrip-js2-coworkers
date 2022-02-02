@@ -9,14 +9,14 @@ export type UnauthenticatedLocals = {
   course: CourseConfig | null;
   user: null;
   bots: Record<any, never>;
-  primaryKey: null;
+  enrollmentKey: null;
 };
 
 export type AuthenticatedLocals = {
   course: CourseConfig | null;
   user: User;
   bots: Record<Bots, Bot>;
-  primaryKey: { username: string; course_id: string };
+  enrollmentKey: { username: string; course_id: string };
 };
 
 export type Bot = {

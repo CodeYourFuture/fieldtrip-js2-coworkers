@@ -5,7 +5,7 @@ export const locals: RequestHandler = (req, res, next) => {
     course: null,
     user: null,
     bots: {},
-    primaryKey: null,
+    enrollmentKey: null,
   };
   next();
 };

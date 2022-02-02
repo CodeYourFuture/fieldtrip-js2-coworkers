@@ -5,7 +5,7 @@ export const db: RequestHandler = async (req, res, next) => {
   if (!user) return next();
   if (!course) return next();
 
-  req.locals.primaryKey = { username: user.login, course_id: course.id };
+  req.locals.enrollmentKey = { username: user.login, course_id: course.id };
 
   next();
 };

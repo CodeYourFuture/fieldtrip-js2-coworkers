@@ -1,7 +1,8 @@
 import { app } from "./app";
 import * as config from "./config";
 import { io } from "./io";
-import { migrate } from "./services/db";
+import { migrate, taskq } from "./services";
+import { processTrigger } from "./tasks";
 
 migrate()
   .then(() => {
@@ -10,6 +11,9 @@ migrate()
     });
 
     io(server);
+
+    taskq.take(/^trigger:/, processTrigger);
+    taskq.start();
   })
   .catch((err) => {
     throw err;

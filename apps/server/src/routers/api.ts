@@ -1,6 +1,6 @@
 import courses from "@packages/courses";
 import { Router } from "express";
-import { enrollments, db } from "../services/db";
+import { enrollments, tasks, db, events } from "../services/db";
 import { Course } from "../services";
 
 export const api = Router();
@@ -25,8 +25,8 @@ api.get("/courses/:id", async (req, res, next) => {
   const courseConfig = req.locals.course;
   if (!courseConfig) return res.send(404);
   try {
-    const state = req.locals.primaryKey
-      ? await enrollments(db).findOne(req.locals.primaryKey)
+    const state = req.locals.enrollmentKey
+      ? await enrollments(db).findOne(req.locals.enrollmentKey)
       : null;
     const course = new Course(courseConfig, state);
     const compiledCourse = await course.compile();
@@ -46,7 +46,7 @@ api.post("/courses/:id", async (req, res, next) => {
   try {
     // Insert must come first so that the row is available to webhook events
     await enrollments(db).insert({
-      ...req.locals.primaryKey,
+      ...req.locals.enrollmentKey,
       repo_url: `https://github.com/${user.login}/${course.repo}`,
     });
     await user.octokit.request("POST /user/repos", {
@@ -58,21 +58,25 @@ api.post("/courses/:id", async (req, res, next) => {
     // if this fails it could mean:
     // a) repo already exists
     // b) user uninstall the root app, but didn't revoke its oauth privileges
-    // c) the store did not initilise
+    // c) the db failed to insert
     next(err);
   }
 });
 
 api.delete("/courses/:id", async (req, res, next) => {
-  const { user, course } = req.locals;
-  if (!user) return res.send(403);
+  const { user, course, enrollmentKey } = req.locals;
+  if (!user || !enrollmentKey) return res.send(403);
   if (!course) return res.send(400);
   try {
     await user.octokit.request("DELETE /repos/{username}/{name}", {
       username: user.login,
       name: course.repo,
     });
-    await enrollments(db).delete(req.locals.primaryKey);
+    await enrollments(db).delete(enrollmentKey);
+    await events(db).delete(enrollmentKey);
+    await tasks(db).delete({
+      name: `trigger:${enrollmentKey.course_id}:${enrollmentKey.username}`,
+    });
     res.sendStatus(204);
   } catch (err) {
     next(err);

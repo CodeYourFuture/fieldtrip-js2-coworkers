@@ -45,5 +45,315 @@
         "typeName": "TEXT"
       }
     ]
+  },
+  {
+    "name": "events",
+    "columns": [
+      {
+        "name": "bot_name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "course_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "event_name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "installation_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "payload",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "trigger_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "username",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      }
+    ]
+  },
+  {
+    "name": "executions",
+    "columns": [
+      {
+        "name": "finished_at",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1184,
+        "typeName": "TIMESTAMPTZ"
+      },
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "started_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1184,
+        "typeName": "TIMESTAMPTZ"
+      },
+      {
+        "name": "status",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "task_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      }
+    ]
+  },
+  {
+    "name": "logs",
+    "columns": [
+      {
+        "name": "execution_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "message",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "time",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1184,
+        "typeName": "TIMESTAMPTZ"
+      }
+    ]
+  },
+  {
+    "name": "migrations",
+    "columns": [
+      {
+        "name": "executed_at",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 1114,
+        "typeName": "TIMESTAMP"
+      },
+      {
+        "name": "hash",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      }
+    ]
+  },
+  {
+    "name": "task_stats",
+    "columns": [
+      {
+        "name": "collection",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "failure",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "locked",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "pending",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "running",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "scheduled",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "success",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "task_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "timeout",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "total",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      }
+    ]
+  },
+  {
+    "name": "tasks",
+    "columns": [
+      {
+        "name": "attempts",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "context",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "execute_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1184,
+        "typeName": "TIMESTAMPTZ"
+      },
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "locked",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
+        "name": "name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 25,
+        "typeName": "TEXT"
+      },
+      {
+        "name": "params",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 3802,
+        "typeName": "JSONB"
+      },
+      {
+        "name": "parent_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 20,
+        "typeName": "BIGINT"
+      },
+      {
+        "name": "priority",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "status",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      }
+    ]
   }
 ]
