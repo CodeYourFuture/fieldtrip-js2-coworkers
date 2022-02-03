@@ -39,7 +39,6 @@ type Params = {
 
 export const processTrigger = taskq.handler<void, Params>(async (self) => {
   const { params } = self;
-  console.log(params.event);
   const event = await events(db).findOneRequired(params.event);
 
   const { trigger_id: triggerId, course_id: courseId, username } = params.event;
