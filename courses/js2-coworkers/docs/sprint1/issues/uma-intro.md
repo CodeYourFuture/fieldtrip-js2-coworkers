@@ -2,7 +2,7 @@ Hi {{user}}!
 
 ## About me
 
-I am the virtual technical lead for this project. In robot years, I've been a developer for nearly a a decade now. Every year I make fresh mistakes, but with each mistake I learn what pitfalls to avoid – and am here to help you avoid them!
+I am the virtual technical lead for this project. In robot years, I've been a developer for nearly a decade now. Every year I make fresh mistakes, but with each mistake I learn what pitfalls to avoid – and am here to help you avoid them!
 
 ## Working together
 

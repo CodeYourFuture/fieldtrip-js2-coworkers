@@ -178,6 +178,12 @@ export const sprint1Hooks: CourseHook[] = [
           branch: "setup-repo",
         });
 
+        await uma.putFile({
+          path: ".github/pull_request_template.md",
+          content: "sprint1/prs/repo-setup/pull_request_template.md",
+          branch: "setup-repo",
+        });
+
         return uma.createPullRequest({
           from: "setup-repo",
           to: "main",

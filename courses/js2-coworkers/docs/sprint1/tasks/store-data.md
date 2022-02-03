@@ -3,7 +3,7 @@
 At the moment people data within the organisation is not stored in a well-organised way and members of the organisation do not have access to it. This makes it hard for members to do things like:
 
 - Find how who their colleagues are
-- Work out who to go for help for particular problems
+- Work out who to go to for help with particular problems
 - See who else is working in their region
 
 ### User Story

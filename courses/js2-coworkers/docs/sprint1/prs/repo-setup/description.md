@@ -1,7 +1,8 @@
 Adds:
 
-- Instructions on how to clone and contribute to the repo
-- JavaScript module for storing user data
+- A pull request template
+- A readme with instructions on how to clone the repo and contribute to it
+- A JavaScript module, `members.js`, to be used for storing the member's data
 
 {{user}} once you've reviewed the code please merge this and then you can clone the repo to your local machine to start development.
 
