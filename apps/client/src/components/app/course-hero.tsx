@@ -20,7 +20,11 @@ export const CourseHero: FC<Props> = ({ course, authenticated }) => (
         </div>
         {authenticated ? (
           course.enrollment ? (
-            <Button variant="outline" disabled>
+            <Button
+              variant="outline"
+              className="cursor-default hover:!bg-blue-500 bg-blue-500 rounded-2xl !text-white !border-none"
+              disabled
+            >
               Course started
             </Button>
           ) : (

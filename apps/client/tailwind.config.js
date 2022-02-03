@@ -7,7 +7,7 @@ module.exports = {
       "../../node_modules/@djgrant/components/src/**/*.{ts,tsx}"
     ),
   ],
-  important: true,
+  important: false,
   theme: {
     fontFamily: {
       heading: "Rubik",
