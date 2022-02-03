@@ -1,4 +1,4 @@
-import { Button, H4 } from "src/components/library";
+import { Button, H4, Markdown } from "src/components/library";
 import { observer } from "mobx-react-lite";
 import * as config from "src/config";
 import type { FC } from "react";
@@ -21,7 +21,7 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
         <span className="mr-3 text-lg font-medium text-gray-400">
           {String(i + 1)}
         </span>
-        {action.label}
+        <Markdown prose={false}>{action.label}</Markdown>
         {action.unlocked &&
           (action.passed ? (
             <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">

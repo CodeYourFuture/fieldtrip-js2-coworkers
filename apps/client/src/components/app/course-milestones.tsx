@@ -1,4 +1,4 @@
-import { H4 } from "src/components/library";
+import { H4, Markdown } from "src/components/library";
 import { observer } from "mobx-react-lite";
 import type { FC } from "react";
 import type { ICourse } from "src/models";
@@ -20,7 +20,7 @@ export const CourseMilestones: FC<Props> = observer(({ stage }) => (
         <span className="mr-3 text-lg font-medium text-gray-400">
           {String(i + 1)}
         </span>
-        {action.label}
+        <Markdown prose={false}>{action.label}</Markdown>
         {action.passed && (
           <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">
             Done
