@@ -12,7 +12,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "data-issue-assigned-to-self",
-    label: "Assigned first issue (Member Data) to self",
+    label: "Assigned first issue, *Store member data*, to self",
     passed: on(
       "issues.assigned",
       (event, state) => event.issue.id === state.hooks.storeDataIssue.id
@@ -20,7 +20,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "member-data-card-in-progress",
-    label: "Moved Member Data card to In Progress",
+    label: "Moved *Store member data* card to *In Progress*",
     passed: on(
       "project_card.moved",
       (event, state) =>
@@ -30,7 +30,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "open-member-data-pr",
-    label: "Opened PR, referencing Member Data issue ",
+    label: "Opened PR, referencing *Store member data* issue ",
     passed: on(
       ["pull_request.opened", "pull_request.edited"],
       (event, state) =>
@@ -40,7 +40,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   // {
   //   id: "assigned-member-data-pr",
-  //   label: "Assigned reviewer to Member Data PR",
+  //   label: "Assigned reviewer to *Store member data* PR",
   //   passed: on(
   //     "pull_request.review_requested",
   //     (event, state) =>
@@ -51,7 +51,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   // },
   {
     id: "member-data-card-in-review",
-    label: "Moved Member Data card to In Review",
+    label: "Moved *Store member data* card to *In Review*",
     passed: on(
       "project_card.moved",
       (event, state) =>
@@ -61,7 +61,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "merged-member-data-pr",
-    label: "Merged Member Data PR (once peer-reviewed)",
+    label: "Merged *Store member data* PR (once peer-reviewed)",
     passed: on(
       "pull_request.closed",
       (event, state) =>
@@ -73,7 +73,7 @@ export const sprint1Milestones: CourseMilestone[] = [
 
   {
     id: "member-data-card-done",
-    label: "Moved Member Data card to Done",
+    label: "Moved *Store member data* card to *Done*",
     passed: on(
       "project_card.moved",
       (event, state) =>
@@ -83,7 +83,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "merge-cli-setup-pr",
-    label: "Merged Uma's CLI setup PR",
+    label: "Merged Uma's *CLI setup* PR",
     passed: on(
       "pull_request.closed",
       (event, state) => event.pull_request.id === state.hooks.cliPr.id
@@ -91,7 +91,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "open-list-pr",
-    label: "Opened List Command PR",
+    label: "Opened *CLI list command* PR",
     passed: on(
       ["pull_request.opened", "pull_request.edited"],
       (event, state) =>
@@ -112,7 +112,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   // },
   {
     id: "list-card-in-review",
-    label: "Moved List Command card to In Review",
+    label: "Moved *CLI list command* card to *In Review*",
     passed: on(
       "project_card.moved",
       (event, state) =>
@@ -122,7 +122,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "list-pr-merged",
-    label: "Merged List Command PR (once peer-reviewed)",
+    label: "Merged *CLI list command* PR (once peer-reviewed)",
     passed: on(
       "pull_request.closed",
       (event, state) =>
@@ -133,7 +133,7 @@ export const sprint1Milestones: CourseMilestone[] = [
   },
   {
     id: "list-card-done",
-    label: "Moved List Command card to Done",
+    label: "Moved *CLI list command* card to Done",
     passed: on(
       "project_card.moved",
       (event, state) =>
