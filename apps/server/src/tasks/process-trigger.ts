@@ -51,7 +51,6 @@ export const processTrigger = taskq.handler<void, Params>(async (self) => {
 
   const action = getActionByTriggerId(triggerId);
   const bot = createProbot(bots[botName as Bots]);
-  // wrap auth so that it retries if it fails
   const authedBot = await bot.auth(installationId);
 
   const github = new Github(
