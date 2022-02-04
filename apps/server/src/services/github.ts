@@ -168,6 +168,21 @@ export class Github {
     return data;
   }
 
+  async moveProjectCard(params: {
+    cardId: number;
+    columnId: number;
+    position?: "top" | "bottom" | `after:${string}`;
+  }) {
+    const { cardId, columnId, position } = params;
+    await this.octokit.projects.moveCard(
+      this.repo({
+        card_id: cardId,
+        position: position || "bottom",
+        column_id: columnId,
+      })
+    );
+  }
+
   async createPullRequest(params: {
     from: string;
     to: string;

@@ -164,6 +164,11 @@ export const sprint1Hooks: CourseHook[] = [
       ["installation_repositories.added", "installation.created"],
       () => true,
       async (uma, state) => {
+        await uma.moveProjectCard({
+          cardId: state.hooks.setupCard.id,
+          columnId: state.hooks.board.columns.review.id,
+        });
+
         await uma.createBranch("setup-repo");
 
         await uma.putFile({
@@ -190,6 +195,20 @@ export const sprint1Hooks: CourseHook[] = [
           title: "Set up repo",
           body: `sprint1/prs/repo-setup/description.md?issueNumber=${state.hooks.setupIssue?.number}`,
           reviewers: [uma.username],
+        });
+      }
+    ),
+  },
+  {
+    id: "moveSetupCardToDone",
+    priority: 0,
+    hook: on.amber(
+      "pull_request.closed",
+      (event, state) => event.pull_request.id === state.hooks.setupPr.id,
+      (amber, state) => {
+        return amber.moveProjectCard({
+          cardId: state.hooks.setupCard.id,
+          columnId: state.hooks.board.columns.done.id,
         });
       }
     ),

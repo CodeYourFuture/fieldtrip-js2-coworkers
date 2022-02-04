@@ -60,10 +60,15 @@ export class Course {
 
   private static toHook = (
     hook: CourseHook | CourseMilestone | CourseAction
-  ): { id: string; hook: EventAssertion } | null => {
+  ): { id: string; hook: EventAssertion; priority?: number } | null => {
     const hookHandler = "hook" in hook ? hook.hook : hook.passed;
+    const priority = "priority" in hook ? hook.priority : undefined;
     if (typeof hookHandler === "object") {
-      return { id: hook.id, hook: hookHandler };
+      return {
+        id: hook.id,
+        hook: hookHandler,
+        priority,
+      };
     }
     return null;
   };

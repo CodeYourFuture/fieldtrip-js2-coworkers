@@ -23,9 +23,14 @@ for (const trigger of triggers) {
     triggersByBotName[trigger.hook.botName] = [];
   }
   if ("action" in trigger.hook && trigger.hook.action) {
+    let priority =
+      "priority" in trigger && typeof trigger.priority === "number"
+        ? trigger.priority
+        : i++;
+
     triggersByBotName[trigger.hook.botName].push({
       // give priority (sequence position) to triggers with an action so that they are executed sequentially
-      priority: i++,
+      priority,
       trigger,
     });
   } else {

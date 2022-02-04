@@ -38,6 +38,7 @@ export type CourseMilestone = {
 
 export type CourseHook = {
   id: string;
+  priority?: number;
   hook: Hook;
 };
 
