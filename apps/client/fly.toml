@@ -1,4 +1,4 @@
-app = "cyf-staging-api"
+app = "cyf-lab-prod"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
