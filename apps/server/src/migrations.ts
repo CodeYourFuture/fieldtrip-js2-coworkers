@@ -93,4 +93,13 @@ export const migrations = [
     for each row when (new.status = 'success')
     execute procedure taskq_extension_on_success();
   `,
+  // remove stats as may be problematic with extension
+  sql`
+    create or replace function on_task_change () returns trigger as $$ 
+    declare
+    begin
+      return new;
+    end
+    $$ language plpgsql volatile;
+  `,
 ];
