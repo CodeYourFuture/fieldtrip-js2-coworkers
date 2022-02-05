@@ -27,7 +27,7 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
             <span className="float-right mr-1.5 mt-1 text-sm text-emerald-500">
               Done
             </span>
-          ) : (
+          ) : action.url !== "" ? (
             <Button
               size="sm"
               className="float-right bg-emerald-500"
@@ -44,6 +44,8 @@ export const CourseActions: FC<Props> = observer(({ stage }) => (
             >
               Start
             </Button>
+          ) : (
+            <span className="float-right text-gray-300">Loading...</span>
           ))}
       </div>
     ))}
