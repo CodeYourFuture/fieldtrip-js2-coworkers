@@ -1,7 +1,7 @@
 import { Probot } from "probot";
 import courses from "@packages/courses";
 import { Course } from "../services/course";
-import { Github } from "../services/github";
+import { Github, actionRegister } from "../services";
 import { db, enrollments, events } from "../services/db";
 import { createProbot } from "../utils";
 import { taskq } from "./taskq";
@@ -10,7 +10,6 @@ import type { Bots } from "@packages/courses/types";
 
 // @todo get course using event payload repo
 const course = courses.js2;
-
 const triggers = Course.getHooks(course);
 
 let i = 0;
@@ -38,10 +37,6 @@ for (const trigger of triggers) {
   }
 }
 
-// @todo this queue should be moved into the persistence layer
-// element may take days before they can be dequeued
-const queues = new Map();
-
 export const createBot = (botName: Bots) => {
   const botTriggers = triggersByBotName[botName];
 
@@ -57,53 +52,55 @@ export const createBot = (botName: Bots) => {
 
         if (github.eventShouldBeIgnored) return;
 
-        const state = await enrollments(db).findOneRequired({
-          username: github.username,
-          course_id: course.id,
-        });
-
-        if (state.milestones.includes(trigger.id)) return;
-
-        let passed;
-        try {
-          passed = predicate(context.payload, state, github);
-        } catch {
-          passed = false;
-        }
-
-        if (!passed) return;
-
-        try {
-          const [event] = await events(db).insert({
-            trigger_id: trigger.id,
+        // wait for actions to finish to ensure state is up-to-date
+        actionRegister.flushed(async function runTrigger() {
+          const state = await enrollments(db).findOneRequired({
             username: github.username,
             course_id: course.id,
-            event_name: context.name,
-            payload: context.payload,
-            bot_name: botName,
-            installation_id: context.payload.installation.id,
           });
 
-          await taskq.enqueue({
-            name: `trigger:${course.id}:${github.username}`,
-            status: "sequenced",
-            priority,
-            params: {
-              event: {
-                trigger_id: event.trigger_id,
-                username: event.username,
-                course_id: event.course_id,
-              },
-            },
-          });
-        } catch (err: any) {
-          if (err.code === "23505") {
-            // duplicate key error
-            // this is not an error, it just means that the event has already been processed
-            return;
+          if (state.milestones.includes(trigger.id)) return;
+          let passed;
+          try {
+            passed = predicate(context.payload, state, github);
+          } catch {
+            passed = false;
           }
-          throw err;
-        }
+
+          if (!passed) return;
+
+          try {
+            const [event] = await events(db).insert({
+              trigger_id: trigger.id,
+              username: github.username,
+              course_id: course.id,
+              event_name: context.name,
+              payload: context.payload,
+              bot_name: botName,
+              installation_id: context.payload.installation.id,
+            });
+
+            await taskq.enqueue({
+              name: `trigger:${course.id}:${github.username}`,
+              status: "sequenced",
+              priority,
+              params: {
+                event: {
+                  trigger_id: event.trigger_id,
+                  username: event.username,
+                  course_id: event.course_id,
+                },
+              },
+            });
+          } catch (err: any) {
+            if (err.code === "23505") {
+              // duplicate key error
+              // this is not an error, it just means that the event has already been processed
+              return;
+            }
+            throw err;
+          }
+        });
       });
     }
   };
