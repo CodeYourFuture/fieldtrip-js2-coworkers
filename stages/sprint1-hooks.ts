@@ -202,7 +202,7 @@ export const sprint1Hooks: CourseHook[] = [
   {
     id: "moveSetupCardToDone",
     priority: 0,
-    hook: on.amber(
+    hook: on.uma(
       "pull_request.closed",
       (event, state) => event.pull_request.id === state.hooks.setupPr.id,
       (amber, state) => {
