@@ -90,6 +90,24 @@ export const sprint1Milestones: CourseMilestone[] = [
     ),
   },
   {
+    id: "list-issue-assigned-to-self",
+    label: "Assigned next issue, *CLI list command* to self",
+    passed: on(
+      "issues.assigned",
+      (event, state) => event.issue.id === state.hooks.listCommandIssue.id
+    ),
+  },
+  {
+    id: "list-card-in-progress",
+    label: "Moved *CLI list command* card to *In Progress*",
+    passed: on(
+      "project_card.moved",
+      (event, state) =>
+        event.project_card.id === state.hooks.listCommandCard.id &&
+        event.project_card.column_id === state.hooks.board.columns.doing.id
+    ),
+  },
+  {
     id: "open-list-pr",
     label: "Opened *CLI list command* PR",
     passed: on(
