@@ -21,7 +21,7 @@ for (const trigger of triggers) {
   if (!triggersByBotName[trigger.hook.botName]) {
     triggersByBotName[trigger.hook.botName] = [];
   }
-  if ("action" in trigger.hook && trigger.hook.action) {
+  if ("action" in trigger.hook) {
     let priority =
       "priority" in trigger && typeof trigger.priority === "number"
         ? trigger.priority
