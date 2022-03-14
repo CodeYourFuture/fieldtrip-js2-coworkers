@@ -13,6 +13,10 @@
     "db:types": "dotenv -- bash -c 'npx @databases/pg-schema-cli --database $DATABASE_URL --directory apps/server/src/types/generated'",
     "dev": "lerna run dev --parallel",
     "dev:packages": "lerna run dev --parallel --scope @packages/* --scope @courses/*",
+    "deploy:server:prod": "fly deploy --config ./fly.server.production.toml",
+    "deploy:server:staging": "fly deploy --config ./fly.server.staging.toml",
+    "deploy:client:prod": "fly deploy --config fly.client.prod.toml",
+    "deploy:client:staging": "fly deploy --config fly.client.staging.toml",
     "start": "yarn workspace server start",
     "test": "yarn build -- --noEmit && jest"
   },

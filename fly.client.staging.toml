@@ -1,11 +1,15 @@
-app = "cyf-lab-prod"
+app = "cyf-staging"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
-[env]
+[build]
+  dockerfile = "Dockerfile.client"
 
+[build.args]
+  REACT_APP_SERVER_URL="https://cyf-staging-api.danielgrant.co"
+  
 [experimental]
   allowed_public_ports = []
   auto_rollback = true

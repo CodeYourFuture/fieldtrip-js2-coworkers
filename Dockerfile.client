@@ -1,0 +1,11 @@
+FROM node:14-slim AS build
+ARG REACT_APP_SERVER_URL
+COPY package.json yarn.lock tsconfig.json lerna.json ./
+COPY apps/client apps/client/
+RUN cd apps/client
+RUN yarn install
+RUN yarn build
+
+FROM pierrezemb/gostatic
+COPY --from=build apps/client/build /srv/http/
+CMD ["-port","8080","-https-promote", "-enable-logging", "-fallback", "index.html"]
