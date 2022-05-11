@@ -1,6 +1,6 @@
 ### Problem
 
-At the moment people data within the organisation is not stored in a well-organised way and members of the organisation do not have access to it. This makes it hard for members to do things like:
+At the moment member data within the organisation is not stored in a well-organised way and members of the organisation do not have access to it. This makes it hard for members to do things like:
 
 - Find how who their colleagues are
 - Work out who to go to for help with particular problems
@@ -15,7 +15,7 @@ At the moment people data within the organisation is not stored in a well-organi
 ### Acceptance Criteria
 
 1. The data should be stored in a JavaScript array/object
-2. The data should be store in a logical format
+2. The data should be stored in a logical format
 
 ### Attachments
 
