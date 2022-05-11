@@ -10,6 +10,6 @@ I'll help you get the repo set up, and, from time to time, I'll provide advice o
 
 ## Next steps
 
-1. Close this issue to complete this onboarding step
+1. Close this issue to complete this onboarding step.
 
 2. Find the pull request I have opened. It has some boilerplate code and setup instructions. Review the code and once you're happy merge the PR.
